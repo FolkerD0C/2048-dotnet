@@ -1,8 +1,14 @@
 ﻿namespace Game2048;
+
 class Program
 {
     static void Main()
     {
-        Console.WriteLine("Hello");
+        Initialize();
+    }
+
+    static void Initialize()
+    {
+        Console.Clear();
     }
 }
