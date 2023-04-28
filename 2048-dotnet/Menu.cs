@@ -33,6 +33,8 @@ internal class Menu
 
     public event Func<bool> MenuAction;
 
+    int menuPosition = 0;
+
     public Menu (string displayName, bool stepBackItem = false)
     {
         this.displayName = displayName;
@@ -46,6 +48,15 @@ internal class Menu
     public void AddSubMenu(Menu menu)
     {
         SubMenus.Add(menu);
+    }
+
+    public void SetDisplayPosition(int position)
+    {
+        menuPosition =
+            position < 0 ? 0 :
+            position > Console.BufferHeight - 1 - SubMenus.Count ?
+                Console.BufferHeight - 1 - SubMenus.Count :
+            position;
     }
 
     public bool FireAction()
@@ -95,14 +106,14 @@ internal class Menu
 
     void DrawMenu(int cursorPosition)
     {
-        Console.Clear();
+        ClearDisplay();
         for (int i = 0; i < SubMenus.Count; i++)
         {
             if (i == cursorPosition)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
+                Console.BackgroundColor = ConsoleColor.Red;
                 Console.WriteLine(SubMenus[i].DisplayName);
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.White;
             }
             else
             {
@@ -111,11 +122,21 @@ internal class Menu
         }
     }
 
+    void ClearDisplay()
+    {
+        Console.SetCursorPosition(0, menuPosition);
+        for (int i = menuPosition; i < Console.BufferHeight; i++)
+        {
+            Console.WriteLine(new string(' ', Console.BufferWidth));
+        }
+        Console.SetCursorPosition(0, menuPosition);
+    }
+
     InputAction HandleKeyboardInput()
     {
         while (true)
         {
-            ConsoleKey input = Console.ReadKey(false).Key;
+            ConsoleKey input = Console.ReadKey(true).Key;
             switch (input)
             {
                 case ConsoleKey.W: case ConsoleKey.UpArrow:
@@ -133,6 +154,7 @@ internal class Menu
 
     bool PreviosMenu()
     {
+        Console.ReadKey(true);
         return false;
     }
 }
