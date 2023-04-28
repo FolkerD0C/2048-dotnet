@@ -2,7 +2,7 @@ namespace Game2048;
 
 class GridInstance
 {
-    enum MoveDirection
+    public enum MoveDirection
     {
         Left,
         Down,
@@ -46,11 +46,9 @@ class GridInstance
         Score += points;
     }
 
-    public GridInstance UpdateField(int up, int left, int value)
+    public void UpdateField(int up, int left, int value)
     {
-        GridInstance copy = CopyGrid();
-        copy.SetField(up, left, value);
-        return copy;
+        SetField(up, left, value);
     }
 
     GridInstance CopyGrid()
@@ -70,5 +68,49 @@ class GridInstance
     protected void SetField(int up, int left, int value)
     {
         Grid[up, left] = value;
+    }
+
+    public GridInstance Move(MoveDirection direction)
+    {
+        GridInstance copycat = CopyGrid(); 
+        int start = 0;
+        int until = 0;
+        int delta = 0;
+        switch (direction)
+        {
+            case MoveDirection.Left: case MoveDirection.Up:
+                {
+                    start = 0;
+                    until = 2;
+                    delta = 1;
+                    break;
+                }
+            case MoveDirection.Right: case MoveDirection.Down:
+                {
+                    start = 3;
+                    until = 1;
+                    delta = -1;
+                    break;
+                }
+        }
+        switch (direction)
+        {
+            case MoveDirection.Left: case MoveDirection.Right:
+                return SimulateMotion(copycat, start, until, delta, 0);
+            case MoveDirection.Down: case MoveDirection.Up:
+                return SimulateMotion(copycat, start, until, delta, 1);
+        }
+    }
+
+    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
+    {
+        for (int i = 0; i < target.Grid.GetLength(axis); i++)
+        {
+            for (int j = start; j <= until; j += delta)
+            {
+                
+            }
+        }
+        return target;
     }
 }
