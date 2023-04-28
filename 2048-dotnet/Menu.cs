@@ -31,12 +31,16 @@ internal class Menu
         }
     }
 
-    public event Action MenuAction;
+    public event Func<bool> MenuAction;
 
-    public Menu (string displayName)
+    public Menu (string displayName, bool stepBackItem = false)
     {
         this.displayName = displayName;
         subMenus = new List<Menu>();
+        if (stepBackItem)
+        {
+            MenuAction += PreviosMenu;
+        }
     }
 
     public void AddSubMenu(Menu menu)
@@ -44,20 +48,21 @@ internal class Menu
         SubMenus.Add(menu);
     }
 
-    public void FireAction()
+    public bool FireAction()
     {
         if (SubMenus.Count > 0)
         {
             MenuAction += Navigate;
         }
-        MenuAction?.Invoke();
+        bool result = MenuAction();
         if (SubMenus.Count > 0)
         {
             MenuAction -= Navigate;
         }
+        return result;
     }
 
-    public void Navigate()
+    public bool Navigate()
     {
         bool navigation = true;
         int cursorPosition = 0;
@@ -80,11 +85,12 @@ internal class Menu
                     }
                 case InputAction.Activate:
                     {
-                        SubMenus[cursorPosition].FireAction();
+                        navigation = SubMenus[cursorPosition].FireAction();
                         break;
                     }
             }
         }
+        return true;
     }
 
     void DrawMenu(int cursorPosition)
@@ -123,5 +129,10 @@ internal class Menu
             }
         }
         throw new ArgumentException();
+    }
+
+    bool PreviosMenu()
+    {
+        return false;
     }
 }
