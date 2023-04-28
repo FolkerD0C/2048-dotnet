@@ -23,9 +23,27 @@ class GridInstance
         }
     }
 
+    int score;
+    public int Score
+    {
+        get
+        {
+            return score;
+        }
+        private set
+        {
+            score = value;
+        }
+    }
+
     public GridInstance()
     {
         Grid = new int[4, 4];
+    }
+
+    public void AddPoints(int points)
+    {
+        Score += points;
     }
 
     public GridInstance UpdateField(int up, int left, int value)
@@ -45,6 +63,7 @@ class GridInstance
                 copycat.SetField(i, j, Grid[i, j]);
             }
         }
+        copycat.AddPoints(Score);
         return copycat;
     }
 
