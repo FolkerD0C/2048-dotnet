@@ -46,7 +46,15 @@ internal class Menu
 
     public void FireAction()
     {
+        if (SubMenus.Count > 0)
+        {
+            MenuAction += Navigate;
+        }
         MenuAction?.Invoke();
+        if (SubMenus.Count > 0)
+        {
+            MenuAction -= Navigate;
+        }
     }
 
     public void Navigate()
