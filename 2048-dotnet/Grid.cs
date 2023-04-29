@@ -72,7 +72,7 @@ class GridInstance
 
     public GridInstance Move(MoveDirection direction)
     {
-        GridInstance copycat = CopyGrid(); 
+        GridInstance copycat = CopyGrid();
         int start = 0;
         int until = 0;
         int delta = 0;
@@ -100,6 +100,7 @@ class GridInstance
             case MoveDirection.Down: case MoveDirection.Up:
                 return SimulateMotion(copycat, start, until, delta, 1);
         }
+        throw new ArgumentOutOfRangeException();
     }
 
     GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
@@ -108,8 +109,34 @@ class GridInstance
         {
             for (int j = start; j <= until; j += delta)
             {
-                
+                switch (axis)
+                {
+                    case 0:
+                        return MotionLogic(target, i, j + delta, i, j);
+                    case 1:
+                        return MotionLogic(target, j + delta, i, j, i);
+                }
             }
+        }
+        throw new ArgumentOutOfRangeException();
+    }
+
+    GridInstance MotionLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
+            int nextVerticalPosition, int nextHorizontalPosition)
+    {
+        if (target.Grid[nextVerticalPosition, nextHorizontalPosition] == 0 &&
+                target.Grid[currentVerticalPosition, currentHorizontalPosition] != 0)
+        {
+            int numberToMove = target.Grid[currentVerticalPosition, currentHorizontalPosition];
+            target.SetField(currentVerticalPosition, currentHorizontalPosition, 0);
+            target.SetField(nextVerticalPosition, nextHorizontalPosition, numberToMove);
+        }
+        else if (target.Grid[nextVerticalPosition, nextHorizontalPosition] ==
+                target.Grid[currentVerticalPosition, currentHorizontalPosition])
+        {
+            target.SetField(currentVerticalPosition, currentHorizontalPosition, 0);
+            target.SetField(nextVerticalPosition, nextHorizontalPosition,
+                    target.Grid[nextVerticalPosition, nextHorizontalPosition] * 2);
         }
         return target;
     }
