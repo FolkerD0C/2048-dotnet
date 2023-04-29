@@ -2,14 +2,6 @@ namespace Game2048;
 
 class GridInstance
 {
-    public enum MoveDirection
-    {
-        Left,
-        Down,
-        Up,
-        Right
-    }
-
     int [,] grid;
     public int[,] Grid
     {
