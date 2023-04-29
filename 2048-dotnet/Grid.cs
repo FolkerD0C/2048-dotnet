@@ -72,7 +72,7 @@ class GridInstance
         }
     }
 
-    public bool CheckIfCanMove()
+    public void CheckIfCanMove()
     {
         int canMove = 4;
         foreach (MoveDirection direction in Enum.GetValues(typeof(MoveDirection)))
@@ -88,7 +88,10 @@ class GridInstance
                 canMove -= 1;
             }
         }
-        return canMove > 0;
+        if (canMove <= 0)
+        {
+            throw new GridStuckException();
+        }
     }
 
     int[] ParseDirection(MoveDirection direction)

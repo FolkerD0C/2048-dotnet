@@ -12,3 +12,8 @@ public class CannotMoveException : Exception
 {
     public CannotMoveException() : base() {  }
 }
+
+public class GridStuckException : Exception
+{
+    public GridStuckException() : base() {  }
+}
