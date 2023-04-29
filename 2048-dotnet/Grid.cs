@@ -130,6 +130,39 @@ class GridInstance
                 target.SetField(motion[0], motion[1], motion[2], true);
             }
         }
+        bool spaceForMoving = false;
+        for (int i = 0; i < target.Grid.GetLength(axis); i++)
+        {
+
+            for (int j = start + delta; j * delta <= (until + delta) * delta; j += delta)
+            {
+                int k = j - delta;
+                while (k * delta < j * delta &&
+                        ZeroLogic(target, axis == 0 ? i : j, axis == 0 ? j : i,
+                            axis == 0 ? i : k, axis == 0 ? k : i))
+                {
+                    k += delta;
+                }
+                if (k * delta < j * delta)
+                {
+                    //TODO
+                    //refactor this part for only checking situations
+                    //not that important, don't need to return
+                    spaceForMoving = true;
+                    int numberToMove = target.Grid[axis == 0 ? i : j, axis == 0 ? j : i];
+                    target.SetField(axis == 0 ? i : j, axis == 0 ? j : i, 0, true);
+                    target.SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove);
+                }
+            }
+        }
+        if (!spaceForMoving)
+        {
+            canMove -= 1;
+        }
+        if (canMove < 0)
+        {
+            throw new CannotMoveException();
+        }
         return target;
     }
 
