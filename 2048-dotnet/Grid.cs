@@ -36,6 +36,8 @@ class GridInstance
         }
     }
 
+    public event Action<int, int, int> GridUpdated;
+
     public GridInstance()
     {
         Grid = new int[4, 4];
@@ -65,9 +67,17 @@ class GridInstance
         return copycat;
     }
 
-    protected void SetField(int up, int left, int value)
+    protected void SetField(int vertical, int horizontal, int value, bool updating = false)
     {
-        Grid[up, left] = value;
+        Grid[vertical, horizontal] = value;
+        if (updating)
+        {
+            if (value > 0)
+            {
+                Thread.Sleep(10);
+            }
+            GridUpdated?.Invoke(vertical, horizontal, value);
+        }
     }
 
     public GridInstance Move(MoveDirection direction)
@@ -103,8 +113,9 @@ class GridInstance
         throw new ArgumentOutOfRangeException();
     }
 
-    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
+    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis, bool onlyChecking = false)
     {
+        int canMove = 1;
         Queue<int[]> motionQueue = new Queue<int[]>();
         for (int i = 0; i < target.Grid.GetLength(axis); i++)
         {
@@ -112,13 +123,25 @@ class GridInstance
             for (int j = start; j * delta <= until * delta; j += delta)
             {
                 int k = j + delta;
-                motionQueue = MotionLogic(motionQueue, target, until, delta, axis, i, ref j, k);
+                motionQueue = AdditionMotionLogic(motionQueue, target, until, delta, axis, i, ref j, k);
             }
         }
-        throw new ArgumentOutOfRangeException();
+        if (motionQueue.Count == 0)
+        {
+            canMove -= 1;
+        }
+        else
+        {
+            while (!onlyChecking && motionQueue.Count > 0)
+            {
+                int[] motion = motionQueue.Dequeue();
+                target.SetField(motion[0], motion[1], motion[2], true);
+            }
+        }
+        return target;
     }
 
-    Queue<int[]> MotionLogic(Queue<int[]> motionQueue, GridInstance target,
+    Queue<int[]> AdditionMotionLogic(Queue<int[]> motionQueue, GridInstance target,
             int until, int delta, int axis,
             int outer, ref int current, int varying)
     {
