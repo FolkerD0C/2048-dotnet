@@ -42,7 +42,7 @@ class GridInstance
 
     public void UpdateField(int up, int left, int value)
     {
-        SetField(up, left, value);
+        SetField(up, left, value, true);
     }
 
     GridInstance CopyGrid()
@@ -72,9 +72,27 @@ class GridInstance
         }
     }
 
-    public GridInstance Move(MoveDirection direction)
+    public bool CheckIfCanMove()
     {
-        GridInstance copycat = CopyGrid();
+        int canMove = 4;
+        foreach (MoveDirection direction in Enum.GetValues(typeof(MoveDirection)))
+        {
+            GridInstance copycat = CopyGrid();
+            int[] arguments = ParseDirection(direction);
+            try
+            {
+                SimulateMotion(copycat, arguments[0], arguments[1], arguments[2], arguments[3]);
+            }
+            catch (CannotMoveException)
+            {
+                canMove -= 1;
+            }
+        }
+        return canMove > 0;
+    }
+
+    int[] ParseDirection(MoveDirection direction)
+    {
         int start = 0;
         int until = 0;
         int delta = 0;
@@ -95,17 +113,38 @@ class GridInstance
                     break;
                 }
         }
+        int axis = -1;
         switch (direction)
         {
             case MoveDirection.Left: case MoveDirection.Right:
-                return SimulateMotion(copycat, start, until, delta, 0);
+                {
+                    axis = 0;
+                    break;
+                }
             case MoveDirection.Down: case MoveDirection.Up:
-                return SimulateMotion(copycat, start, until, delta, 1);
+                {
+                    axis = 1;
+                    break;
+                }
         }
-        throw new ArgumentOutOfRangeException();
+        return new int[] { start, until, delta, axis };
     }
 
-    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis, bool onlyChecking = false)
+    public GridInstance Move(MoveDirection direction)
+    {
+        GridInstance copycat = CopyGrid();
+        int[] arguments = ParseDirection(direction);
+        try
+        {
+            return SimulateMotion(copycat, arguments[0], arguments[1], arguments[2], arguments[3]);
+        }
+        catch (CannotMoveException)
+        {
+            throw;
+        }
+    }
+
+    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
     {
         int canMove = 1;
         Queue<int[]> motionQueue = new Queue<int[]>();
@@ -124,7 +163,7 @@ class GridInstance
         }
         else
         {
-            while (!onlyChecking && motionQueue.Count > 0)
+            while (motionQueue.Count > 0)
             {
                 int[] motion = motionQueue.Dequeue();
                 target.SetField(motion[0], motion[1], motion[2], true);
