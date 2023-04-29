@@ -105,53 +105,61 @@ class GridInstance
 
     GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
     {
-        Queue<int[]> MotionQueue = new Queue<int[]>();
+        Queue<int[]> motionQueue = new Queue<int[]>();
         for (int i = 0; i < target.Grid.GetLength(axis); i++)
         {
 
             for (int j = start; j * delta <= until * delta; j += delta)
             {
                 int k = j + delta;
-                while (k * delta < (until + delta) * delta)
-                {
-                    switch (axis)
-                    {
-                        case 0:
-                            {
-                                if (AdditionLogic(target, i, k, i, j))
-                                {
-                                    MotionQueue.Enqueue(new int[]{i, k, 0});
-                                    MotionQueue.Enqueue(new int[]{i, j, target.Grid[i, j] * 2});
-                                    k = (until + delta) * delta;
-                                    j += delta;
-                                }
-                                else if (!ZeroLogic(target, i, k, i, j))
-                                {
-                                    k = (until + delta) * delta;
-                                }
-                                break;
-                            }
-                        case 1:
-                            {
-                                if (AdditionLogic(target, k, i, j, i))
-                                {
-                                    MotionQueue.Enqueue(new int[]{k, i, 0});
-                                    MotionQueue.Enqueue(new int[]{j, i, target.Grid[j, i] * 2});
-                                    k = (until + delta) * delta;
-                                    j += delta;
-                                }
-                                else if (!ZeroLogic(target, k, i, j, i))
-                                {
-                                    k = (until + delta) * delta;
-                                }
-                                break;
-                            }
-                    }
-                    k += delta;
-                }
+                motionQueue = MotionLogic(motionQueue, target, until, delta, axis, i, ref j, k);
             }
         }
         throw new ArgumentOutOfRangeException();
+    }
+
+    Queue<int[]> MotionLogic(Queue<int[]> motionQueue, GridInstance target,
+            int until, int delta, int axis,
+            int outer, ref int current, int varying)
+    {
+        while (varying * delta < (until + delta) * delta)
+        {
+            switch (axis)
+            {
+                case 0:
+                    {
+                        if (AdditionLogic(target, outer, varying, outer, current))
+                        {
+                            motionQueue.Enqueue(new int[]{outer, varying, 0});
+                            motionQueue.Enqueue(new int[]{outer, current, target.Grid[outer, current] * 2});
+                            varying = (until + delta) * delta;
+                            current += delta;
+                        }
+                        else if (!ZeroLogic(target, outer, varying, outer, current))
+                        {
+                            varying = (until + delta) * delta;
+                        }
+                        break;
+                    }
+                case 1:
+                    {
+                        if (AdditionLogic(target, varying, outer, current, outer))
+                        {
+                            motionQueue.Enqueue(new int[]{varying, outer, 0});
+                            motionQueue.Enqueue(new int[]{current, outer, target.Grid[current, outer] * 2});
+                            varying = (until + delta) * delta;
+                            current += delta;
+                        }
+                        else if (!ZeroLogic(target, varying, outer, current, outer))
+                        {
+                            varying = (until + delta) * delta;
+                        }
+                        break;
+                    }
+            }
+            varying += delta;
+        }
+        return motionQueue;
     }
 
     bool AdditionLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
