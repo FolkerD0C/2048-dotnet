@@ -105,39 +105,66 @@ class GridInstance
 
     GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
     {
+        Queue<int[]> MotionQueue = new Queue<int[]>();
         for (int i = 0; i < target.Grid.GetLength(axis); i++)
         {
-            for (int j = start; j <= until; j += delta)
+
+            for (int j = start; j * delta <= until * delta; j += delta)
             {
-                switch (axis)
+                int k = j + delta;
+                while (k * delta < (until + delta) * delta)
                 {
-                    case 0:
-                        return MotionLogic(target, i, j + delta, i, j);
-                    case 1:
-                        return MotionLogic(target, j + delta, i, j, i);
+                    switch (axis)
+                    {
+                        case 0:
+                            {
+                                if (AdditionLogic(target, i, k, i, j))
+                                {
+                                    MotionQueue.Enqueue(new int[]{i, k, 0});
+                                    MotionQueue.Enqueue(new int[]{i, j, target.Grid[i, j] * 2});
+                                    k = (until + delta) * delta;
+                                    j += delta;
+                                }
+                                else if (!ZeroLogic(target, i, k, i, j))
+                                {
+                                    k = (until + delta) * delta;
+                                }
+                                break;
+                            }
+                        case 1:
+                            {
+                                if (AdditionLogic(target, k, i, j, i))
+                                {
+                                    MotionQueue.Enqueue(new int[]{k, i, 0});
+                                    MotionQueue.Enqueue(new int[]{j, i, target.Grid[j, i] * 2});
+                                    k = (until + delta) * delta;
+                                    j += delta;
+                                }
+                                else if (!ZeroLogic(target, k, i, j, i))
+                                {
+                                    k = (until + delta) * delta;
+                                }
+                                break;
+                            }
+                    }
+                    k += delta;
                 }
             }
         }
         throw new ArgumentOutOfRangeException();
     }
 
-    GridInstance MotionLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
+    bool AdditionLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
-        if (target.Grid[nextVerticalPosition, nextHorizontalPosition] == 0 &&
-                target.Grid[currentVerticalPosition, currentHorizontalPosition] != 0)
-        {
-            int numberToMove = target.Grid[currentVerticalPosition, currentHorizontalPosition];
-            target.SetField(currentVerticalPosition, currentHorizontalPosition, 0);
-            target.SetField(nextVerticalPosition, nextHorizontalPosition, numberToMove);
-        }
-        else if (target.Grid[nextVerticalPosition, nextHorizontalPosition] ==
-                target.Grid[currentVerticalPosition, currentHorizontalPosition])
-        {
-            target.SetField(currentVerticalPosition, currentHorizontalPosition, 0);
-            target.SetField(nextVerticalPosition, nextHorizontalPosition,
-                    target.Grid[nextVerticalPosition, nextHorizontalPosition] * 2);
-        }
-        return target;
+        return target.Grid[nextVerticalPosition, nextHorizontalPosition] ==
+            target.Grid[currentVerticalPosition, currentHorizontalPosition];
+    }
+
+    bool ZeroLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
+            int nextVerticalPosition, int nextHorizontalPosition)
+    {
+        return target.Grid[nextVerticalPosition, nextHorizontalPosition] == 0 &&
+            target.Grid[currentVerticalPosition, currentHorizontalPosition] != 0;
     }
 }
