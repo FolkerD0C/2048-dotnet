@@ -30,6 +30,8 @@ class GridInstance
 
     public event Action<int, int, int> GridUpdated;
 
+    public event Action<int> ScoreUpdated;
+
     public GridInstance()
     {
         Grid = new int[4, 4];
@@ -38,6 +40,7 @@ class GridInstance
     public void AddPoints(int points)
     {
         Score += points;
+        ScoreUpdated?.Invoke(Score);
     }
 
     public void UpdateField(int vertical, int horizontal, int value)
@@ -62,14 +65,11 @@ class GridInstance
     protected void SetField(int vertical, int horizontal, int value, bool updating = false)
     {
         Grid[vertical, horizontal] = value;
-        if (updating)
+        if (updating && value > 0)
         {
-            if (value > 0)
-            {
-                Thread.Sleep(10);
-            }
-            GridUpdated?.Invoke(vertical, horizontal, value);
+            Thread.Sleep(10);
         }
+        GridUpdated?.Invoke(vertical, horizontal, value);
     }
 
     public void CheckIfCanMove()
@@ -147,7 +147,7 @@ class GridInstance
         }
     }
 
-    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis)
+    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis, bool updating = true)
     {
         int canMove = 1;
         Queue<int[]> motionQueue = new Queue<int[]>();
@@ -169,7 +169,7 @@ class GridInstance
             while (motionQueue.Count > 0)
             {
                 int[] motion = motionQueue.Dequeue();
-                target.SetField(motion[0], motion[1], motion[2], true);
+                target.SetField(motion[0], motion[1], motion[2], updating);
             }
         }
         bool spaceForMoving = false;
@@ -189,8 +189,8 @@ class GridInstance
                 {
                     spaceForMoving = true;
                     int numberToMove = target.Grid[axis == 0 ? i : j, axis == 0 ? j : i];
-                    target.SetField(axis == 0 ? i : j, axis == 0 ? j : i, 0, true);
-                    target.SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove, true);
+                    target.SetField(axis == 0 ? i : j, axis == 0 ? j : i, 0, updating);
+                    target.SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove, updating);
                 }
             }
         }
