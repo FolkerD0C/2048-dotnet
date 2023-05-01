@@ -187,13 +187,10 @@ class GridInstance
                 }
                 if (k * delta < j * delta)
                 {
-                    //TODO
-                    //refactor this part for only checking situations
-                    //not that important, don't need to return
                     spaceForMoving = true;
                     int numberToMove = target.Grid[axis == 0 ? i : j, axis == 0 ? j : i];
                     target.SetField(axis == 0 ? i : j, axis == 0 ? j : i, 0, true);
-                    target.SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove);
+                    target.SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove, true);
                 }
             }
         }
