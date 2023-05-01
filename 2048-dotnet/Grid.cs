@@ -32,6 +32,8 @@ class GridInstance
 
     public event Action<int> ScoreUpdated;
 
+    public event Action<int[,]> Reached2048;
+
     public GridInstance()
     {
         Grid = new int[4, 4];
@@ -70,6 +72,10 @@ class GridInstance
             Thread.Sleep(10);
         }
         GridUpdated?.Invoke(vertical, horizontal, value);
+        if (value == 2048)
+        {
+            Reached2048?.Invoke(Grid);
+        }
     }
 
     public void CheckIfCanMove()
