@@ -28,8 +28,8 @@ class Display
         "+------+------+------+------+"
     };
 
-    readonly string help1 = "Use arrow keys";
-    readonly string help2 = "or WASD to move";
+    readonly string help1 = "Use arrow keys or WASD to move";
+    readonly string help2 = "Use BACKSPACE to undo";
 
     readonly string points = "Points:";
 
@@ -45,6 +45,13 @@ class Display
     readonly (int Vertical, int Horizontal) help2Position = (5, 35);
     readonly (int Vertical, int Horizontal) pointsPosition = (10, 10);
     readonly (int Vertical, int Horizontal) scorePosition = (10, 18);
+
+    Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet;
+
+    public Display(Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet)
+    {
+        this.colorSet = colorSet;
+    }
 
     string NumberToDisplayWidth(int number, int maxSpace)
     {
@@ -103,18 +110,18 @@ class Display
         }
         var position = ParsePosition(vertical, horizontal);
         var displayText = NumberToDisplayWidth(value, maxSpaceForTiles);
-        Print(position, displayText);
+        Print(position, displayText, colorSet[value].Fg, colorSet[value].Bg);
     }
 
     public void PrintScore(int score)
     {
         string displayText = NumberToDisplayWidth(score, maxSpaceForScore);
-        Print(scorePosition, displayText);
+        Print(scorePosition, displayText, ConsoleColor.White, ConsoleColor.Red);
     }
 
     (int Vertical, int Horizontal) ParsePosition(int vertical, int horizontal)
     {
-        int ver = 1 + vertical * maxSpaceForTiles;
+        int ver = 1 + vertical * (maxSpaceForTiles + 1);
         int hor = 1 + horizontal * 2;
         return (ver, hor);
     }
