@@ -2,7 +2,7 @@ namespace Game2048;
 
 class Display
 {
-    readonly string[] borderUntil2049 = new string[]
+    readonly string[] borderUntil2048 = new string[]
     {
         "+----+----+----+----+",
         "|    |    |    |    |",
@@ -34,13 +34,13 @@ class Display
     readonly string points = "Points:";
 
     int maxSpaceForTiles = 4;
-    
+
     int maxSpaceForScore = 9;
 
     int gridWidth = 21;
 
     //Constants for display positions
-    readonly (int Vertical, int Horizontal) gridPosition = (0, 0);
+    readonly (int Vertical, int Horizontal)[] gridPosition = { (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8) };
     readonly (int Vertical, int Horizontal) help1Position = (3, 35);
     readonly (int Vertical, int Horizontal) help2Position = (5, 35);
     readonly (int Vertical, int Horizontal) pointsPosition = (10, 10);
@@ -55,26 +55,67 @@ class Display
 
     public void InitializeDisplay()
     {
-
+        Console.Clear();
+        Console.CursorVisible = false;
+        for (int i = 0; i < gridPosition.Length; i++)
+        {
+            Print(gridPosition[i], borderUntil2048[i]);
+        }
+        Print(help1Position, help1);
+        Print(help2Position, help2);
+        Print(pointsPosition, points);
     }
 
-    public void ScaleUp()
+    public void ScaleUp(int[,] grid)
     {
-
+        Console.Clear();
+        Console.CursorVisible = false;
+        for (int i = 0; i < gridPosition.Length; i++)
+        {
+            Print(gridPosition[i], borderAfter2048[i]);
+        }
+        maxSpaceForTiles = 6;
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                PrintTile(i, j, grid[i, j]);
+            }
+        }
     }
 
-    public void PrintConsts((int Vertical, int Horizontal) position, string displayText)
+    void Print((int Vertical, int Horizontal) position, string displayText,
+            ConsoleColor fgColor = ConsoleColor.White, ConsoleColor bgColor = ConsoleColor.Black)
     {
-
+        Console.SetCursorPosition(position.Horizontal, position.Vertical);
+        Console.ForegroundColor = fgColor;
+        Console.BackgroundColor = bgColor;
+        Console.WriteLine(displayText);
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.BackgroundColor = ConsoleColor.Black;
     }
 
     public void PrintTile(int vertical, int horizontal, int value)
     {
+        if (value == 0)
+        {
+            return;
+        }
+        var position = ParsePosition(vertical, horizontal);
+        var displayText = NumberToDisplayWidth(value, maxSpaceForTiles);
+        Print(position, displayText);
+    }
 
+    public void PrintScore(int score)
+    {
+        string displayText = NumberToDisplayWidth(score, maxSpaceForScore);
+        Print(scorePosition, displayText);
     }
 
     (int Vertical, int Horizontal) ParsePosition(int vertical, int horizontal)
     {
-        return (-1, -1);
+        int ver = 1 + vertical * maxSpaceForTiles;
+        int hor = 1 + horizontal * 2;
+        return (ver, hor);
     }
 }
