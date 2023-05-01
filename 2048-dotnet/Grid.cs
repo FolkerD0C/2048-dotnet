@@ -40,9 +40,9 @@ class GridInstance
         Score += points;
     }
 
-    public void UpdateField(int up, int left, int value)
+    public void UpdateField(int vertical, int horizontal, int value)
     {
-        SetField(up, left, value, true);
+        SetField(vertical, horizontal, value, true);
     }
 
     GridInstance CopyGrid()
