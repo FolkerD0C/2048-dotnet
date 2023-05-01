@@ -55,6 +55,10 @@ class Display
 
     string NumberToDisplayWidth(int number, int maxSpace)
     {
+        if (number == 0)
+        {
+            return new string(' ', maxSpace);
+        }
         int actualWidth = $"{number}".Length;
         string result = new string(' ', maxSpace - actualWidth) + $"{number}";
         return result;
@@ -104,10 +108,6 @@ class Display
 
     public void PrintTile(int vertical, int horizontal, int value)
     {
-        if (value == 0)
-        {
-            return;
-        }
         var position = ParsePosition(vertical, horizontal);
         var displayText = NumberToDisplayWidth(value, maxSpaceForTiles);
         Print(position, displayText, colorSet[value].Fg, colorSet[value].Bg);
