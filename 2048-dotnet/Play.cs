@@ -36,6 +36,27 @@ class Play
         display = new Display(colorSet);
     }
 
+    public void Initialize()
+    {
+        
+    }
+
+    List<(int Vertical, int Horizontal)> GetEmptyPositions()
+    {
+        List<(int Vertical, int Horizontal)> result = new List<(int Vertical, int Horizontal)>();
+        for (int i = 0; i < undoChain.First.Value.Grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < undoChain.First.Value.Grid.GetLength(1); j++)
+            {
+                if (undoChain.First.Value.Grid[i, j] == 0)
+                {
+                    result.Add((i, j));
+                }
+            }
+        }
+        return result;
+    }
+
     void HandleInput()
     {
         MoveDirection? input = null;
