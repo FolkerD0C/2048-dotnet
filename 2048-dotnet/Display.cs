@@ -93,7 +93,7 @@ class Display
         }
     }
 
-    public void DrawAllTiles(int[,] grid)
+    public void RedrawGridInstance(int[,] grid, int score)
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
@@ -102,6 +102,7 @@ class Display
                 PrintTile(i, j, grid[i, j]);
             }
         }
+        PrintScore(score);
     }
 
     void Print((int Vertical, int Horizontal) position, string displayText,
