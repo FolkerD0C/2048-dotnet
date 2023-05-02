@@ -101,7 +101,7 @@ class Display
         Console.SetCursorPosition(position.Horizontal, position.Vertical);
         Console.ForegroundColor = fgColor;
         Console.BackgroundColor = bgColor;
-        Console.WriteLine(displayText);
+        Console.Write(displayText);
         Console.ForegroundColor = ConsoleColor.White;
         Console.BackgroundColor = ConsoleColor.Black;
     }
