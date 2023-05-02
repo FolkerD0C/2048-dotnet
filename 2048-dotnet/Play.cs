@@ -15,7 +15,7 @@ class Play
             ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
             ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
             ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
-            ConsoleColor.Black, ConsoleColor.Black, ConsoleColor.Black,  
+            ConsoleColor.Black, ConsoleColor.Black, ConsoleColor.Black,
             ConsoleColor.White, ConsoleColor.White, ConsoleColor.White,
             ConsoleColor.White, ConsoleColor.White
         };
