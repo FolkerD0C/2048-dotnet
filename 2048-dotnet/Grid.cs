@@ -87,7 +87,7 @@ class GridInstance
             int[] arguments = ParseDirection(direction);
             try
             {
-                SimulateMotion(copycat, arguments[0], arguments[1], arguments[2], arguments[3]);
+                SimulateMotion(copycat, arguments[0], arguments[1], arguments[2], arguments[3], false);
             }
             catch (CannotMoveException)
             {
