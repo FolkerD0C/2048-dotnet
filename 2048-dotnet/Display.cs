@@ -79,13 +79,22 @@ class Display
 
     public void ScaleUp(int[,] grid)
     {
-        Console.Clear();
-        Console.CursorVisible = false;
+        maxSpaceForTiles = 6;
         for (int i = 0; i < gridPosition.Length; i++)
         {
-            Print(gridPosition[i], borderAfter2048[i]);
+            Print(gridPosition[i], borderUntil2048[i]);
         }
-        maxSpaceForTiles = 6;
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                PrintTile(i, j, grid[i, j]);
+            }
+        }
+    }
+
+    public void DrawAllTiles(int[,] grid)
+    {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             for (int j = 0; j < grid.GetLength(1); j++)
