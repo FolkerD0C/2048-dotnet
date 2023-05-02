@@ -39,9 +39,19 @@ class Play
         first.GridUpdated += display.PrintTile;
         first.ScoreUpdated += display.PrintScore;
         first.Reached2048 += display.ScaleUp;
+        undoChain.AddFirst(first);
+        PutTwoOrFour();
+        PutTwoOrFour();
     }
 
-    
+    void PutTwoOrFour()
+    {
+        Random rnd = new Random();
+        var emptyTiles = GetEmptyPositions();
+        var position = emptyTiles[rnd.Next(0, emptyTiles.Count)];
+        var twoOrFour = rnd.NextDouble() < 0.5 ? 2 : 4;
+        undoChain.First.Value.UpdateField(position.Vertical, position.Horizontal, twoOrFour);
+    }
 
     List<(int Vertical, int Horizontal)> GetEmptyPositions()
     {
@@ -59,7 +69,7 @@ class Play
         return result;
     }
 
-    void HandleInput()
+    bool HandleInput()
     {
         MoveDirection? input = null;
         switch(Console.ReadKey().Key)
@@ -96,7 +106,7 @@ class Play
         }
         if (input == null)
         {
-            return;
+            return false;
         }
         try
         {
@@ -105,8 +115,9 @@ class Play
         }
         catch (CannotMoveException)
         {
-
+            return false;
         }
+        return true;
     }
 
     void UpdateUndoChain(GridInstance grid)
@@ -130,7 +141,13 @@ class Play
 
     public void Run()
     {
-
+        while (true)
+        {
+            if (HandleInput())
+            {
+                PutTwoOrFour();
+            }
+        }
     }
 
     void Undo()
