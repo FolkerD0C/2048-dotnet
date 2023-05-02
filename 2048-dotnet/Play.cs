@@ -34,12 +34,14 @@ class Play
             colorSet.Add((int)Math.Pow(2, i + 1), (fgColors[i], bgColors[i]));
         }
         display = new Display(colorSet);
+        display.InitializeDisplay();
+        GridInstance first = new GridInstance();
+        first.GridUpdated += display.PrintTile;
+        first.ScoreUpdated += display.PrintScore;
+        first.Reached2048 += display.ScaleUp;
     }
 
-    public void Initialize()
-    {
-        
-    }
+    
 
     List<(int Vertical, int Horizontal)> GetEmptyPositions()
     {
@@ -95,6 +97,24 @@ class Play
         if (input == null)
         {
             return;
+        }
+        try
+        {
+            GridInstance next = undoChain.First.Value.Move(input, display.PrintTile, display.PrintScore, display.ScaleUp);
+            UpdateUndoChain(next);
+        }
+        catch (CannotMoveException)
+        {
+
+        }
+    }
+
+    void UpdateUndoChain(GridInstance grid)
+    {
+        undoChain.AddFirst(grid);
+        while (undoChain.Count > 7)
+        {
+            undoChain.RemoveLast();
         }
     }
 
