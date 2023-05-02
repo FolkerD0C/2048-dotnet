@@ -139,9 +139,12 @@ class GridInstance
         return new int[] { start, until, delta, axis };
     }
 
-    public GridInstance Move(MoveDirection direction, Action<int, int, int> updateGridFunc, Action<int> upgradeScoreFunc, Action<int[,]> reach2048Func)
+    public GridInstance Move(MoveDirection direction, Action<int, int, int> updateGridFunc, Action<int> updateScoreFunc, Action<int[,]> reach2048Func)
     {
         GridInstance copycat = CopyGrid();
+        copycat.GridUpdated += updateGridFunc;
+        copycat.Reached2048 += reach2048Func;
+        copycat.ScoreUpdated += updateScoreFunc;
         int[] arguments = ParseDirection(direction);
         try
         {
