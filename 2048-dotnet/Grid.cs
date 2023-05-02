@@ -100,7 +100,7 @@ class GridInstance
         }
     }
 
-    int[] ParseDirection(MoveDirection direction)
+    int[] ParseDirection(MoveDirection? direction)
     {
         int start = 0;
         int until = 0;
@@ -139,7 +139,7 @@ class GridInstance
         return new int[] { start, until, delta, axis };
     }
 
-    public GridInstance Move(MoveDirection direction, Action<int, int, int> updateGridFunc, Action<int> updateScoreFunc, Action<int[,]> reach2048Func)
+    public GridInstance Move(MoveDirection? direction, Action<int, int, int> updateGridFunc, Action<int> updateScoreFunc, Action<int[,]> reach2048Func)
     {
         GridInstance copycat = CopyGrid();
         copycat.GridUpdated += updateGridFunc;
