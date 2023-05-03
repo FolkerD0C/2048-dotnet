@@ -2,13 +2,12 @@ namespace Game2048;
 
 class Play
 {
-    LinkedList<GridInstance> undoChain;
-
     Display display;
+
+    Repository repository;
 
     public Play()
     {
-        undoChain = new LinkedList<GridInstance>();
         Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet = new Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)>();
         ConsoleColor[] fgColors = new ConsoleColor[]
         {
@@ -35,38 +34,7 @@ class Play
         }
         display = new Display(colorSet);
         display.InitializeDisplay();
-        GridInstance first = new GridInstance();
-        first.GridUpdated += display.PrintTile;
-        first.ScoreUpdated += display.PrintScore;
-        first.Reached2048 += display.ScaleUp;
-        undoChain.AddFirst(first);
-        PutTwoOrFour();
-        PutTwoOrFour();
-    }
-
-    void PutTwoOrFour()
-    {
-        Random rnd = new Random();
-        var emptyTiles = GetEmptyPositions();
-        var position = emptyTiles[rnd.Next(0, emptyTiles.Count)];
-        var twoOrFour = rnd.NextDouble() < 0.5 ? 2 : 4;
-        undoChain.First.Value.UpdateField(position.Vertical, position.Horizontal, twoOrFour);
-    }
-
-    List<(int Vertical, int Horizontal)> GetEmptyPositions()
-    {
-        List<(int Vertical, int Horizontal)> result = new List<(int Vertical, int Horizontal)>();
-        for (int i = 0; i < undoChain.First.Value.Grid.GetLength(0); i++)
-        {
-            for (int j = 0; j < undoChain.First.Value.Grid.GetLength(1); j++)
-            {
-                if (undoChain.First.Value.Grid[i, j] == 0)
-                {
-                    result.Add((i, j));
-                }
-            }
-        }
-        return result;
+        repository = new Repository(display);
     }
 
     bool HandleInput()
@@ -96,7 +64,7 @@ class Play
                 }
             case ConsoleKey.Backspace:
                 {
-                    Undo();
+                    repository.Undo();
                     break;
                 }
             case ConsoleKey.Escape:
@@ -110,23 +78,13 @@ class Play
         }
         try
         {
-            GridInstance next = undoChain.First.Value.Move(input, display.PrintTile, display.PrintScore, display.ScaleUp);
-            UpdateUndoChain(next);
+            repository.Move(input, display);
         }
         catch (CannotMoveException)
         {
             return false;
         }
         return true;
-    }
-
-    void UpdateUndoChain(GridInstance grid)
-    {
-        undoChain.AddFirst(grid);
-        while (undoChain.Count > 7)
-        {
-            undoChain.RemoveLast();
-        }
     }
 
     void GameOver()
@@ -145,14 +103,9 @@ class Play
         {
             if (HandleInput())
             {
-                PutTwoOrFour();
+                repository.AddNewTile();
             }
         }
-    }
-
-    void Undo()
-    {
-
     }
 
     void Save()
