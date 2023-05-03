@@ -16,6 +16,8 @@ class Repository
         }
     }
 
+    public event Action<int[,], int> UndoHappened;
+
     public Repository(Display display)
     {
         undoChain = new LinkedList<GridInstance>();
@@ -75,6 +77,14 @@ class Repository
 
     public void Undo()
     {
-
+        if (UndoChain.Count > 1)
+        {
+            UndoChain.RemoveFirst();
+        }
+        else
+        {
+            throw new UndoImpossibleException();
+        }
+        UndoHappened?.Invoke(UndoChain.First.Value.Grid, UndoChain.First.Value.Score);
     }
 }
