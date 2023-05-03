@@ -37,10 +37,14 @@ class Display
 
     int maxSpaceForScore = 9;
 
-    int gridWidth = 21;
+    readonly int maxErrorHight = 4;
+    readonly int maxErrorWidth = 30;
+
+    bool errorDisplayed;
 
     //Constants for display positions
-    readonly (int Vertical, int Horizontal)[] gridPosition = { (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8) };
+    readonly (int Vertical, int Horizontal)[] gridPosition = { (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0) };
+    readonly (int Vertical, int Horizontal)[] errorPosition = { (5, 5), (6, 5), (7, 5), (8, 5) };
     readonly (int Vertical, int Horizontal) help1Position = (3, 35);
     readonly (int Vertical, int Horizontal) help2Position = (5, 35);
     readonly (int Vertical, int Horizontal) pointsPosition = (10, 10);
@@ -95,6 +99,10 @@ class Display
 
     public void RedrawGridInstance(int[,] grid, int score)
     {
+        if (errorDisplayed)
+        {
+            ClearErrorMessage();
+        }
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             for (int j = 0; j < grid.GetLength(1); j++)
@@ -118,6 +126,10 @@ class Display
 
     public void PrintTile(int vertical, int horizontal, int value)
     {
+        if (errorDisplayed)
+        {
+            ClearErrorMessage();
+        }
         var position = ParsePosition(vertical, horizontal);
         var displayText = NumberToDisplayWidth(value, maxSpaceForTiles);
         Print(position, displayText, colorSet[value].Fg, colorSet[value].Bg);
@@ -125,6 +137,10 @@ class Display
 
     public void PrintScore(int score)
     {
+        if (errorDisplayed)
+        {
+            ClearErrorMessage();
+        }
         string displayText = NumberToDisplayWidth(score, maxSpaceForScore);
         Print(scorePosition, displayText, ConsoleColor.White, ConsoleColor.Red);
     }
@@ -134,5 +150,42 @@ class Display
         int ver = 1 + vertical * (maxSpaceForTiles + 1);
         int hor = 1 + horizontal * 2;
         return (ver, hor);
+    }
+
+    public void DrawErrorMessage(string error)
+    {
+        string[] parsedMessage = ParseErrorMessage(error);
+        for (int i = 0; i < parsedMessage.Length; i++)
+        {
+            Print(errorPosition[i], parsedMessage[i], ConsoleColor.White, ConsoleColor.Red);
+        }
+        errorDisplayed = true;
+    }
+
+    void ClearErrorMessage()
+    {
+        for (int i = 0; i < maxErrorHight; i++)
+        {
+            Print(errorPosition[i], new string(' ', maxErrorWidth));
+        }
+    }
+
+    string[] ParseErrorMessage(string error)
+    {
+        var splittedMessage = new Queue<string>(error.Split(' '));
+        var result = new string[maxErrorHight];
+        for (int i = 0; i < maxErrorHight; i++)
+        {
+            string currentBuffer = splittedMessage.Count > 0 ? splittedMessage.Dequeue() : "";
+            int currentCount = currentBuffer.Length;
+            while (splittedMessage.Count > 0 && currentCount + splittedMessage.Peek().Length + 1 <= maxErrorWidth)
+            {
+                currentCount += splittedMessage.Peek().Length + 1;
+                currentBuffer += " " + splittedMessage.Dequeue();
+            }
+            currentBuffer += new string(' ', maxErrorWidth - currentBuffer.Length);
+            result[i] = currentBuffer;
+        }
+        return result;
     }
 }
