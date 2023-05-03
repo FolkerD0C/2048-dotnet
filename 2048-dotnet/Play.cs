@@ -34,7 +34,11 @@ class Play
         }
         display = new Display(colorSet);
         display.InitializeDisplay();
-        repository = new Repository(display);
+        repository = new Repository();
+        repository.GridUpdated += display.PrintTile;
+        repository.ScoreUpdated += display.PrintScore;
+        repository.UndoHappened += display.RedrawGridInstance;
+        repository.Reached2048 += display.ScaleUp;
     }
 
     bool HandleInput()

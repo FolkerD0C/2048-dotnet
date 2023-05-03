@@ -9,7 +9,7 @@ class GridInstance
         {
             return grid;
         }
-        private set
+        protected set
         {
             grid = value;
         }
@@ -22,59 +22,68 @@ class GridInstance
         {
             return score;
         }
-        private set
+        protected set
         {
+            if (value == score)
+            {
+                ScoreQueue.Enqueue(null);
+            }
+            else
+            {
+                ScoreQueue.Enqueue(value);
+            }
             score = value;
         }
     }
 
-    public event Action<int, int, int> GridUpdated;
+    Queue<(int Vertical, int Horizontal, int Value)> MoveQueue;
 
-    public event Action<int> ScoreUpdated;
+    Queue<int?> ScoreQueue;
 
-    public event Action<int[,]> Reached2048;
+    public event Action Reached2048;
+
+    public event Action<Queue<(int Vertical, int Horizontal, int Value)>, Queue<int?>> UpdateHappened;
 
     public GridInstance()
     {
-        Grid = new int[4, 4];
+        grid = new int[4, 4];
+        MoveQueue = new Queue<(int Vertical, int Horizontal, int Value)>();
+        ScoreQueue = new Queue<int?>();
     }
 
-    public void AddPoints(int points)
+    public GridInstance(int score) : base()
     {
-        Score += points;
-        ScoreUpdated?.Invoke(Score);
-    }
-
-    public void UpdateField(int vertical, int horizontal, int value)
-    {
-        SetField(vertical, horizontal, value, true);
+        this.score = score;
     }
 
     GridInstance CopyGrid()
     {
-        GridInstance copycat = new GridInstance();
+        GridInstance copycat = new GridInstance(Score);
         for (int i = 0; i < copycat.Grid.GetLength(0); i++)
         {
             for (int j = 0; j < copycat.Grid.GetLength(1); j++)
             {
-                copycat.SetField(i, j, Grid[i, j]);
+                copycat.Grid[i, j] = this.Grid[i, j];
             }
         }
-        copycat.AddPoints(Score);
         return copycat;
     }
 
-    protected void SetField(int vertical, int horizontal, int value, bool updating = false)
+    public void UpdateField(int vertical, int horizontal, int value)
     {
         Grid[vertical, horizontal] = value;
-        if (updating && value > 0)
-        {
-            Thread.Sleep(10);
-        }
-        GridUpdated?.Invoke(vertical, horizontal, value);
+        UpdateHappened?.Invoke(MoveQueue, ScoreQueue);
+        MoveQueue = new Queue<(int Vertical, int Horizontal, int Value)>();
+        ScoreQueue = new Queue<int?>();
+    }
+
+    void SetField(int vertical, int horizontal, int value)
+    {
+        Grid[vertical, horizontal] = value;
+        MoveQueue.Enqueue((vertical, horizontal, value));
         if (value == 2048)
         {
-            Reached2048?.Invoke(Grid);
+            Reached2048?.Invoke();
         }
     }
 
@@ -87,7 +96,7 @@ class GridInstance
             int[] arguments = ParseDirection(direction);
             try
             {
-                SimulateMotion(copycat, arguments[0], arguments[1], arguments[2], arguments[3], false);
+                SimulateMotion(arguments[0], arguments[1], arguments[2], arguments[3], false);
             }
             catch (CannotMoveException)
             {
@@ -139,83 +148,61 @@ class GridInstance
         return new int[] { start, until, delta, axis };
     }
 
-    public GridInstance Move(MoveDirection? direction, Action<int, int, int> updateGridFunc, Action<int> updateScoreFunc, Action<int[,]> reach2048Func)
+    public GridInstance Move(MoveDirection? direction,
+            Action<Queue<(int Vertical, int Horizontal, int Value)>, Queue<int?>> updateInstance,
+            Action reach2048Func)
     {
         GridInstance copycat = CopyGrid();
-        copycat.GridUpdated += updateGridFunc;
         copycat.Reached2048 += reach2048Func;
-        copycat.ScoreUpdated += updateScoreFunc;
+        copycat.UpdateHappened += updateInstance;
         int[] arguments = ParseDirection(direction);
-        try
-        {
-            return SimulateMotion(copycat, arguments[0], arguments[1], arguments[2], arguments[3]);
-        }
-        catch (CannotMoveException)
-        {
-            throw;
-        }
+        return copycat.SimulateMotion(arguments[0], arguments[1], arguments[2], arguments[3]);
     }
 
-    GridInstance SimulateMotion(GridInstance target, int start, int until, int delta, int axis, bool updating = true)
+    protected GridInstance SimulateMotion(int start, int until, int delta, int axis, bool updating = true)
     {
-        int canMove = 1;
-        Queue<int[]> motionQueue = new Queue<int[]>();
-        for (int i = 0; i < target.Grid.GetLength(axis); i++)
+        for (int i = 0; i < Grid.GetLength(axis); i++)
         {
-
             for (int j = start; j * delta <= until * delta; j += delta)
             {
                 int k = j + delta;
-                motionQueue = AdditionMotionLogic(motionQueue, target, until, delta, axis, i, ref j, k);
+                AdditionMotionLogic(until, delta, axis, i, ref j, k);
             }
         }
-        if (motionQueue.Count == 0)
-        {
-            canMove -= 1;
-        }
-        else
-        {
-            while (motionQueue.Count > 0)
-            {
-                int[] motion = motionQueue.Dequeue();
-                target.SetField(motion[0], motion[1], motion[2], updating);
-            }
-        }
-        bool spaceForMoving = false;
-        for (int i = 0; i < target.Grid.GetLength(axis); i++)
+        for (int i = 0; i < Grid.GetLength(axis); i++)
         {
 
             for (int j = start + delta; j * delta <= (until + delta) * delta; j += delta)
             {
                 int k = j - delta;
                 while (k * delta < j * delta &&
-                        ZeroLogic(target, axis == 0 ? i : j, axis == 0 ? j : i,
+                        ZeroLogic(axis == 0 ? i : j, axis == 0 ? j : i,
                             axis == 0 ? i : k, axis == 0 ? k : i))
                 {
                     k += delta;
                 }
                 if (k * delta < j * delta)
                 {
-                    spaceForMoving = true;
-                    int numberToMove = target.Grid[axis == 0 ? i : j, axis == 0 ? j : i];
-                    target.SetField(axis == 0 ? i : j, axis == 0 ? j : i, 0, updating);
-                    target.SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove, updating);
+                    int numberToMove = Grid[axis == 0 ? i : j, axis == 0 ? j : i];
+                    SetField(axis == 0 ? i : j, axis == 0 ? j : i, 0);
+                    SetField(axis == 0 ? i : k, axis == 0 ? k : i, numberToMove);
                 }
             }
         }
-        if (!spaceForMoving)
-        {
-            canMove -= 1;
-        }
-        if (canMove < 0)
+        if (MoveQueue.Count == 0)
         {
             throw new CannotMoveException();
         }
-        return target;
+        if (updating)
+        {
+            UpdateHappened?.Invoke(MoveQueue, ScoreQueue);
+            MoveQueue = new Queue<(int Vertical, int Horizontal, int Value)>();
+            ScoreQueue = new Queue<int?>();
+        }
+        return this;
     }
 
-    Queue<int[]> AdditionMotionLogic(Queue<int[]> motionQueue, GridInstance target,
-            int until, int delta, int axis,
+    void AdditionMotionLogic(int until, int delta, int axis,
             int outer, ref int current, int varying)
     {
         while (varying * delta < (until + delta) * delta)
@@ -224,14 +211,16 @@ class GridInstance
             {
                 case 0:
                     {
-                        if (AdditionLogic(target, outer, varying, outer, current))
+                        if (AdditionLogic(outer, varying, outer, current))
                         {
-                            motionQueue.Enqueue(new int[]{outer, varying, 0});
-                            motionQueue.Enqueue(new int[]{outer, current, target.Grid[outer, current] * 2});
+                            SetField(outer, varying, 0);
+                            Score = Score;
+                            SetField(outer, current, Grid[outer, current] * 2);
+                            Score += Grid[outer, current] * 2;
                             varying = (until + delta) * delta;
                             current += delta;
                         }
-                        else if (!ZeroLogic(target, outer, varying, outer, current))
+                        else if (!ZeroLogic(outer, varying, outer, current))
                         {
                             varying = (until + delta) * delta;
                         }
@@ -239,14 +228,16 @@ class GridInstance
                     }
                 case 1:
                     {
-                        if (AdditionLogic(target, varying, outer, current, outer))
+                        if (AdditionLogic(varying, outer, current, outer))
                         {
-                            motionQueue.Enqueue(new int[]{varying, outer, 0});
-                            motionQueue.Enqueue(new int[]{current, outer, target.Grid[current, outer] * 2});
+                            SetField(varying, outer, 0);
+                            Score = Score;
+                            SetField(current, outer, Grid[current, outer] * 2);
+                            Score += Grid[current, outer] * 2;
                             varying = (until + delta) * delta;
                             current += delta;
                         }
-                        else if (!ZeroLogic(target, varying, outer, current, outer))
+                        else if (!ZeroLogic(varying, outer, current, outer))
                         {
                             varying = (until + delta) * delta;
                         }
@@ -255,20 +246,19 @@ class GridInstance
             }
             varying += delta;
         }
-        return motionQueue;
     }
 
-    bool AdditionLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
+    bool AdditionLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
-        return target.Grid[nextVerticalPosition, nextHorizontalPosition] ==
-            target.Grid[currentVerticalPosition, currentHorizontalPosition];
+        return Grid[nextVerticalPosition, nextHorizontalPosition] ==
+            Grid[currentVerticalPosition, currentHorizontalPosition];
     }
 
-    bool ZeroLogic(GridInstance target, int currentVerticalPosition, int currentHorizontalPosition,
+    bool ZeroLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
-        return target.Grid[nextVerticalPosition, nextHorizontalPosition] == 0 &&
-            target.Grid[currentVerticalPosition, currentHorizontalPosition] != 0;
+        return Grid[nextVerticalPosition, nextHorizontalPosition] == 0 &&
+            Grid[currentVerticalPosition, currentHorizontalPosition] != 0;
     }
 }

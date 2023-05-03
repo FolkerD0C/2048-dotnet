@@ -18,13 +18,16 @@ class Repository
 
     public event Action<int[,], int> UndoHappened;
 
-    public Repository(Display display)
+    public event Action<int, int, int> GridUpdated;
+
+    public event Action<int> ScoreUpdated;
+
+    public event Action<int[,]> Reached2048;
+
+    public Repository()
     {
         undoChain = new LinkedList<GridInstance>();
         GridInstance first = new GridInstance();
-        first.GridUpdated += display.PrintTile;
-        first.ScoreUpdated += display.PrintScore;
-        first.Reached2048 += display.ScaleUp;
         undoChain.AddFirst(first);
         PutTwoOrFour();
         PutTwoOrFour();
@@ -37,6 +40,11 @@ class Repository
         var position = emptyTiles[rnd.Next(0, emptyTiles.Count)];
         var twoOrFour = rnd.NextDouble() < 0.5 ? 2 : 4;
         UndoChain.First.Value.UpdateField(position.Vertical, position.Horizontal, twoOrFour);
+    }
+
+    void GameWon()
+    {
+        Reached2048?.Invoke(UndoChain.First.Value.Grid);
     }
 
     List<(int Vertical, int Horizontal)> GetEmptyPositions()
@@ -55,9 +63,9 @@ class Repository
         return result;
     }
 
-    public void Move(MoveDirection? input, Display display)
+    public void Move(MoveDirection? input)
     {
-        GridInstance next = UndoChain.First.Value.Move(input, display.PrintTile, display.PrintScore, display.ScaleUp);
+        GridInstance next = UndoChain.First.Value.Move(input, UpdateHappened, GameWon);
         UpdateUndoChain(next);
     }
 
@@ -86,5 +94,22 @@ class Repository
             throw new UndoImpossibleException();
         }
         UndoHappened?.Invoke(UndoChain.First.Value.Grid, UndoChain.First.Value.Score);
+    }
+
+    void UpdateHappened(Queue<(int Vertical, int Horizontal, int Value)> moveQueue, Queue<int?> scoreQueue)
+    {
+        while(moveQueue.Count > 0)
+        {
+            var updateArgs = moveQueue.Dequeue();
+            GridUpdated?.Invoke(updateArgs.Vertical, updateArgs.Horizontal, updateArgs.Value);
+            if (scoreQueue.TryDequeue(out int? nextScore) && nextScore != null)
+            {
+                ScoreUpdated?.Invoke((int)nextScore);
+            }
+            if (updateArgs.Value > 0)
+            {
+                Thread.Sleep(10);
+            }
+        }
     }
 }
