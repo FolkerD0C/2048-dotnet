@@ -64,7 +64,14 @@ class Play
                 }
             case ConsoleKey.Backspace:
                 {
-                    repository.Undo();
+                    try
+                    {
+                        repository.Undo();
+                    }
+                    catch (UndoImpossibleException exc)
+                    {
+                        display.DrawErrorMessage(exc.Message);
+                    }
                     break;
                 }
             case ConsoleKey.Escape:
@@ -80,8 +87,9 @@ class Play
         {
             repository.Move(input, display);
         }
-        catch (CannotMoveException)
+        catch (CannotMoveException exc)
         {
+            display.DrawErrorMessage(exc.Message);
             return false;
         }
         return true;
