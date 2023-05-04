@@ -65,6 +65,7 @@ class Repository
         var twoOrFour = rnd.NextDouble() < 0.5 ? 2 : 4;
         UndoChain.First.Value.UpdateField(position.Vertical, position.Horizontal, twoOrFour);
         GridUpdated?.Invoke(position.Vertical, position.Horizontal, twoOrFour);
+        ScoreUpdated?.Invoke(undoChain.First.Value.Score);
     }
 
     void GameWon()
