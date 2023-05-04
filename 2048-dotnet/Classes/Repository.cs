@@ -55,6 +55,7 @@ class Repository
         undoChain.AddFirst(first);
         PutTwoOrFour();
         PutTwoOrFour();
+        Lives = 5;
     }
 
     void PutTwoOrFour()
@@ -93,6 +94,20 @@ class Repository
     {
         GridInstance next = UndoChain.First.Value.Move(input, UpdateHappened, GameWon);
         UpdateUndoChain(next);
+        PutTwoOrFour();
+        try
+        {
+            UndoChain.First.Value.CheckIfCanMove();
+        }
+        catch(GridStuckException)
+        {
+            lives -= 1;
+            if (lives <= 0)
+            {
+                throw new GameOverException();
+            }
+            throw;
+        }
     }
 
     void UpdateUndoChain(GridInstance grid)
@@ -102,11 +117,6 @@ class Repository
         {
             undoChain.RemoveLast();
         }
-    }
-
-    public void AddNewTile()
-    {
-        PutTwoOrFour();
     }
 
     public void Undo()

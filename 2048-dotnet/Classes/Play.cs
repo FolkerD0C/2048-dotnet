@@ -98,6 +98,10 @@ class Play
             display.PrintErrorMessage(exc.Message);
             return false;
         }
+        catch (GridStuckException exc)
+        {
+            display.PrintErrorMessage(exc.Message);
+        }
         return true;
     }
 
@@ -111,15 +115,21 @@ class Play
 
     }
 
-    public void Run()
+    public bool Run()
     {
-        while (true)
+        try
         {
-            if (HandleInput())
+            while (true)
             {
-                repository.AddNewTile();
+                HandleInput();
             }
         }
+        catch (GameOverException exc)
+        {
+            display.PrintErrorMessage(exc.Message);
+            GameOver();
+        }
+        return true;
     }
 
     void Save()
