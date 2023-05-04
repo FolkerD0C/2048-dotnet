@@ -49,7 +49,7 @@ class Display
 
     //Constants for display positions
     readonly (int Vertical, int Horizontal)[] gridPositions = { (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0) };
-    readonly (int Vertical, int Horizontal)[] errorPositions = { (12, 5), (13, 5), (14, 5), (15, 5) };
+    readonly (int Vertical, int Horizontal)[] errorPositions = { (12, 5), (13, 5), (14, 5), (15, 5), (16, 5) };
     readonly (int Vertical, int Horizontal)[] helpPositions = { (1, 35), (3, 35) };
     readonly (int Vertical, int Horizontal) pointsPosition = (10, 10);
     readonly (int Vertical, int Horizontal) scorePosition = (10, 18);
