@@ -1,16 +1,16 @@
 * Interfaces for:
-** Repository
-** Display
-** GridInstance
+    * Repository
+    * Display
+    * GridInstance
 
 * FileHandler
-** for Saving
-** Loading
-** Highscores
+    * for Saving
+    * Loading
+    * Highscores
 
 * Update event handling
-** Delete events from GridInstance
-** Make Event and EventArgs classes
+    * Delete events from GridInstance
+    * Make Event and EventArgs classes
 
 * Pause menu
 
