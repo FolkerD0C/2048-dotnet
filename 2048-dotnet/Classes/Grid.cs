@@ -51,7 +51,7 @@ class GridInstance
         ScoreQueue = new Queue<int?>();
     }
 
-    public GridInstance(int score) : base()
+    public GridInstance(int score) : this()
     {
         this.score = score;
     }
@@ -72,9 +72,6 @@ class GridInstance
     public void UpdateField(int vertical, int horizontal, int value)
     {
         Grid[vertical, horizontal] = value;
-        UpdateHappened?.Invoke(MoveQueue, ScoreQueue);
-        MoveQueue = new Queue<(int Vertical, int Horizontal, int Value)>();
-        ScoreQueue = new Queue<int?>();
     }
 
     void SetField(int vertical, int horizontal, int value)
@@ -150,10 +147,13 @@ class GridInstance
 
     public GridInstance Move(MoveDirection? direction,
             Action<Queue<(int Vertical, int Horizontal, int Value)>, Queue<int?>> updateInstance,
-            Action reach2048Func)
+            Action? reach2048Func)
     {
         GridInstance copycat = CopyGrid();
-        copycat.Reached2048 += reach2048Func;
+        if (reach2048Func != null)
+        {
+            copycat.Reached2048 += reach2048Func;
+        }
         copycat.UpdateHappened += updateInstance;
         int[] arguments = ParseDirection(direction);
         return copycat.SimulateMotion(arguments[0], arguments[1], arguments[2], arguments[3]);
