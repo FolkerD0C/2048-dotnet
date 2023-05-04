@@ -213,10 +213,11 @@ class GridInstance
                     {
                         if (AdditionLogic(outer, varying, outer, current))
                         {
+                            int numberToMove = Grid[outer, current];
                             SetField(outer, varying, 0);
                             Score = Score;
-                            SetField(outer, current, Grid[outer, current] * 2);
-                            Score += Grid[outer, current] * 2;
+                            SetField(outer, current, numberToMove * 2);
+                            Score += numberToMove * 2;
                             varying = (until + delta) * delta;
                             current += delta;
                         }
@@ -230,10 +231,11 @@ class GridInstance
                     {
                         if (AdditionLogic(varying, outer, current, outer))
                         {
+                            int numberToMove = Grid[current, outer];
                             SetField(varying, outer, 0);
                             Score = Score;
-                            SetField(current, outer, Grid[current, outer] * 2);
-                            Score += Grid[current, outer] * 2;
+                            SetField(current, outer, numberToMove * 2);
+                            Score += numberToMove * 2;
                             varying = (until + delta) * delta;
                             current += delta;
                         }
@@ -251,7 +253,8 @@ class GridInstance
     bool AdditionLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
-        return Grid[nextVerticalPosition, nextHorizontalPosition] ==
+        return Grid[currentVerticalPosition, currentHorizontalPosition] != 0 &&
+            Grid[nextVerticalPosition, nextHorizontalPosition] ==
             Grid[currentVerticalPosition, currentHorizontalPosition];
     }
 
