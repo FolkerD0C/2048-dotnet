@@ -13,6 +13,22 @@ class Repository
         private set
         {
             undoChain = value;
+            UndoCountChanged?.Invoke(undoChain.Count - 1);
+        }
+    }
+
+    int lives;
+
+    public int Lives
+    {
+        get
+        {
+            return lives;
+        }
+        private set
+        {
+            lives = value;
+            LivesCountChanged?.Invoke(lives);
         }
     }
 
@@ -24,9 +40,17 @@ class Repository
 
     public event Action<int[,]> Reached2048;
 
+    public event Action<int> UndoCountChanged;
+
+    public event Action<int> LivesCountChanged;
+
     public Repository()
     {
         undoChain = new LinkedList<GridInstance>();
+    }
+
+    public void Initialize()
+    {
         GridInstance first = new GridInstance();
         undoChain.AddFirst(first);
         PutTwoOrFour();
@@ -40,6 +64,7 @@ class Repository
         var position = emptyTiles[rnd.Next(0, emptyTiles.Count)];
         var twoOrFour = rnd.NextDouble() < 0.5 ? 2 : 4;
         UndoChain.First.Value.UpdateField(position.Vertical, position.Horizontal, twoOrFour);
+        GridUpdated?.Invoke(position.Vertical, position.Horizontal, twoOrFour);
     }
 
     void GameWon()
