@@ -1,4 +1,4 @@
-namespace Game2048;
+namespace Game2048.Classes;
 
 internal class Menu
 {
