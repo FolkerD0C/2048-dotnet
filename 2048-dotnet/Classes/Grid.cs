@@ -1,6 +1,6 @@
 namespace Game2048.Classes;
 
-class GridInstance
+class GridInstanc
 {
     int [,] grid;
     public int[,] Grid
