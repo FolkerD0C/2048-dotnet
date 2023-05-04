@@ -28,10 +28,15 @@ class Display
         "+------+------+------+------+"
     };
 
-    readonly string help1 = "Use arrow keys or WASD to move";
-    readonly string help2 = "Use BACKSPACE to undo";
+    readonly string[] helpMessages =
+    {
+        "Use arrow keys or WASD to move",
+        "Use BACKSPACE to undo"
+    };
 
     readonly string points = "Points:";
+    readonly string undos = "Possible undos:";
+    readonly string lives = "Remaining lives:";
 
     int maxSpaceForTiles = 4;
 
@@ -43,18 +48,34 @@ class Display
     bool errorDisplayed;
 
     //Constants for display positions
-    readonly (int Vertical, int Horizontal)[] gridPosition = { (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0) };
-    readonly (int Vertical, int Horizontal)[] errorPosition = { (5, 5), (6, 5), (7, 5), (8, 5) };
-    readonly (int Vertical, int Horizontal) help1Position = (3, 35);
-    readonly (int Vertical, int Horizontal) help2Position = (5, 35);
+    readonly (int Vertical, int Horizontal)[] gridPositions = { (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0) };
+    readonly (int Vertical, int Horizontal)[] errorPositions = { (12, 5), (13, 5), (14, 5), (15, 5) };
+    readonly (int Vertical, int Horizontal)[] helpPositions = { (1, 35), (3, 35) };
     readonly (int Vertical, int Horizontal) pointsPosition = (10, 10);
     readonly (int Vertical, int Horizontal) scorePosition = (10, 18);
+    readonly (int Vertical, int Horizontal) undosPosition = (5, 35);
+    readonly (int Vertical, int Horizontal) undosCountPosition = (5, 51);
+    readonly (int Vertical, int Horizontal) livesPosition = (7, 35);
+    readonly (int Vertical, int Horizontal) livesCountPosition = (7, 52);
 
     Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet;
 
     public Display(Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet)
     {
         this.colorSet = colorSet;
+        Console.Clear();
+        Console.CursorVisible = false;
+        for (int i = 0; i < gridPositions.Length; i++)
+        {
+            Print(gridPositions[i], borderUntil2048[i]);
+        }
+        for (int i = 0; i < helpPositions.Length; i++)
+        {
+            Print(helpPositions[i], helpMessages[i]);
+        }
+        Print(pointsPosition, points);
+        Print(undosPosition, undos);
+        Print(livesPosition, lives);
     }
 
     string NumberToDisplayWidth(int number, int maxSpace)
@@ -68,25 +89,12 @@ class Display
         return result;
     }
 
-    public void InitializeDisplay()
-    {
-        Console.Clear();
-        Console.CursorVisible = false;
-        for (int i = 0; i < gridPosition.Length; i++)
-        {
-            Print(gridPosition[i], borderUntil2048[i]);
-        }
-        Print(help1Position, help1);
-        Print(help2Position, help2);
-        Print(pointsPosition, points);
-    }
-
     public void ScaleUp(int[,] grid)
     {
         maxSpaceForTiles = 6;
-        for (int i = 0; i < gridPosition.Length; i++)
+        for (int i = 0; i < gridPositions.Length; i++)
         {
-            Print(gridPosition[i], borderUntil2048[i]);
+            Print(gridPositions[i], borderUntil2048[i]);
         }
         for (int i = 0; i < grid.GetLength(0); i++)
         {
@@ -99,10 +107,6 @@ class Display
 
     public void RedrawGridInstance(int[,] grid, int score)
     {
-        if (errorDisplayed)
-        {
-            ClearErrorMessage();
-        }
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             for (int j = 0; j < grid.GetLength(1); j++)
@@ -126,10 +130,6 @@ class Display
 
     public void PrintTile(int vertical, int horizontal, int value)
     {
-        if (errorDisplayed)
-        {
-            ClearErrorMessage();
-        }
         var position = ParsePosition(vertical, horizontal);
         var displayText = NumberToDisplayWidth(value, maxSpaceForTiles);
         Print(position, displayText, colorSet[value].Fg, colorSet[value].Bg);
@@ -152,12 +152,12 @@ class Display
         return (ver, hor);
     }
 
-    public void DrawErrorMessage(string error)
+    public void PrintErrorMessage(string errorMessage)
     {
-        string[] parsedMessage = ParseErrorMessage(error);
+        string[] parsedMessage = ParseErrorMessage(errorMessage);
         for (int i = 0; i < parsedMessage.Length; i++)
         {
-            Print(errorPosition[i], parsedMessage[i], ConsoleColor.White, ConsoleColor.Red);
+            Print(errorPositions[i], parsedMessage[i], ConsoleColor.White, ConsoleColor.Red);
         }
         errorDisplayed = true;
     }
@@ -166,8 +166,9 @@ class Display
     {
         for (int i = 0; i < maxErrorHight; i++)
         {
-            Print(errorPosition[i], new string(' ', maxErrorWidth));
+            Print(errorPositions[i], new string(' ', maxErrorWidth));
         }
+        errorDisplayed = false;
     }
 
     string[] ParseErrorMessage(string error)
@@ -187,5 +188,15 @@ class Display
             result[i] = currentBuffer;
         }
         return result;
+    }
+
+    public void PrintUndosCount(int undosCount)
+    {
+        Print(undosCountPosition, NumberToDisplayWidth(undosCount, 1), ConsoleColor.Magenta, ConsoleColor.Yellow);
+    }
+
+    public void PrintLivesCount(int livesCount)
+    {
+        Print(livesCountPosition, NumberToDisplayWidth(livesCount, 1), ConsoleColor.Magenta, ConsoleColor.Yellow);
     }
 }
