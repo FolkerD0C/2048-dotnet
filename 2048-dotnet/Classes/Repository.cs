@@ -52,7 +52,7 @@ class Repository
     public void Initialize()
     {
         GridInstance first = new GridInstance();
-        undoChain.AddFirst(first);
+        UpdateUndoChain(first);
         PutTwoOrFour();
         PutTwoOrFour();
         Lives = 5;
@@ -117,6 +117,7 @@ class Repository
         {
             undoChain.RemoveLast();
         }
+        UndoCountChanged?.Invoke(UndoChain.Count - 1);
     }
 
     public void Undo()
