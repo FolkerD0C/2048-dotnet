@@ -33,12 +33,14 @@ class Play
             colorSet.Add((int)Math.Pow(2, i + 1), (fgColors[i], bgColors[i]));
         }
         display = new Display(colorSet);
-        display.InitializeDisplay();
         repository = new Repository();
         repository.GridUpdated += display.PrintTile;
         repository.ScoreUpdated += display.PrintScore;
         repository.UndoHappened += display.RedrawGridInstance;
         repository.Reached2048 += display.ScaleUp;
+        repository.UndoCountChanged += display.PrintUndosCount;
+        repository.LivesCountChanged += display.PrintLivesCount;
+        repository.Initialize();
     }
 
     bool HandleInput()
@@ -74,7 +76,7 @@ class Play
                     }
                     catch (UndoImpossibleException exc)
                     {
-                        display.DrawErrorMessage(exc.Message);
+                        display.PrintErrorMessage(exc.Message);
                     }
                     break;
                 }
@@ -89,11 +91,11 @@ class Play
         }
         try
         {
-            repository.Move(input, display);
+            repository.Move(input);
         }
         catch (CannotMoveException exc)
         {
-            display.DrawErrorMessage(exc.Message);
+            display.PrintErrorMessage(exc.Message);
             return false;
         }
         return true;
