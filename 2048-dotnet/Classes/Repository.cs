@@ -13,7 +13,6 @@ class Repository
         private set
         {
             undoChain = value;
-            UndoCountChanged?.Invoke(undoChain.Count - 1);
         }
     }
 
@@ -101,7 +100,7 @@ class Repository
         }
         catch(GridStuckException)
         {
-            lives -= 1;
+            Lives -= 1;
             if (lives <= 0)
             {
                 throw new GameOverException();
@@ -131,6 +130,7 @@ class Repository
             throw new UndoImpossibleException();
         }
         UndoHappened?.Invoke(UndoChain.First.Value.Grid, UndoChain.First.Value.Score);
+        UndoCountChanged?.Invoke(UndoChain.Count - 1);
     }
 
     void UpdateHappened(Queue<(int Vertical, int Horizontal, int Value)> moveQueue, Queue<int?> scoreQueue)
@@ -145,7 +145,7 @@ class Repository
             }
             if (updateArgs.Value > 0)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(20);
             }
         }
     }

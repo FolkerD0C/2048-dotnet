@@ -42,7 +42,7 @@ class Display
 
     int maxSpaceForScore = 9;
 
-    readonly int maxErrorHight = 4;
+    readonly int maxErrorHight = 5;
     readonly int maxErrorWidth = 30;
 
     bool errorDisplayed;
