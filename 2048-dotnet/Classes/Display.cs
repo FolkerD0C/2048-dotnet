@@ -147,8 +147,8 @@ class Display
 
     (int Vertical, int Horizontal) ParsePosition(int vertical, int horizontal)
     {
-        int ver = 1 + vertical * (maxSpaceForTiles + 1);
-        int hor = 1 + horizontal * 2;
+        int ver = 1 + vertical * 2;
+        int hor = 1 + horizontal * (maxSpaceForTiles + 1);
         return (ver, hor);
     }
 
