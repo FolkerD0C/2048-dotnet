@@ -142,6 +142,7 @@ class Repository
 
     bool UpdateHappened(Queue<(int Vertical, int Horizontal, int Value)> moveQueue, Queue<int?> scoreQueue)
     {
+        Random rnd = new Random();
         bool reached2048 = false;
         while(moveQueue.Count > 0)
         {
@@ -157,7 +158,7 @@ class Repository
             }
             if (updateArgs.Value > 0)
             {
-                Thread.Sleep(20);
+                Thread.Sleep(rnd.Next(5, 36));
             }
         }
         return reached2048;
