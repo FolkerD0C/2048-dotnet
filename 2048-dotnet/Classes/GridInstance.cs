@@ -36,13 +36,33 @@ class GridInstance
         }
     }
 
-    Queue<(int Vertical, int Horizontal, int Value)> MoveQueue;
+    Queue<(int Vertical, int Horizontal, int Value)> moveQueue;
 
-    Queue<int?> ScoreQueue;
+    public Queue<(int Vertical, int Horizontal, int Value)> MoveQueue
+    {
+        get
+        {
+            return moveQueue;
+        }
+        private set
+        {
+            moveQueue = value;
+        }
+    }
 
-    public event Action Reached2048;
+    Queue<int?> scoreQueue;
 
-    public event Action<Queue<(int Vertical, int Horizontal, int Value)>, Queue<int?>> UpdateHappened;
+    public Queue<int?> ScoreQueue
+    {
+        get
+        {
+            return scoreQueue;
+        }
+        private set
+        {
+            scoreQueue = value;
+        }
+    }
 
     public GridInstance()
     {
@@ -78,10 +98,6 @@ class GridInstance
     {
         Grid[vertical, horizontal] = value;
         MoveQueue.Enqueue((vertical, horizontal, value));
-        if (value == 2048)
-        {
-            Reached2048?.Invoke();
-        }
     }
 
     public void CheckIfCanMove()
@@ -92,7 +108,7 @@ class GridInstance
             GridInstance copycat = CopyGrid();
             try
             {
-                copycat.SimulateMotion(direction, false);
+                copycat.SimulateMotion(direction);
             }
             catch (CannotMoveException)
             {
@@ -105,20 +121,13 @@ class GridInstance
         }
     }
 
-    public GridInstance Move(MoveDirection? direction,
-            Action<Queue<(int Vertical, int Horizontal, int Value)>, Queue<int?>> updateInstance,
-            Action? reach2048Func)
+    public GridInstance Move(MoveDirection? direction)
     {
         GridInstance copycat = CopyGrid();
-        if (reach2048Func != null)
-        {
-            copycat.Reached2048 += reach2048Func;
-        }
-        copycat.UpdateHappened += updateInstance;
-        return copycat.SimulateMotion(direction, true);
+        return copycat.SimulateMotion(direction);
     }
 
-    GridInstance SimulateMotion(MoveDirection? direction, bool updating)
+    GridInstance SimulateMotion(MoveDirection? direction)
     {
         switch (direction)
         {
@@ -146,12 +155,6 @@ class GridInstance
         if (MoveQueue.Count == 0)
         {
             throw new CannotMoveException();
-        }
-        if (updating)
-        {
-            UpdateHappened?.Invoke(MoveQueue, ScoreQueue);
-            MoveQueue = new Queue<(int Vertical, int Horizontal, int Value)>();
-            ScoreQueue = new Queue<int?>();
         }
         return this;
     }

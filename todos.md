@@ -9,7 +9,6 @@
     * Highscores
 
 * Update event handling
-    * Delete events from GridInstance
     * Make Event and EventArgs classes
 
 * Pause menu

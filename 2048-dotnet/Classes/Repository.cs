@@ -31,6 +31,8 @@ class Repository
         }
     }
 
+    bool triggered2048;
+
     public event Action<int[,], int> UndoHappened;
 
     public event Action<int, int, int> GridUpdated;
@@ -91,9 +93,14 @@ class Repository
 
     public void Move(MoveDirection? input)
     {
-        GridInstance next = UndoChain.First.Value.Move(input, UpdateHappened, GameWon);
+        GridInstance next = UndoChain.First.Value.Move(input);
+        bool reached2048 = UpdateHappened(next.MoveQueue, next.ScoreQueue);
         UpdateUndoChain(next);
         PutTwoOrFour();
+        if (!triggered2048 && reached2048)
+        {
+            Reached2048?.Invoke(UndoChain.First.Value.Grid);
+        }
         try
         {
             UndoChain.First.Value.CheckIfCanMove();
@@ -133,12 +140,17 @@ class Repository
         UndoCountChanged?.Invoke(UndoChain.Count - 1);
     }
 
-    void UpdateHappened(Queue<(int Vertical, int Horizontal, int Value)> moveQueue, Queue<int?> scoreQueue)
+    bool UpdateHappened(Queue<(int Vertical, int Horizontal, int Value)> moveQueue, Queue<int?> scoreQueue)
     {
+        bool reached2048 = false;
         while(moveQueue.Count > 0)
         {
             var updateArgs = moveQueue.Dequeue();
             GridUpdated?.Invoke(updateArgs.Vertical, updateArgs.Horizontal, updateArgs.Value);
+            if (!triggered2048 && updateArgs.Value >= 2048)
+            {
+                reached2048 = true;
+            }
             if (scoreQueue.TryDequeue(out int? nextScore) && nextScore != null)
             {
                 ScoreUpdated?.Invoke((int)nextScore);
@@ -148,5 +160,6 @@ class Repository
                 Thread.Sleep(20);
             }
         }
+        return reached2048;
     }
 }
