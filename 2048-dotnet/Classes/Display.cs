@@ -89,7 +89,7 @@ class Display
         return result;
     }
 
-    public void ScaleUp(int[,] grid)
+    public void ScaleUp(object? o, int[,] grid)
     {
         maxSpaceForTiles = 6;
         for (int i = 0; i < gridPositions.Length; i++)
@@ -100,21 +100,21 @@ class Display
         {
             for (int j = 0; j < grid.GetLength(1); j++)
             {
-                PrintTile(i, j, grid[i, j]);
+                PrintTile(null, (i, j, grid[i, j]));
             }
         }
     }
 
-    public void RedrawGridInstance(int[,] grid, int score)
+    public void RedrawGridInstance(object? o, (int[,] grid, int score) args)
     {
-        for (int i = 0; i < grid.GetLength(0); i++)
+        for (int i = 0; i < args.grid.GetLength(0); i++)
         {
-            for (int j = 0; j < grid.GetLength(1); j++)
+            for (int j = 0; j < args.grid.GetLength(1); j++)
             {
-                PrintTile(i, j, grid[i, j]);
+                PrintTile(null, (i, j, args.grid[i, j]));
             }
         }
-        PrintScore(score);
+        PrintScore(null, args.score);
     }
 
     void Print((int Vertical, int Horizontal) position, string displayText,
@@ -128,14 +128,14 @@ class Display
         Console.BackgroundColor = ConsoleColor.Black;
     }
 
-    public void PrintTile(int vertical, int horizontal, int value)
+    public void PrintTile(object? o, (int vertical, int horizontal, int value) args)
     {
-        var position = ParsePosition(vertical, horizontal);
-        var displayText = NumberToDisplayWidth(value, maxSpaceForTiles);
-        Print(position, displayText, colorSet[value].Fg, colorSet[value].Bg);
+        var position = ParsePosition(args.vertical, args.horizontal);
+        var displayText = NumberToDisplayWidth(args.value, maxSpaceForTiles);
+        Print(position, displayText, colorSet[args.value].Fg, colorSet[args.value].Bg);
     }
 
-    public void PrintScore(int score)
+    public void PrintScore(object? o, int score)
     {
         if (errorDisplayed)
         {
@@ -190,12 +190,12 @@ class Display
         return result;
     }
 
-    public void PrintUndosCount(int undosCount)
+    public void PrintUndosCount(object? o, int undosCount)
     {
         Print(undosCountPosition, NumberToDisplayWidth(undosCount, 1), ConsoleColor.Magenta, ConsoleColor.Yellow);
     }
 
-    public void PrintLivesCount(int livesCount)
+    public void PrintLivesCount(object? o, int livesCount)
     {
         Print(livesCountPosition, NumberToDisplayWidth(livesCount, 1), ConsoleColor.Magenta, ConsoleColor.Yellow);
     }

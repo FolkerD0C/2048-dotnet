@@ -8,9 +8,10 @@
     * Loading
     * Highscores
 
-* Update event handling
-    * Make Event and EventArgs classes
+* Add new kind of menu types for different purposes
+    * Main menu
+    * Display menu
+    * Action menu
+    * Prompt menu
 
-* Pause menu
-
-* Starting the game with a main menu
+* Start the game with a main menu

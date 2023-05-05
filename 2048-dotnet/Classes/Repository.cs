@@ -27,23 +27,23 @@ class Repository
         private set
         {
             lives = value;
-            LivesCountChanged?.Invoke(lives);
+            LivesCountChanged?.Invoke(this, lives);
         }
     }
 
     bool triggered2048;
 
-    public event Action<int[,], int> UndoHappened;
+    public event EventHandler<(int[,], int)> UndoHappened;
 
-    public event Action<int, int, int> GridUpdated;
+    public event EventHandler<(int, int, int)> GridUpdated;
 
-    public event Action<int> ScoreUpdated;
+    public event EventHandler<int> ScoreUpdated;
 
-    public event Action<int[,]> Reached2048;
+    public event EventHandler<int[,]> Reached2048;
 
-    public event Action<int> UndoCountChanged;
+    public event EventHandler<int> UndoCountChanged;
 
-    public event Action<int> LivesCountChanged;
+    public event EventHandler<int> LivesCountChanged;
 
     public Repository()
     {
@@ -66,13 +66,13 @@ class Repository
         var position = emptyTiles[rnd.Next(0, emptyTiles.Count)];
         var twoOrFour = rnd.NextDouble() < 0.5 ? 2 : 4;
         UndoChain.First.Value.UpdateField(position.Vertical, position.Horizontal, twoOrFour);
-        GridUpdated?.Invoke(position.Vertical, position.Horizontal, twoOrFour);
-        ScoreUpdated?.Invoke(undoChain.First.Value.Score);
+        GridUpdated?.Invoke(this, (position.Vertical, position.Horizontal, twoOrFour));
+        ScoreUpdated?.Invoke(this, undoChain.First.Value.Score);
     }
 
     void GameWon()
     {
-        Reached2048?.Invoke(UndoChain.First.Value.Grid);
+        Reached2048?.Invoke(this, UndoChain.First.Value.Grid);
     }
 
     List<(int Vertical, int Horizontal)> GetEmptyPositions()
@@ -99,7 +99,7 @@ class Repository
         PutTwoOrFour();
         if (!triggered2048 && reached2048)
         {
-            Reached2048?.Invoke(UndoChain.First.Value.Grid);
+            Reached2048?.Invoke(this, UndoChain.First.Value.Grid);
         }
         try
         {
@@ -123,7 +123,7 @@ class Repository
         {
             undoChain.RemoveLast();
         }
-        UndoCountChanged?.Invoke(UndoChain.Count - 1);
+        UndoCountChanged?.Invoke(this, UndoChain.Count - 1);
     }
 
     public void Undo()
@@ -136,8 +136,8 @@ class Repository
         {
             throw new UndoImpossibleException();
         }
-        UndoHappened?.Invoke(UndoChain.First.Value.Grid, UndoChain.First.Value.Score);
-        UndoCountChanged?.Invoke(UndoChain.Count - 1);
+        UndoHappened?.Invoke(this, (UndoChain.First.Value.Grid, UndoChain.First.Value.Score));
+        UndoCountChanged?.Invoke(this, UndoChain.Count - 1);
     }
 
     bool UpdateHappened(Queue<(int Vertical, int Horizontal, int Value)> moveQueue, Queue<int?> scoreQueue)
@@ -147,14 +147,14 @@ class Repository
         while(moveQueue.Count > 0)
         {
             var updateArgs = moveQueue.Dequeue();
-            GridUpdated?.Invoke(updateArgs.Vertical, updateArgs.Horizontal, updateArgs.Value);
+            GridUpdated?.Invoke(this, (updateArgs.Vertical, updateArgs.Horizontal, updateArgs.Value));
             if (!triggered2048 && updateArgs.Value >= 2048)
             {
                 reached2048 = true;
             }
             if (scoreQueue.TryDequeue(out int? nextScore) && nextScore != null)
             {
-                ScoreUpdated?.Invoke((int)nextScore);
+                ScoreUpdated?.Invoke(this, (int)nextScore);
             }
             if (updateArgs.Value > 0)
             {
