@@ -11,6 +11,5 @@
 * Add new kind of menu types for different purposes
     * DisplayMenu
     * PromptMenu
-    * BackMenu
 
 * Start the game with a main menu
