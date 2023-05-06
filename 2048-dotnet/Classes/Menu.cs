@@ -64,7 +64,7 @@ public class NavigationMenu : IMenu
         Func<int, int> moveCursor = x =>
             x < 0 ? SubMenus.Count - 1 :
             x >= SubMenus.Count ? 0 : x;
-        while (navigation != MenuResult.Back)
+        while (navigation == MenuResult.OK)
         {
             DrawMenu(cursorPosition);
             switch(HandleKeyboardInput())
@@ -86,7 +86,8 @@ public class NavigationMenu : IMenu
                     }
             }
         }
-        return navigation;
+        ClearDisplay();
+        return MenuResult.OK;
     }
 
     void DrawMenu(int cursorPosition)
