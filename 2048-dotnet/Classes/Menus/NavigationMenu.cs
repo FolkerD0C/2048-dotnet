@@ -57,7 +57,7 @@ public class NavigationMenu : IMenu
         return Navigate();
     }
 
-    protected MenuResult Navigate()
+    protected virtual MenuResult Navigate()
     {
         MenuResult navigation = MenuResult.OK;
         int cursorPosition = 0;
@@ -90,7 +90,7 @@ public class NavigationMenu : IMenu
         return MenuResult.OK;
     }
 
-    void DrawMenu(int cursorPosition)
+    protected void DrawMenu(int cursorPosition)
     {
         ClearDisplay();
         for (int i = 0; i < SubMenus.Count; i++)
@@ -99,7 +99,7 @@ public class NavigationMenu : IMenu
             {
                 Console.BackgroundColor = ConsoleColor.Red;
                 Console.WriteLine(SubMenus[i].DisplayName);
-                Console.BackgroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
             }
             else
             {
@@ -108,7 +108,7 @@ public class NavigationMenu : IMenu
         }
     }
 
-    void ClearDisplay()
+    protected void ClearDisplay()
     {
         Console.SetCursorPosition(0, menuPosition);
         for (int i = menuPosition; i < Console.BufferHeight; i++)
@@ -118,7 +118,7 @@ public class NavigationMenu : IMenu
         Console.SetCursorPosition(0, menuPosition);
     }
 
-    InputAction HandleKeyboardInput()
+    protected virtual InputAction HandleKeyboardInput()
     {
         while (true)
         {
