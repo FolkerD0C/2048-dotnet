@@ -1,10 +1,12 @@
+using Game2048.Interfaces;
+
 namespace Game2048.Classes;
 
-class GameRepository
+class GameRepository : IGameRepository
 {
-    LinkedList<GridInstance> undoChain;
+    LinkedList<IGridInstance> undoChain;
 
-    public LinkedList<GridInstance> UndoChain
+    public LinkedList<IGridInstance> UndoChain
     {
         get
         {
@@ -45,9 +47,9 @@ class GameRepository
 
     public event EventHandler<int> LivesCountChanged;
 
-    public Repository()
+    public GameRepository()
     {
-        undoChain = new LinkedList<GridInstance>();
+        undoChain = new LinkedList<IGridInstance>();
     }
 
     public void Initialize()
@@ -93,7 +95,7 @@ class GameRepository
 
     public void Move(MoveDirection? input)
     {
-        GridInstance next = UndoChain.First.Value.Move(input);
+        IGridInstance next = UndoChain.First.Value.Move(input);
         bool reached2048 = UpdateHappened(next.MoveQueue, next.ScoreQueue);
         UpdateUndoChain(next);
         PutTwoOrFour();
@@ -116,7 +118,7 @@ class GameRepository
         }
     }
 
-    void UpdateUndoChain(GridInstance grid)
+    void UpdateUndoChain(IGridInstance grid)
     {
         UndoChain.AddFirst(grid);
         while (undoChain.Count > 7)

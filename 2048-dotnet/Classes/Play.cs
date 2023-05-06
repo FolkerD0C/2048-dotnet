@@ -4,7 +4,7 @@ class Play
 {
     GameDisplay display;
 
-    GameRepository repository;
+    IGameRepository repository;
 
     public Play()
     {
@@ -32,8 +32,8 @@ class Play
         {
             colorSet.Add((int)Math.Pow(2, i + 1), (fgColors[i], bgColors[i]));
         }
-        display = new Display(colorSet);
-        repository = new Repository();
+        display = new GameDisplay(colorSet);
+        repository = new GameRepository();
         repository.GridUpdated += display.PrintTile;
         repository.ScoreUpdated += display.PrintScore;
         repository.UndoHappened += display.RedrawGridInstance;

@@ -1,7 +1,5 @@
 * Interfaces for:
-    * Repository
     * Display
-    * GridInstance
 
 * FileHandler
     * Saving
