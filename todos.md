@@ -9,7 +9,6 @@
     * Highscores
 
 * Add new kind of menu types for different purposes
-    * MainMenu
     * DisplayMenu
     * ActionMenu
     * PromptMenu

@@ -1,7 +1,21 @@
 namespace Game2048.Classes;
 
-public abstract class Menu
+public interface IMenu
 {
+    string DisplayName { get; }
+
+    MenuResult MenuAction();
+}
+
+public class NavigationMenu : IMenu
+{
+    protected enum InputAction
+    {
+        Up,
+        Down,
+        Activate
+    }
+
     string displayName;
     public string DisplayName
     {
@@ -9,23 +23,6 @@ public abstract class Menu
         {
             return displayName;
         }
-    }
-
-    public Menu (string displayName)
-    {
-        this.displayName = displayName;
-    }
-
-    public abstract MenuResult MenuAction();
-}
-
-class NavigationMenu : Menu
-{
-    protected enum InputAction
-    {
-        Up,
-        Down,
-        Activate
     }
 
     int menuPosition;
@@ -41,8 +38,8 @@ class NavigationMenu : Menu
         }
     }
 
-    List<Menu> subMenus;
-    public List<Menu> SubMenus
+    List<IMenu> subMenus;
+    public List<IMenu> SubMenus
     {
         get
         {
@@ -54,12 +51,13 @@ class NavigationMenu : Menu
         }
     }
 
-    public NavigationMenu(string displayName, List<Menu> subMenus) : base(displayName)
+    public NavigationMenu(string displayName, List<IMenu> subMenus)
     {
+        this.displayName = displayName;
         this.subMenus = subMenus;
     }
 
-    public override MenuResult MenuAction()
+    public MenuResult MenuAction()
     {
         return Navigate();
     }
@@ -73,6 +71,7 @@ class NavigationMenu : Menu
             x >= SubMenus.Count ? 0 : x;
         while (navigation != MenuResult.Back)
         {
+            DrawMenu(cursorPosition);
             switch(HandleKeyboardInput())
             {
                 case InputAction.Up:
@@ -141,5 +140,13 @@ class NavigationMenu : Menu
             }
         }
         throw new ArgumentException();
+    }
+}
+
+public class MainMenu : NavigationMenu
+{
+    public MainMenu(string displayName, List<IMenu> subMenus) : base(displayName, subMenus)
+    {
+        Navigate();
     }
 }
