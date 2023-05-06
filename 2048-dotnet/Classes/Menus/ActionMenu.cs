@@ -13,17 +13,20 @@ class ActionMenu : IMenu
         }
     }
 
-    Action action;
+    Action<object?> action;
 
-    public ActionMenu(string displayName, Action action)
+    object? obj;
+
+    public ActionMenu(string displayName, Action<object?> action, object? obj)
     {
         this.displayName = displayName;
         this.action = action;
+        this.obj = obj;
     }
 
     public MenuResult MenuAction()
     {
-        action?.Invoke();
+        action?.Invoke(obj);
         return MenuResult.OK;
     }
 }
