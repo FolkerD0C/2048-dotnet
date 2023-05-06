@@ -1,8 +1,8 @@
 using Game2048.Interfaces;
 
-namespace Game2048.Classes.Menus;
+namespace Game2048.Classes;
 
-class ActionMenu : IMenu
+class ObjectMenu : IMenu
 {
     string displayName;
     public string DisplayName
@@ -13,16 +13,20 @@ class ActionMenu : IMenu
         }
     }
 
-    Action action;
+    Action<object[]> action;
 
-    public ActionMenu(string displayName)
+    object[] args;
+
+    public ObjectMenu(string displayName, Action<object[]> action, params object[] args)
     {
         this.displayName = displayName;
+        this.action = action;
+        this.args = args;
     }
 
     public MenuResult MenuAction()
     {
-        action?.Invoke();
+        action?.Invoke(args);
         return MenuResult.OK;
     }
 }
