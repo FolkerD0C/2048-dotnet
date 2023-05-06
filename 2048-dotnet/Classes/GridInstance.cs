@@ -1,6 +1,8 @@
+using Game2048.Interfaces;
+
 namespace Game2048.Classes;
 
-class GridInstance
+public class GridInstance : IGridInstance
 {
     int [,] grid;
     public int[,] Grid
@@ -121,7 +123,7 @@ class GridInstance
         }
     }
 
-    public GridInstance Move(MoveDirection? direction)
+    public IGridInstance Move(MoveDirection? direction)
     {
         GridInstance copycat = CopyGrid();
         return copycat.SimulateMotion(direction);
