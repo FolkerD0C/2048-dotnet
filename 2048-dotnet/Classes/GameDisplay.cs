@@ -96,7 +96,7 @@ class GameDisplay : IGameDisplay
         maxSpaceForTiles = 6;
         for (int i = 0; i < gridPositions.Length; i++)
         {
-            Print(gridPositions[i], borderUntil2048[i]);
+            Print(gridPositions[i], borderAfter2048[i]);
         }
         for (int i = 0; i < grid.GetLength(0); i++)
         {
