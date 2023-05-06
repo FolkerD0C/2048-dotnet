@@ -43,5 +43,5 @@ public class SavedGameObject
 {
     public bool Reached2048 { get; set; }
     public int RemainingLives { get; set; }
-    public List<(int[,], int)> GridUndoChain { get; set; }
+    public List<(int[,] Grid, int Score)> GridUndoChain { get; set; }
 }
