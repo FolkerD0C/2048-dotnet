@@ -33,7 +33,7 @@ public class PromptMenu : NavigationMenu
         Console.SetCursorPosition(0, MenuPosition);
     }
 
-    public new MenuResult MenuAction()
+    public MenuResult MenuAction()
     {
         return Navigate();
     }

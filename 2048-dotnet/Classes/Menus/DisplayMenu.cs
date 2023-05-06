@@ -13,7 +13,7 @@ public class DisplayMenu : NavigationMenu
             MenuPosition = displayMessage.Length;
         }
 
-    public new MenuResult MenuAction()
+    public MenuResult MenuAction()
     {
         return Navigate();
     }
