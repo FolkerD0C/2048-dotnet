@@ -78,6 +78,12 @@ public class GridInstance : IGridInstance
         this.score = score;
     }
 
+    public GridInstance(int[,] grid, int score) : this()
+    {
+        this.grid = grid;
+        this.score = score;
+    }
+
     GridInstance CopyGrid()
     {
         GridInstance copycat = new GridInstance(Score);
