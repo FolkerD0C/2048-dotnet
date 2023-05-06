@@ -1,6 +1,8 @@
+using Game2048.Interfaces;
+
 namespace Game2048.Classes;
 
-class GameDisplay
+class GameDisplay : IGameDisplay
 {
     readonly string[] borderUntil2048 = new string[]
     {
@@ -60,7 +62,7 @@ class GameDisplay
 
     Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet;
 
-    public Display(Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet)
+    public GameDisplay(Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet)
     {
         this.colorSet = colorSet;
         Console.Clear();

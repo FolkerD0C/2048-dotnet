@@ -1,8 +1,10 @@
+using Game2048.Interfaces;
+
 namespace Game2048.Classes;
 
 class Play
 {
-    GameDisplay display;
+    IGameDisplay display;
 
     IGameRepository repository;
 

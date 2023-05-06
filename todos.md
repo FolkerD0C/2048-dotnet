@@ -1,6 +1,3 @@
-* Interfaces for:
-    * Display
-
 * FileHandler
     * Saving
     * Loading
