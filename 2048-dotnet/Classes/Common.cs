@@ -38,3 +38,10 @@ public class GameOverException : Exception
 {
     public GameOverException() : base("You have ran out of lives, game is over") {  }
 }
+
+public class SavedGameObject
+{
+    public bool Reached2048 { get; set; }
+    public int RemainingLives { get; set; }
+    public List<(int[,], int)> GridUndoChain { get; set; }
+}
