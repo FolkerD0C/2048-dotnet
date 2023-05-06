@@ -1,12 +1,44 @@
 namespace Game2048.Classes;
 
-internal class Menu
+public abstract class Menu
 {
-    enum InputAction
+    string displayName;
+    public string DisplayName
+    {
+        get
+        {
+            return displayName;
+        }
+    }
+
+    public Menu (string displayName)
+    {
+        this.displayName = displayName;
+    }
+
+    public abstract MenuResult MenuAction();
+}
+
+class NavigationMenu : Menu
+{
+    protected enum InputAction
     {
         Up,
         Down,
         Activate
+    }
+
+    int menuPosition;
+    protected int MenuPosition
+    {
+        get
+        {
+            return menuPosition;
+        }
+        set
+        {
+            menuPosition = value;
+        }
     }
 
     List<Menu> subMenus;
@@ -22,65 +54,24 @@ internal class Menu
         }
     }
 
-    string displayName;
-    public string DisplayName
+    public NavigationMenu(string displayName, List<Menu> subMenus) : base(displayName)
     {
-        get
-        {
-            return displayName;
-        }
+        this.subMenus = subMenus;
     }
 
-    public event Func<bool> MenuAction;
-
-    int menuPosition = 0;
-
-    public Menu (string displayName, bool stepBackItem = false)
+    public override MenuResult MenuAction()
     {
-        this.displayName = displayName;
-        subMenus = new List<Menu>();
-        if (stepBackItem)
-        {
-            MenuAction += PreviosMenu;
-        }
+        return Navigate();
     }
 
-    public void AddSubMenu(Menu menu)
+    protected MenuResult Navigate()
     {
-        SubMenus.Add(menu);
-    }
-
-    public void SetDisplayPosition(int position)
-    {
-        menuPosition =
-            position < 0 ? 0 :
-            position > Console.BufferHeight - 1 - SubMenus.Count ?
-                Console.BufferHeight - 1 - SubMenus.Count :
-            position;
-    }
-
-    public bool FireAction()
-    {
-        if (SubMenus.Count > 0)
-        {
-            MenuAction += Navigate;
-        }
-        bool result = MenuAction();
-        if (SubMenus.Count > 0)
-        {
-            MenuAction -= Navigate;
-        }
-        return result;
-    }
-
-    public bool Navigate()
-    {
-        bool navigation = true;
+        MenuResult navigation = MenuResult.OK;
         int cursorPosition = 0;
         Func<int, int> moveCursor = x =>
             x < 0 ? SubMenus.Count - 1 :
             x >= SubMenus.Count ? 0 : x;
-        while (navigation)
+        while (navigation != MenuResult.Back)
         {
             switch(HandleKeyboardInput())
             {
@@ -96,12 +87,12 @@ internal class Menu
                     }
                 case InputAction.Activate:
                     {
-                        navigation = SubMenus[cursorPosition].FireAction();
+                        navigation = SubMenus[cursorPosition].MenuAction();
                         break;
                     }
             }
         }
-        return true;
+        return navigation;
     }
 
     void DrawMenu(int cursorPosition)
@@ -150,11 +141,5 @@ internal class Menu
             }
         }
         throw new ArgumentException();
-    }
-
-    bool PreviosMenu()
-    {
-        Console.ReadKey(true);
-        return false;
     }
 }

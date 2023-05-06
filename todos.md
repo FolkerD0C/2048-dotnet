@@ -9,8 +9,6 @@
     * Highscores
 
 * Add new kind of menu types for different purposes
-    * Menu class needs to be abstract
-    * NavigationMenu
     * MainMenu
     * DisplayMenu
     * ActionMenu
