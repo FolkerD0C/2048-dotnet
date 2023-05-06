@@ -8,7 +8,4 @@
     * Loading
     * Highscores
 
-* Add new kind of menu types for different purposes
-    * PromptMenu
-
 * Start the game with a main menu
