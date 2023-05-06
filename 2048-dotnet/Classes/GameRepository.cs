@@ -1,6 +1,6 @@
 namespace Game2048.Classes;
 
-class Repository
+class GameRepository
 {
     LinkedList<GridInstance> undoChain;
 

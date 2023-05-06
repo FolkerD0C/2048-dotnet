@@ -1,6 +1,6 @@
 namespace Game2048.Classes;
 
-class Display
+class GameDisplay
 {
     readonly string[] borderUntil2048 = new string[]
     {

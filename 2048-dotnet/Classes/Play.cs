@@ -2,9 +2,9 @@ namespace Game2048.Classes;
 
 class Play
 {
-    Display display;
+    GameDisplay display;
 
-    Repository repository;
+    GameRepository repository;
 
     public Play()
     {
