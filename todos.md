@@ -10,7 +10,6 @@
 
 * Add new kind of menu types for different purposes
     * DisplayMenu
-    * ActionMenu
     * PromptMenu
     * BackMenu
 
