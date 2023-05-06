@@ -2,7 +2,7 @@ using Game2048.Classes;
 
 namespace Game2048.Interfaces;
 
- interface IGameRepository
+public interface IGameRepository
 {
     LinkedList<IGridInstance> UndoChain { get; }
 
