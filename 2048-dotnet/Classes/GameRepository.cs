@@ -35,13 +35,21 @@ class GameRepository : IGameRepository
 
     bool triggered2048;
 
+    public bool Reached2048
+    {
+        get
+        {
+            return triggered2048;
+        }
+    }
+
     public event EventHandler<(int[,], int)> UndoHappened;
 
     public event EventHandler<(int, int, int)> GridUpdated;
 
     public event EventHandler<int> ScoreUpdated;
 
-    public event EventHandler<int[,]> Reached2048;
+    public event EventHandler<int[,]> Reach2048;
 
     public event EventHandler<int> UndoCountChanged;
 
@@ -50,6 +58,13 @@ class GameRepository : IGameRepository
     public GameRepository()
     {
         undoChain = new LinkedList<IGridInstance>();
+    }
+
+    public GameRepository(int lives, bool reached2048, LinkedList<IGridInstance> undoChain)
+    {
+        this.lives = lives;
+        this.triggered2048 = reached2048;
+        this.undoChain = undoChain;
     }
 
     public void Initialize()
@@ -74,7 +89,7 @@ class GameRepository : IGameRepository
 
     void GameWon()
     {
-        Reached2048?.Invoke(this, UndoChain.First.Value.Grid);
+        Reach2048?.Invoke(this, UndoChain.First.Value.Grid);
     }
 
     List<(int Vertical, int Horizontal)> GetEmptyPositions()
@@ -101,7 +116,7 @@ class GameRepository : IGameRepository
         PutTwoOrFour();
         if (!triggered2048 && reached2048)
         {
-            Reached2048?.Invoke(this, UndoChain.First.Value.Grid);
+            Reach2048?.Invoke(this, UndoChain.First.Value.Grid);
         }
         try
         {
@@ -164,5 +179,31 @@ class GameRepository : IGameRepository
             }
         }
         return reached2048;
+    }
+
+    public static IGameRepository Convert(SavedGameObject obj)
+    {
+        return new GameRepository
+            (
+                obj.RemainingLives,
+                obj.Reached2048,
+                new LinkedList<IGridInstance>
+                (
+                    obj.GridUndoChain.Select
+                    (
+                        item => new GridInstance(item.Grid, item.Score)
+                    )
+                )
+            );
+    }
+
+    public static SavedGameObject ConvertBack(IGameRepository obj)
+    {
+        return new SavedGameObject()
+        {
+            RemainingLives = obj.Lives,
+            Reached2048 = obj.Reached2048,
+            GridUndoChain = obj.UndoChain.Select(node => (node.Grid, node.Score)).ToList()
+        };
     }
 }

@@ -8,13 +8,15 @@ public interface IGameRepository
 
     int Lives { get; }
 
+    bool Reached2048 { get; }
+
     event EventHandler<(int[,], int)> UndoHappened;
 
     event EventHandler<(int, int, int)> GridUpdated;
 
     event EventHandler<int> ScoreUpdated;
 
-    event EventHandler<int[,]> Reached2048;
+    event EventHandler<int[,]> Reach2048;
 
     event EventHandler<int> UndoCountChanged;
 
