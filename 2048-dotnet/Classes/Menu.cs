@@ -1,11 +1,6 @@
+using Game2048.Interfaces;
+
 namespace Game2048.Classes;
-
-public interface IMenu
-{
-    string DisplayName { get; }
-
-    MenuResult MenuAction();
-}
 
 public class NavigationMenu : IMenu
 {
