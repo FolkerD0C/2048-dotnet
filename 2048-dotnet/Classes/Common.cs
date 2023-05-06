@@ -8,6 +8,15 @@ public enum MoveDirection
     Right
 }
 
+public enum MenuResult
+{
+    Yes,
+    No,
+    OK,
+    Cancel,
+    Back
+}
+
 public class CannotMoveException : Exception
 {
     public CannotMoveException() : base("You can not move in that direction!") {  }

@@ -9,7 +9,6 @@
     * Highscores
 
 * Add new kind of menu types for different purposes
-    * enum MenuResult is needed for Menu
     * Menu class needs to be abstract
     * NavigationMenu
     * MainMenu
