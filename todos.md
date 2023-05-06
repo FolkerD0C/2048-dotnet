@@ -9,9 +9,12 @@
     * Highscores
 
 * Add new kind of menu types for different purposes
-    * Main menu
-    * Display menu
-    * Action menu
-    * Prompt menu
+    * enum MenuResult is needed for Menu
+    * Menu class needs to be abstract
+    * MainMenu
+    * DisplayMenu
+    * ActionMenu
+    * PromptMenu
+    * BackMenu
 
 * Start the game with a main menu
