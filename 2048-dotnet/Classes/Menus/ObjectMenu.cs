@@ -27,6 +27,6 @@ class ObjectMenu : IMenu
     public MenuResult MenuAction()
     {
         action?.Invoke(args);
-        return MenuResult.OK;
+        return MenuResult.Obj;
     }
 }
