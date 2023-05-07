@@ -181,7 +181,7 @@ class GameRepository : IGameRepository
         return reached2048;
     }
 
-    public static IGameRepository Convert(SavedGameObject obj)
+    public static IGameRepository ConvertBack(SavedGameObject obj)
     {
         return new GameRepository
             (
@@ -197,7 +197,7 @@ class GameRepository : IGameRepository
             );
     }
 
-    public static SavedGameObject ConvertBack(IGameRepository obj)
+    public static SavedGameObject Convert(IGameRepository obj)
     {
         return new SavedGameObject()
         {
