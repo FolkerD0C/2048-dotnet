@@ -67,13 +67,31 @@ class GameRepository : IGameRepository
         this.undoChain = undoChain;
     }
 
-    public void Initialize()
+    public void Initialize(bool loadedGame)
     {
-        GridInstance first = new GridInstance();
-        UpdateUndoChain(first);
-        PutTwoOrFour();
-        PutTwoOrFour();
-        Lives = 5;
+        if (!loadedGame)
+        {
+            GridInstance first = new GridInstance();
+            UpdateUndoChain(first);
+            PutTwoOrFour();
+            PutTwoOrFour();
+            Lives = 5;
+        }
+        else
+        {
+            if (triggered2048)
+            {
+                Reach2048?.Invoke(this, UndoChain.First.Value.Grid);
+                ScoreUpdated?.Invoke(this, UndoChain.First.Value.Score);
+            }
+            else
+            {
+                UndoHappened?.Invoke(this,
+                        (UndoChain.First.Value.Grid, UndoChain.First.Value.Score));
+            }
+            UndoCountChanged?.Invoke(this, UndoChain.Count - 1);
+            LivesCountChanged?.Invoke(this, Lives);
+        }
     }
 
     void PutTwoOrFour()

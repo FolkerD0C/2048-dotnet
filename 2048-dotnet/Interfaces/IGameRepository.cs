@@ -22,7 +22,7 @@ public interface IGameRepository
 
     event EventHandler<int> LivesCountChanged;
 
-    void Initialize();
+    void Initialize(bool loadedGame);
 
     void Move(MoveDirection? input);
 
