@@ -62,4 +62,17 @@ class FileHandler : IFileHandler
     {
         File.WriteAllText(path, jsonObject);
     }
+
+    public string GetFullSavePath(string fileName)
+    {
+        if (!fileName.Contains(gameDataDirectory))
+        {
+            fileName = Path.Combine(gameDataDirectory, fileName);
+        }
+        if (!fileName.Contains(savePrefix))
+        {
+            fileName = Path.Combine(fileName, savePrefix);
+        }
+        return fileName;
+    }
 }
