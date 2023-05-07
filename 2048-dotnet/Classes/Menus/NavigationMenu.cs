@@ -46,15 +46,23 @@ public class NavigationMenu : IMenu
         }
     }
 
+    MenuResult result;
+
     public NavigationMenu(string displayName, List<IMenu> subMenus)
     {
         this.displayName = displayName;
         this.subMenus = subMenus;
+        result = MenuResult.OK;
     }
 
     public MenuResult MenuAction()
     {
         return Navigate();
+    }
+
+    public void SetReturnValue(MenuResult result)
+    {
+        this.result = result;
     }
 
     protected virtual MenuResult Navigate()
@@ -87,7 +95,7 @@ public class NavigationMenu : IMenu
             }
         }
         ClearDisplay();
-        return MenuResult.OK;
+        return result;
     }
 
     protected void DrawMenu(int cursorPosition)
