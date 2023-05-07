@@ -15,9 +15,10 @@ class ActionMenu : IMenu
 
     Action action;
 
-    public ActionMenu(string displayName)
+    public ActionMenu(string displayName, Action action)
     {
         this.displayName = displayName;
+        this.action = action;
     }
 
     public MenuResult MenuAction()
