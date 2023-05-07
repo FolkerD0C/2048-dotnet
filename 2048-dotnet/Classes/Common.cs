@@ -13,7 +13,7 @@ public enum MenuResult
     Yes,
     No,
     OK,
-    Cancel,
+    Obj,
     Back
 }
 
