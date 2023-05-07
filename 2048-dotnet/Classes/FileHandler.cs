@@ -4,7 +4,7 @@ namespace Game2048.Classes;
 
 class FileHandler : IFileHandler
 {
-    string gameDataDirectory = Path.Combine(Environment.GetEnvironmentVariable("HOME"), "Games", ".2048-dotnet");
+    string gameDataDirectory;
 
     string savePrefix = ".save.json";
 
@@ -23,6 +23,20 @@ class FileHandler : IFileHandler
 
     public FileHandler()
     {
+        string envVar = "";
+        if (OperatingSystem.IsWindows())
+        {
+            envVar = "USERPROFILE";
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            envVar = "HOME";
+        }
+        else
+        {
+            throw new SystemException("Not supported OS");
+        }
+        gameDataDirectory = Path.Combine(Environment.GetEnvironmentVariable(envVar), "Games", ".2048-dotnet");
         if (!Directory.Exists(gameDataDirectory))
         {
             Directory.CreateDirectory(gameDataDirectory);
