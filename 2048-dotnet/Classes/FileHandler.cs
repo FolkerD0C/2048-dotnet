@@ -31,8 +31,7 @@ class FileHandler : IFileHandler
         highscoresPath = Path.Combine(gameDataDirectory, "highscores.json");
         if (!File.Exists(highscoresPath))
         {
-            File.Create(highscoresPath);
-            var highscores = new List<(string, int)>() {
+            var highscores = new List<(string Name, int Score)>() {
                 ("Alice", 150000), ("Bob", 130000),
                 ("Clara", 110000), ("Daniel", 100000),
                 ("Esther", 90000), ("Frank", 80000),

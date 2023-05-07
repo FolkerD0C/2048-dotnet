@@ -6,7 +6,7 @@ public interface IJSONHandler
 
     string SerializeRepository(IGameRepository repository);
 
-    IList<(string, int)> DeserializeHighScores(string jsonHighScores);
+    IList<(string Name, int Score)> DeserializeHighScores(string jsonHighScores);
 
-    string SerializeHighScores(IList<(string, int)> highscores);
+    string SerializeHighScores(IList<(string Name, int Score)> highscores);
 }

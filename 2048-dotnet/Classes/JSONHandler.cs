@@ -15,19 +15,21 @@ class JSONHandler : IJSONHandler
     public string SerializeRepository(IGameRepository repository)
     {
         var gameObject = GameRepository.Convert(repository);
-        string jsonObject = JsonSerializer.Serialize<SavedGameObject>(gameObject);
+        var options = new JsonSerializerOptions() { WriteIndented = true };
+        string jsonObject = JsonSerializer.Serialize<SavedGameObject>(gameObject, options);
         return jsonObject;
     }
 
-    public IList<(string, int)> DeserializeHighScores(string jsonHighScores)
+    public IList<(string Name, int Score)> DeserializeHighScores(string jsonHighScores)
     {
-        var highscores = JsonSerializer.Deserialize<List<(string, int)>>(jsonHighScores);
+        var highscores = JsonSerializer.Deserialize<List<(string Name, int Score)>>(jsonHighScores);
         return highscores;
     }
 
-    public string SerializeHighScores(IList<(string, int)> highscores)
+    public string SerializeHighScores(IList<(string Name, int Score)> highscores)
     {
-        string jsonHighScores = JsonSerializer.Serialize<List<(string, int)>>((List<(string, int)>)highscores);
+        var options = new JsonSerializerOptions() { WriteIndented = true };
+        string jsonHighScores = JsonSerializer.Serialize<List<(string Name, int Score)>>((List<(string Name, int Score)>)highscores, options);
         return jsonHighScores;
     }
 }
