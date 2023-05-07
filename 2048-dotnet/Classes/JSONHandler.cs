@@ -22,13 +22,14 @@ class JSONHandler : IJSONHandler
 
     public IList<(string Name, int Score)> DeserializeHighScores(string jsonHighScores)
     {
-        var highscores = JsonSerializer.Deserialize<List<(string Name, int Score)>>(jsonHighScores);
+        var options = new JsonSerializerOptions() { IncludeFields = true };
+        var highscores = JsonSerializer.Deserialize<List<(string Name, int Score)>>(jsonHighScores, options);
         return highscores;
     }
 
     public string SerializeHighScores(IList<(string Name, int Score)> highscores)
     {
-        var options = new JsonSerializerOptions() { WriteIndented = true };
+        var options = new JsonSerializerOptions() { WriteIndented = true, IncludeFields = true };
         string jsonHighScores = JsonSerializer.Serialize<List<(string Name, int Score)>>((List<(string Name, int Score)>)highscores, options);
         return jsonHighScores;
     }
