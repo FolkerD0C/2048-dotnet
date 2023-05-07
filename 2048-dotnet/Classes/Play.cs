@@ -10,6 +10,8 @@ class Play
 
     IFileHandler fileHandler;
 
+    string savePath;
+
     public Play(params object[] args)
     {
         var colorSet = InitColors();
@@ -17,7 +19,9 @@ class Play
         fileHandler = (IFileHandler)args[0];
         if (args.Length > 1)
         {
-            repository = fileHandler.Converter.DeserializeRepository((string)args[1]);
+            savePath = (string)args[1];
+            var jsonRepository  = fileHandler.GetSavedObject(savePath);
+            repository = fileHandler.Converter.DeserializeRepository(jsonRepository);
         }
         else
         {
@@ -40,7 +44,8 @@ class Play
 
     Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> InitColors()
     {
-        Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet = new Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)>();
+        Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet =
+            new Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)>();
         ConsoleColor[] fgColors = new ConsoleColor[]
         {
             ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
@@ -67,7 +72,7 @@ class Play
         return colorSet;
     }
 
-    bool HandleInput()
+    void HandleInput()
     {
         MoveDirection? input = null;
         switch(Console.ReadKey().Key)
@@ -111,7 +116,7 @@ class Play
         }
         if (input == null)
         {
-            return false;
+            return;
         }
         try
         {
@@ -120,13 +125,11 @@ class Play
         catch (CannotMoveException exc)
         {
             display.PrintErrorMessage(exc.Message);
-            return false;
         }
         catch (GridStuckException exc)
         {
             display.PrintErrorMessage(exc.Message);
         }
-        return true;
     }
 
     void GameOver()
