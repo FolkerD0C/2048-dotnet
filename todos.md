@@ -1,8 +1,3 @@
-* FileHandler
-    * Saving
-    * Loading
-    * Highscores
-
 * Start the game with a main menu
 
 * Add pause menu
