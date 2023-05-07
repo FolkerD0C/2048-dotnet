@@ -8,7 +8,37 @@ class Play
 
     IGameRepository repository;
 
-    public Play()
+    IFileHandler fileHandler;
+
+    public Play(params object[] args)
+    {
+        var colorSet = InitColors();
+        display = new GameDisplay(colorSet);
+        fileHandler = (IFileHandler)args[0];
+        if (args.Length > 1)
+        {
+            repository = fileHandler.Converter.DeserializeRepository((string)args[1]);
+        }
+        else
+        {
+            repository = new GameRepository();
+        }
+        repository.GridUpdated += display.PrintTile;
+        repository.ScoreUpdated += display.PrintScore;
+        repository.UndoHappened += display.RedrawGridInstance;
+        repository.Reach2048 += display.ScaleUp;
+        repository.UndoCountChanged += display.PrintUndosCount;
+        repository.LivesCountChanged += display.PrintLivesCount;
+        repository.Initialize(args.Length > 1);
+    }
+
+    public static void Initialize(params object[] args)
+    {
+        var play = new Play(args);
+        play.Run();
+    }
+
+    Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> InitColors()
     {
         Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet = new Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)>();
         ConsoleColor[] fgColors = new ConsoleColor[]
@@ -34,15 +64,7 @@ class Play
         {
             colorSet.Add((int)Math.Pow(2, i + 1), (fgColors[i], bgColors[i]));
         }
-        display = new GameDisplay(colorSet);
-        repository = new GameRepository();
-        repository.GridUpdated += display.PrintTile;
-        repository.ScoreUpdated += display.PrintScore;
-        repository.UndoHappened += display.RedrawGridInstance;
-        repository.Reach2048 += display.ScaleUp;
-        repository.UndoCountChanged += display.PrintUndosCount;
-        repository.LivesCountChanged += display.PrintLivesCount;
-        repository.Initialize();
+        return colorSet;
     }
 
     bool HandleInput()
