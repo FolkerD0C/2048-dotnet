@@ -39,7 +39,7 @@ class Play
         repository.GridUpdated += display.PrintTile;
         repository.ScoreUpdated += display.PrintScore;
         repository.UndoHappened += display.RedrawGridInstance;
-        repository.Reached2048 += display.ScaleUp;
+        repository.Reach2048 += display.ScaleUp;
         repository.UndoCountChanged += display.PrintUndosCount;
         repository.LivesCountChanged += display.PrintLivesCount;
         repository.Initialize();
