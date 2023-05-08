@@ -1,6 +1,9 @@
 * Start the game with a main menu
 
-* Add pause menu
+* Add ingame menu
+    * Solve saving the game via menu
+        * Rewrite PromptMenu
+        * Add a form to get the name of the player
 
 * Add description for the game
 
