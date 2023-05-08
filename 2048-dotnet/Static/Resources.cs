@@ -56,7 +56,7 @@ public static class Resources
         }
     }
 
-    static void GracefulExit()
+    public static void GracefulExit()
     {
         Console.Clear();
         Console.CursorVisible = true;
