@@ -1,4 +1,4 @@
-* Start the game with a main menu
+* Set setatic display size
 
 * Add ingame menu
     * Solve saving the game via menu
