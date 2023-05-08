@@ -50,6 +50,20 @@ public class NavigationMenu : IMenu
 
     List<MenuResult> acceptedResults;
 
+    int cursorPosition;
+
+    protected int CursorPosition
+    {
+        get
+        {
+            return cursorPosition;
+        }
+        private set
+        {
+            cursorPosition = value;
+        }
+    }
+
     public NavigationMenu(string displayName, List<IMenu> subMenus)
     {
         this.displayName = displayName;
@@ -61,7 +75,7 @@ public class NavigationMenu : IMenu
         };
     }
 
-    public MenuResult MenuAction()
+    public virtual MenuResult MenuAction()
     {
         return Navigate();
     }
@@ -82,23 +96,22 @@ public class NavigationMenu : IMenu
     protected virtual MenuResult Navigate()
     {
         MenuResult navigation = MenuResult.OK;
-        int cursorPosition = 0;
         Func<int, int> moveCursor = x =>
             x < 0 ? SubMenus.Count - 1 :
             x >= SubMenus.Count ? 0 : x;
         while (acceptedResults.Contains(navigation))
         {
-            DrawMenu(cursorPosition);
+            DrawMenu(CursorPosition);
             switch(HandleKeyboardInput())
             {
                 case InputAction.Up:
                     {
-                        cursorPosition = moveCursor(cursorPosition - 1);
+                        cursorPosition = moveCursor(CursorPosition - 1);
                         break;
                     }
                 case InputAction.Down:
                     {
-                        cursorPosition = moveCursor(cursorPosition + 1);
+                        cursorPosition = moveCursor(CursorPosition + 1);
                         break;
                     }
                 case InputAction.Activate:
