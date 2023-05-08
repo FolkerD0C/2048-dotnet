@@ -11,9 +11,20 @@ public class ReturnMenu : IMenu
         {
             return displayName;
         }
+        protected set
+        {
+            displayName = value;
+        }
     }
 
     MenuResult returnValue;
+    protected MenuResult ReturnValue
+    {
+        get
+        {
+            return returnValue;
+        }
+    }
 
     public ReturnMenu(MenuResult returnValue)
     {
@@ -21,7 +32,7 @@ public class ReturnMenu : IMenu
         this.returnValue = returnValue;
     }
 
-    public MenuResult MenuAction()
+    public virtual MenuResult MenuAction()
     {
         return returnValue;
     }
