@@ -1,4 +1,5 @@
 using Game2048.Interfaces;
+using Game2048.Static;
 
 namespace Game2048.Classes.Menus;
 
@@ -8,36 +9,33 @@ public class PromptMenu : NavigationMenu
 
     Action action;
 
-    public PromptMenu(string displayName, string[] promptMessage, Action action) :
+    public PromptMenu(string displayName, IEnumerable<string> promptMessage, Action action) :
         base(displayName, new List<IMenu>() { new ReturnMenu(MenuResult.Yes), new ReturnMenu(MenuResult.No) })
     {
-        this.promptMessage = promptMessage;
+        this.promptMessage = promptMessage.ToArray();
         this.action = action;
-        MenuPosition = promptMessage.Length;
+        MenuPosition = promptMessage.Count();
     }
 
     void DrawDisplayMessage()
     {
-        Console.SetCursorPosition(0, 0);
-        foreach(string line in promptMessage)
+        for (int i = 0; i < promptMessage.Length; i++)
         {
-            Console.WriteLine(line);
+            Display.PrintText(promptMessage[i], 0, i, ConsoleColor.White, ConsoleColor.Black);
         }
-        Console.SetCursorPosition(0, MenuPosition);
     }
 
     void ClearDisplayMessage()
     {
-        Console.SetCursorPosition(0, 0);
-        foreach(string line in promptMessage)
+        for (int i = 0; i < promptMessage.Length; i++)
         {
-            Console.WriteLine(new string(' ', Console.BufferWidth));
+            Display.PrintText(new string(' ', Display.Width), 0, i, ConsoleColor.White, ConsoleColor.Black);
         }
-        Console.SetCursorPosition(0, MenuPosition);
     }
 
     public override MenuResult MenuAction()
     {
+        Display.NewLayout();
         DrawDisplayMessage();
         Navigate();
         ClearDisplayMessage();
@@ -46,6 +44,7 @@ public class PromptMenu : NavigationMenu
         {
             action?.Invoke();
         }
+        Display.PreviousLayout();
         return result;
     }
 }

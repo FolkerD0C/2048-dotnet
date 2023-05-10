@@ -78,7 +78,10 @@ public class NavigationMenu : IMenu
 
     public virtual MenuResult MenuAction()
     {
-        return Navigate();
+        Display.NewLayout();
+        var result = Navigate();
+        Display.PreviousLayout();
+        return result;
     }
 
     public void SetReturnValue(MenuResult result)

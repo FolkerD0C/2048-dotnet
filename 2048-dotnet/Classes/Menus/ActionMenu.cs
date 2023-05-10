@@ -1,4 +1,5 @@
 using Game2048.Interfaces;
+using Game2048.Static;
 
 namespace Game2048.Classes.Menus;
 
@@ -23,7 +24,9 @@ class ActionMenu : IMenu
 
     public MenuResult MenuAction()
     {
+        Display.NewLayout();
         action?.Invoke();
         return MenuResult.OK;
+        Display.PreviousLayout();
     }
 }
