@@ -1,4 +1,5 @@
 using Game2048.Interfaces;
+using Game2048.Static;
 
 namespace Game2048.Classes;
 
@@ -65,8 +66,6 @@ class GameDisplay : IGameDisplay
     public GameDisplay(Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet)
     {
         this.colorSet = colorSet;
-        Console.Clear();
-        Console.CursorVisible = false;
         for (int i = 0; i < gridPositions.Length; i++)
         {
             Print(gridPositions[i], borderUntil2048[i]);
@@ -122,12 +121,8 @@ class GameDisplay : IGameDisplay
     void Print((int Vertical, int Horizontal) position, string displayText,
             ConsoleColor fgColor = ConsoleColor.White, ConsoleColor bgColor = ConsoleColor.Black)
     {
-        Console.SetCursorPosition(position.Horizontal, position.Vertical);
-        Console.ForegroundColor = fgColor;
-        Console.BackgroundColor = bgColor;
-        Console.Write(displayText);
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.BackgroundColor = ConsoleColor.Black;
+        Display.PrintText(displayText, position.Horizontal, position.Vertical,
+                fgColor, bgColor);
     }
 
     public void PrintTile(object? o, (int vertical, int horizontal, int value) args)
