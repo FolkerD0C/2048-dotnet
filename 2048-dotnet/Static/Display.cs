@@ -5,7 +5,7 @@ static class Display
     static int offsetHorizontal;
     static int offsetVertical;
 
-    static readonly int width = 50;
+    static readonly int width = 70;
     static readonly int height = 25;
 
     class DisplayPos
