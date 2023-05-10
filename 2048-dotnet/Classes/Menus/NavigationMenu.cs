@@ -1,4 +1,5 @@
 using Game2048.Interfaces;
+using Game2048.Static;
 
 namespace Game2048.Classes.Menus;
 
@@ -99,19 +100,23 @@ public class NavigationMenu : IMenu
         Func<int, int> moveCursor = x =>
             x < 0 ? SubMenus.Count - 1 :
             x >= SubMenus.Count ? 0 : x;
+        int prevPos = 0;
+        DrawMenu();
         while (acceptedResults.Contains(navigation))
         {
-            DrawMenu(CursorPosition);
+            SelectionChanged(prevPos);
             switch(HandleKeyboardInput())
             {
                 case InputAction.Up:
                     {
-                        cursorPosition = moveCursor(CursorPosition - 1);
+                        prevPos = CursorPosition;
+                        CursorPosition = moveCursor(CursorPosition - 1);
                         break;
                     }
                 case InputAction.Down:
                     {
-                        cursorPosition = moveCursor(CursorPosition + 1);
+                        prevPos = CursorPosition;
+                        CursorPosition = moveCursor(CursorPosition + 1);
                         break;
                     }
                 case InputAction.Activate:
@@ -121,25 +126,23 @@ public class NavigationMenu : IMenu
                     }
             }
         }
-        ClearDisplay();
         return result;
     }
 
-    protected void DrawMenu(int cursorPosition)
+    protected void SelectionChanged(int prevPos)
     {
-        ClearDisplay();
+        Display.PrintText(SubMenus[prevPos].DisplayName, 0, prevPos + MenuPosition,
+                ConsoleColor.White, ConsoleColor.Black);
+        Display.PrintText(SubMenus[CursorPosition].DisplayName, 0, CursorPosition + MenuPosition,
+                ConsoleColor.White, ConsoleColor.Red);
+    }
+
+    protected void DrawMenu()
+    {
         for (int i = 0; i < SubMenus.Count; i++)
         {
-            if (i == cursorPosition)
-            {
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.WriteLine(SubMenus[i].DisplayName);
-                Console.BackgroundColor = ConsoleColor.Black;
-            }
-            else
-            {
-                Console.WriteLine(SubMenus[i].DisplayName);
-            }
+            Display.PrintText(SubMenus[i].DisplayName, 0, i + MenuPosition,
+                    ConsoleColor.White, ConsoleColor.Black);
         }
     }
 
