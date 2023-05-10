@@ -46,8 +46,6 @@ public static class Resources
 
     public static void Run()
     {
-        Console.BackgroundColor = ConsoleColor.Black;
-        Console.Clear();
         Console.CursorVisible = false;
         while (true)
         {
