@@ -1,4 +1,4 @@
-* Set setatic display size
+* Rewrite menus and GameDisplay to use new static class Game2048Static.Display
 
 * Add ingame menu
     * Solve saving the game via menu
