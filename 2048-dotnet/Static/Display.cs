@@ -2,11 +2,26 @@ namespace Game2048.Static;
 
 static class Display
 {
-    static int offsetHorizontal;
-    static int offsetVertical;
+    static readonly int offsetHorizontal;
+    static readonly int offsetVertical;
 
-    static readonly int width = 70;
-    static readonly int height = 25;
+    static readonly int width;
+    public static int Width
+    {
+        get
+        {
+            return width;
+        }
+    }
+
+    static readonly int height;
+    public static int Height
+    {
+        get
+        {
+            return height;
+        }
+    }
 
     class DisplayPos
     {
@@ -20,14 +35,16 @@ static class Display
 
     static Display()
     {
-        DisplayStack = new Stack<DisplayPos[,]>();
-        CurrentDisplay = NewEmptyOverlay();
+        width = Console.WindowWidth < 70 ? Console.WindowWidth : 70;
+        height = Console.WindowHeight < 40 ? Console.WindowHeight : 40;
         offsetHorizontal = (Console.WindowWidth - width) / 2;
         offsetVertical = (Console.WindowHeight - height) / 2;
-        RedrawDisplay();
+        DisplayStack = new Stack<DisplayPos[,]>();
+        CurrentDisplay = NewEmptyLayout();
+        DrawEntireDisplay();
     }
 
-    static DisplayPos[,] NewEmptyOverlay()
+    static DisplayPos[,] NewEmptyLayout()
     {
         var result = new DisplayPos[height, width];
         for (int i = 0; i < result.GetLength(1); i++)
@@ -45,7 +62,7 @@ static class Display
         return result;
     }
 
-    static void RedrawDisplay()
+    static void DrawEntireDisplay()
     {
         for (int i = 0; i < CurrentDisplay.GetLength(1); i++)
         {
@@ -56,35 +73,35 @@ static class Display
         }
     }
 
-    public static void NewOverlay()
+    public static void NewLayout()
     {
         DisplayStack.Push(CurrentDisplay);
-        CurrentDisplay = NewEmptyOverlay();
-        RedrawDisplay();
+        CurrentDisplay = NewEmptyLayout();
+        DrawEntireDisplay();
     }
 
-    public static void PreviousOverlay()
+    public static void PreviousLayout()
     {
         CurrentDisplay = DisplayStack.Pop();
-        RedrawDisplay();
+        DrawEntireDisplay();
     }
 
     public static void PrintText(string text, int relativeHorizontalPosition, int relativeVerticalPosition,
-            ConsoleColor ForegColor, ConsoleColor BackgColor)
+            ConsoleColor ForegroundColor, ConsoleColor BackgroundColor)
     {
         for (int i = 0; i < text.Length; i++)
         {
             DisplayPos val = new DisplayPos()
                             {
                                 Value = text[i],
-                                FgColor = ForegColor,
-                                BgColor = BackgColor
+                                FgColor = ForegroundColor,
+                                BgColor = BackgroundColor
                             };
             Print(i + relativeHorizontalPosition + offsetHorizontal,
                     relativeVerticalPosition + offsetVertical,
                     val
                     );
-            CurrentDisplay[relativeVerticalPosition + i, relativeVerticalPosition] = val;
+            CurrentDisplay[relativeVerticalPosition, relativeHorizontalPosition + i] = val;
         }
     }
 
