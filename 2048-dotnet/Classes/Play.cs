@@ -1,4 +1,6 @@
 using Game2048.Interfaces;
+using Game2048.Classes.Menus;
+using Game2048.Static;
 
 namespace Game2048.Classes;
 
@@ -11,6 +13,8 @@ class Play
     IFileHandler fileHandler;
 
     string savePath;
+
+    bool inGame;
 
     public Play(params object[] args)
     {
@@ -39,6 +43,7 @@ class Play
     public static void Initialize(params object[] args)
     {
         var play = new Play(args);
+        play.inGame = true;
         play.Run();
     }
 
@@ -111,6 +116,7 @@ class Play
                 }
             case ConsoleKey.Escape:
                 {
+                    ConstructIngameMenu();
                     break;
                 }
         }
@@ -142,11 +148,29 @@ class Play
 
     }
 
+    void ConstructIngameMenu()
+    {
+        List<IMenu> subMenus = new List<IMenu>();
+        subMenus.Add(new NamedReturnMenu("Resume game", MenuResult.Back));
+        subMenus.Add(new ObjectMenu("Save game", Save, "WIP"));
+        subMenus.Add(new PromptMenu("Exit to main menu", new string[] { "Are you sure to exit to main menu?" }, LeaveGame));
+        subMenus.Add(new PromptMenu("Quit game", new string[] { "Are you sure to quit the game?" }, Resources.GracefulExit));
+
+        NavigationMenu ingameMenu = new NavigationMenu("ingameMenu", subMenus);
+        ingameMenu.AddAcceptedResult(MenuResult.No);
+        ingameMenu.MenuAction();
+    }
+
+    void LeaveGame()
+    {
+        inGame = false;
+    }
+
     public bool Run()
     {
         try
         {
-            while (true)
+            while (inGame)
             {
                 HandleInput();
             }
@@ -159,7 +183,7 @@ class Play
         return true;
     }
 
-    void Save()
+    void Save(object[] args)
     {
 
     }
