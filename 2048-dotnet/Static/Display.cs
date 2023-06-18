@@ -112,4 +112,14 @@ static class Display
         Console.BackgroundColor = toDraw.BgColor;
         Console.Write(toDraw.Value);
     }
+
+    public static void ToggleCursor()
+    {
+        Console.CursorVisible = !Console.CursorVisible;
+    }
+
+    public static void SetCursorPos(int relativeHorizontalPosition, int relativeVerticalPosition)
+    {
+        Console.SetCursorPosition(offsetHorizontal + relativeHorizontalPosition, offsetVertical + relativeVerticalPosition);
+    }
 }
