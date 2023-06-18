@@ -19,7 +19,6 @@ public class DisplayMenu : NavigationMenu
         Display.NewLayout();
         DrawDisplayMessage();
         Navigate();
-        ClearDisplayMessage();
         Display.PreviousLayout();
         return MenuResult.OK;
     }
@@ -29,14 +28,6 @@ public class DisplayMenu : NavigationMenu
         for (int i = 0; i < displayMessage.Length; i++)
         {
             Display.PrintText(displayMessage[i], 0, i, ConsoleColor.White, ConsoleColor.Black);
-        }
-    }
-
-    void ClearDisplayMessage()
-    {
-        for (int i = 0; i < displayMessage.Length; i++)
-        {
-            Display.PrintText(new string(' ', Display.Width), 0, i, ConsoleColor.White, ConsoleColor.Black);
         }
     }
 }
