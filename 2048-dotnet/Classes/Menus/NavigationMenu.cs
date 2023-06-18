@@ -149,16 +149,6 @@ public class NavigationMenu : IMenu
         }
     }
 
-    protected void ClearDisplay()
-    {
-        Console.SetCursorPosition(0, menuPosition);
-        for (int i = menuPosition; i < Console.BufferHeight; i++)
-        {
-            Console.WriteLine(new string(' ', Console.BufferWidth));
-        }
-        Console.SetCursorPosition(0, menuPosition);
-    }
-
     protected virtual InputAction HandleKeyboardInput()
     {
         while (true)
