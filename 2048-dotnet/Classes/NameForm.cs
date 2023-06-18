@@ -37,12 +37,16 @@ class Nameform
     const int horizontalOffset = 8;
     const int messagePosition = 14;
     const int formPosition = 16;
+    const int returnMessagePosition = 18;
+
+    static string successMessage = "You have successfully saved your game.";
+    static string cancelledMessage = "You have cancelled the saving process.";
 
     public static string Form()
     {
         Display.NewLayout();
-        Display.PrintText("Please enter your name below:", horizontalOffset, messagePosition, ConsoleColor.Black, ConsoleColor.Cyan);
-        Display.PrintText(new string(' ', maxLength), horizontalOffset, formPosition, ConsoleColor.Black, ConsoleColor.Cyan);
+        Display.PrintText("Please enter your name below:", horizontalOffset, messagePosition, ConsoleColor.White, ConsoleColor.Black);
+        Display.PrintText(new string(' ', maxLength), horizontalOffset, formPosition, ConsoleColor.Black, ConsoleColor.White);
         Display.ToggleCursor();
         Display.SetCursorPos(horizontalOffset, formPosition);
 
@@ -56,7 +60,7 @@ class Nameform
         }
 
         Action<string, int> updateFormValue = (formValue, horizontalDisplayPosition) => {
-            Display.PrintText(formValue, horizontalDisplayPosition, formPosition, ConsoleColor.Black, ConsoleColor.Cyan);
+            Display.PrintText(formValue, horizontalDisplayPosition, formPosition, ConsoleColor.Black, ConsoleColor.White);
         };
         Action deleteBefore = () =>
         {
@@ -174,5 +178,17 @@ class Nameform
         {
             Type = InputType.Empty
         };
+    }
+
+    static void DisplayCancelMessage()
+    {
+        Display.PrintText(cancelledMessage, horizontalOffset, returnMessagePosition, ConsoleColor.White, ConsoleColor.Red);
+        Thread.Sleep(1500);
+    }
+
+    static void DisplaySuccessMessage()
+    {
+        Display.PrintText(successMessage, horizontalOffset, returnMessagePosition, ConsoleColor.White, ConsoleColor.Green);
+        Thread.Sleep(1500);
     }
 }
