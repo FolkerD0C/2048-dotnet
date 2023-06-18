@@ -89,4 +89,9 @@ class FileHandler : IFileHandler
         }
         return fileName;
     }
+
+    public bool SaveExists(string fileName)
+    {
+        return fullSavePaths.Contains(GetFullSavePath(fileName));
+    }
 }

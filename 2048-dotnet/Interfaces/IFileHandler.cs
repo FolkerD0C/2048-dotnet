@@ -15,4 +15,6 @@ public interface IFileHandler
     void SaveObject(string path, string jsonObject);
 
     string GetFullSavePath(string fileName);
+
+    bool SaveExists(string fileName);
 }
