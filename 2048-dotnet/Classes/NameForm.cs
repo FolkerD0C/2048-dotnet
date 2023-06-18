@@ -2,7 +2,7 @@ using Game2048.Static;
 
 namespace Game2048.Classes;
 
-class Nameform
+public class NameForm
 {
     enum InputType
     {
