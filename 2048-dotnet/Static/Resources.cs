@@ -38,7 +38,7 @@ public static class Resources
 
         subMenus.Add(new DisplayMenu("Description", gameDescription));
 
-        subMenus.Add(new ActionMenu("Exit", GracefulExit));
+        subMenus.Add(new PromptMenu("Exit", new string[] { "Do you really want to exit the game?" }, GracefulExit));
 
         return new NavigationMenu("mainMenu", subMenus);
     }
