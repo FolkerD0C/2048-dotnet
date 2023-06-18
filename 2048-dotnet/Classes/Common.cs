@@ -39,6 +39,11 @@ public class GameOverException : Exception
     public GameOverException() : base("You have ran out of lives, game is over") {  }
 }
 
+public class FormCancelledException : Exception
+{
+    public FormCancelledException() : base("Input form is cancelled.") {  }
+}
+
 public class SavedGameObject
 {
     public bool Reached2048 { get; set; }
