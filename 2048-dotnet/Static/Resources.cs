@@ -6,16 +6,15 @@ namespace Game2048.Static;
 
 public static class Resources
 {
-    public static IFileHandler IOHandler { get; set; }
+    static IFileHandler iOHandler = new FileHandler();
 
-    public static NavigationMenu EntryPoint { get; set; }
+    public static IFileHandler IOHandler { get { return iOHandler; } set { iOHandler = value; } }
+
+    static NavigationMenu entryPoint;
+
+    public static NavigationMenu EntryPoint { get { return entryPoint; } set { entryPoint = value; } }
 
     static string[] gameDescription = { "dummy" };
-
-    static Resources()
-    {
-        IOHandler = new FileHandler();
-    }
 
     static NavigationMenu ConstructMainMenu()
     {
