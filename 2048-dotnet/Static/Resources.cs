@@ -47,8 +47,8 @@ public static class Resources
     {
         while (true)
         {
-            var main = ConstructMainMenu();
-            main.MenuAction();
+            EntryPoint = ConstructMainMenu();
+            EntryPoint.MenuAction();
         }
     }
 
