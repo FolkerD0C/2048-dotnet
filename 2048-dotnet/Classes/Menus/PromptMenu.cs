@@ -25,20 +25,11 @@ public class PromptMenu : NavigationMenu
         }
     }
 
-    void ClearDisplayMessage()
-    {
-        for (int i = 0; i < promptMessage.Length; i++)
-        {
-            Display.PrintText(new string(' ', Display.Width), 0, i, ConsoleColor.White, ConsoleColor.Black);
-        }
-    }
-
     public override MenuResult MenuAction()
     {
         Display.NewLayout();
         DrawDisplayMessage();
         Navigate();
-        ClearDisplayMessage();
         var result = SubMenus[CursorPosition].MenuAction();
         if (result == MenuResult.Yes)
         {
