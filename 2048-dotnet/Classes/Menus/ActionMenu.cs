@@ -26,7 +26,7 @@ class ActionMenu : IMenu
     {
         Display.NewLayout();
         action?.Invoke();
-        return MenuResult.OK;
         Display.PreviousLayout();
+        return MenuResult.OK;
     }
 }
