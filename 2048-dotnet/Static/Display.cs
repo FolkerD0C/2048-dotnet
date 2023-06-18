@@ -2,6 +2,8 @@ namespace Game2048.Static;
 
 static class Display
 {
+    static bool cursorVisible;
+
     static readonly int offsetHorizontal;
     static readonly int offsetVertical;
 
@@ -35,6 +37,8 @@ static class Display
 
     static Display()
     {
+        Console.CursorVisible = false;
+        cursorVisible = false;
         width = Console.WindowWidth < 70 ? Console.WindowWidth : 70;
         height = Console.WindowHeight < 40 ? Console.WindowHeight : 40;
         offsetHorizontal = (Console.WindowWidth - width) / 2;
@@ -115,7 +119,8 @@ static class Display
 
     public static void ToggleCursor()
     {
-        Console.CursorVisible = !Console.CursorVisible;
+        cursorVisible = !cursorVisible;
+        Console.CursorVisible = cursorVisible;
     }
 
     public static void SetCursorPos(int relativeHorizontalPosition, int relativeVerticalPosition)

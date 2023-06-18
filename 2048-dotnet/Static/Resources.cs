@@ -45,7 +45,6 @@ public static class Resources
 
     public static void Run()
     {
-        Console.CursorVisible = false;
         while (true)
         {
             var main = ConstructMainMenu();
