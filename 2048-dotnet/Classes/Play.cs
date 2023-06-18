@@ -80,7 +80,7 @@ class Play
     void HandleInput()
     {
         MoveDirection? input = null;
-        switch(Console.ReadKey().Key)
+        switch(Console.ReadKey(true).Key)
         {
             case ConsoleKey.W: case ConsoleKey.UpArrow:
                 {
@@ -102,7 +102,7 @@ class Play
                     input = MoveDirection.Right;
                     break;
                 }
-            case ConsoleKey.Backspace:
+            case ConsoleKey.Backspace: case ConsoleKey.U:
                 {
                     try
                     {
