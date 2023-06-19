@@ -61,7 +61,8 @@ class FileHandler : IFileHandler
     {
         fullSavePaths = Directory.GetFiles(gameDataDirectory, "*" + savePrefix).ToList();
         var result = fullSavePaths.Select(
-                path => (path[..savePrefix.Length].Remove(0, gameDataDirectory.Length + 1), path)
+                path => (new string(path.SkipLast(savePrefix.Length)
+                        .Skip(gameDataDirectory.Length + 1).ToArray()), path)
             ).ToList();
         return result;
     }
@@ -85,7 +86,7 @@ class FileHandler : IFileHandler
         }
         if (!fileName.Contains(savePrefix))
         {
-            fileName = Path.Combine(fileName, savePrefix);
+            fileName = fileName + savePrefix;
         }
         return fileName;
     }
