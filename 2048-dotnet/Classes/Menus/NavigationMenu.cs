@@ -109,7 +109,7 @@ public class NavigationMenu : IMenu
         }
     }
 
-    protected virtual MenuResult Navigate()
+    protected virtual void Navigate()
     {
         MenuResult navigation = MenuResult.OK;
         Func<int, int> moveCursor = x =>
@@ -141,7 +141,6 @@ public class NavigationMenu : IMenu
                     }
             }
         }
-        return Result;
     }
 
     protected void SelectionChanged(int prevPos)
