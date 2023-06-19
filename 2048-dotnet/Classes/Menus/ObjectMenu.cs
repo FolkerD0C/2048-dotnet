@@ -18,11 +18,24 @@ class ObjectMenu : IMenu
 
     object[] args;
 
+    MenuResult result;
+
     public ObjectMenu(string displayName, Action<object[]> action, params object[] args)
     {
         this.displayName = displayName;
         this.action = action;
         this.args = args;
+        this.result = MenuResult.Obj;
+    }
+
+    public void SetResult(MenuResult result)
+    {
+        this.result = result;
+    }
+
+    public void AddArgs(object[] args)
+    {
+        this.args = this.args.Concat(args).ToArray();
     }
 
     public MenuResult MenuAction()
@@ -30,6 +43,6 @@ class ObjectMenu : IMenu
         Display.NewLayout();
         action?.Invoke(args);
         Display.PreviousLayout();
-        return MenuResult.Obj;
+        return this.result;
     }
 }

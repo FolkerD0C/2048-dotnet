@@ -154,7 +154,6 @@ public class NameForm
                     break;
             }
         }
-        DisplaySuccessMessage();
         Display.ToggleCursor();
         Display.PreviousLayout();
         return new string(result).Trim();
@@ -187,12 +186,6 @@ public class NameForm
     static void DisplayCancelMessage()
     {
         Display.PrintText(cancelledMessage, horizontalOffset, returnMessagePosition, ConsoleColor.White, ConsoleColor.Red);
-        Thread.Sleep(1500);
-    }
-
-    static void DisplaySuccessMessage()
-    {
-        Display.PrintText(successMessage, horizontalOffset, returnMessagePosition, ConsoleColor.White, ConsoleColor.Green);
         Thread.Sleep(1500);
     }
 }

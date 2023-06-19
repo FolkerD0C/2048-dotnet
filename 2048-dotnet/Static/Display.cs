@@ -90,6 +90,31 @@ static class Display
         DrawEntireDisplay();
     }
 
+    static DisplayPos[,] CopyLayout()
+    {
+        DisplayPos[,] result = new DisplayPos[CurrentDisplay.GetLength(0), CurrentDisplay.GetLength(1)];
+        for (int i = 0; i < result.GetLength(0); i++)
+        {
+            for (int j = 0; j < result.GetLength(1); j++)
+            {
+                result[i, j] = new DisplayPos()
+                {
+                    Value = CurrentDisplay[i, j].Value,
+                    FgColor = CurrentDisplay[i, j].FgColor,
+                    BgColor = CurrentDisplay[i, j].BgColor
+                };
+            }
+        }
+        return result;
+    }
+
+    public static void NewOverLay()
+    {
+        var newDisplay = CopyLayout();
+        DisplayStack.Push(CurrentDisplay);
+        CurrentDisplay = newDisplay;
+    }
+
     public static void PrintText(string text, int relativeHorizontalPosition, int relativeVerticalPosition,
             ConsoleColor ForegroundColor, ConsoleColor BackgroundColor)
     {

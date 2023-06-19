@@ -16,7 +16,7 @@ class Play
 
     bool inGame;
 
-    public Play(params object[] args)
+    public Play(object[] args)
     {
         var colorSet = InitColors();
         display = new GameDisplay(colorSet);
@@ -152,12 +152,29 @@ class Play
     {
         List<IMenu> subMenus = new List<IMenu>();
         subMenus.Add(new NamedReturnMenu("Resume game", MenuResult.Back));
-        subMenus.Add(new ActionMenu("Save game", Save));
+        ObjectMenu saveSubMenu = new ObjectMenu("Save game", Save, new object[0]);
+        saveSubMenu.AddArgs(new object[] { saveSubMenu });
+        subMenus.Add(saveSubMenu);
         subMenus.Add(new PromptMenu("Exit to main menu", new string[] { "Are you sure to exit to main menu?" }, LeaveGame));
         subMenus.Add(new PromptMenu("Quit game", new string[] { "Are you sure to quit the game?" }, Resources.GracefulExit));
 
-        NavigationMenu ingameMenu = new NavigationMenu("ingameMenu", subMenus);
+        NotifiableMenu ingameMenu = new NotifiableMenu("ingameMenu", subMenus,
+                new Dictionary<IMenu, Dictionary<MenuResult, string[]>>()
+                {
+                    {
+                        saveSubMenu, new Dictionary<MenuResult, string[]>()
+                        {
+                            {
+                                MenuResult.Obj, new string[]
+                                {
+                                    "Game successfully saved."
+                                }
+                            }
+                        }
+                    }
+                });
         ingameMenu.AddAcceptedResult(MenuResult.No);
+        ingameMenu.AddAcceptedResult(MenuResult.Obj);
         ingameMenu.MenuAction();
     }
 
@@ -183,7 +200,7 @@ class Play
         return true;
     }
 
-    void Save()
+    void Save(object[] args)
     {
         if (savePath is not null)
         {
@@ -206,7 +223,7 @@ class Play
             }
             catch (FormCancelledException)
             {
-                return;
+                (args.First(arg => arg is ObjectMenu) as ObjectMenu).SetResult(MenuResult.No);
             }
         }
     }
