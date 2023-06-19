@@ -11,7 +11,7 @@ public class PromptObjectMenu : NavigationMenu
 
     object[] args;
 
-    public PromptObjectMenu(string displayName, IEnumerable<string> promptMessage, Action<object[]> action, object[] args) :
+    public PromptObjectMenu(string displayName, IEnumerable<string> promptMessage, Action<object[]> action, params object[] args) :
         base(displayName, new List<IMenu>() { new ReturnMenu(MenuResult.Yes), new ReturnMenu(MenuResult.No) })
     {
         this.promptMessage = promptMessage.ToArray();
