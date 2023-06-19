@@ -33,13 +33,15 @@ public class NameForm
         { ConsoleKey.Escape, InputType.Escape }
     };
 
+    static string bannedCharacters = ".\"'\\/";
+
     const int maxLength = 32;
     const int horizontalOffset = 8;
     const int messagePosition = 14;
     const int formPosition = 16;
     const int returnMessagePosition = 18;
 
-    static string successMessage = "You have successfully saved your game.";
+    static string successMessage = "You have successfully entered your name.";
     static string cancelledMessage = "You have cancelled the saving process.";
 
     public static string Form()
@@ -146,11 +148,13 @@ public class NameForm
                         break;
                     }
                 case InputType.Escape:
+                    DisplayCancelMessage();
                     throw new FormCancelledException();
                 default:
                     break;
             }
         }
+        DisplaySuccessMessage();
         Display.ToggleCursor();
         Display.PreviousLayout();
         return new string(result).Trim();
@@ -166,7 +170,7 @@ public class NameForm
                 Type = acceptedSpecialInputs[input.Key]
             };
         }
-        if (!char.IsControl(input.KeyChar) && input.KeyChar != '"')
+        if (!char.IsControl(input.KeyChar) && !bannedCharacters.Contains(input.KeyChar))
         {
             return new FormInput()
             {
