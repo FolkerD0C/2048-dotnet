@@ -78,9 +78,18 @@ public class GridInstance : IGridInstance
         this.score = score;
     }
 
-    public GridInstance(int[,] grid, int score) : this()
+    public GridInstance(List<List<int>> grid, int score) : this()
     {
-        this.grid = grid;
+        int height = grid.Count;
+        int width = grid.FirstOrDefault().Count();
+        this.grid = new int[height, width];
+        for (int i = 0; i < this.grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < this.grid.GetLength(1); j++)
+            {
+                this.grid[i, j] = grid[i][j];
+            }
+        }
         this.score = score;
     }
 
