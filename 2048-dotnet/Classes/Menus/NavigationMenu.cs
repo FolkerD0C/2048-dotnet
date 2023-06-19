@@ -83,7 +83,7 @@ public class NavigationMenu : IMenu
         {
             return cursorPosition;
         }
-        private set
+        set
         {
             cursorPosition = value;
         }
@@ -148,7 +148,7 @@ public class NavigationMenu : IMenu
                     }
                 case InputAction.Activate:
                     {
-                        navigation = SubMenus[cursorPosition].MenuAction();
+                        navigation = SubMenus[CursorPosition].MenuAction();
                         break;
                     }
             }
