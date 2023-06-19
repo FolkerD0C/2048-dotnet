@@ -63,6 +63,18 @@ public class NavigationMenu : IMenu
 
     List<MenuResult> acceptedResults;
 
+    protected List<MenuResult> AcceptedResults
+    {
+        get
+        {
+            return acceptedResults;
+        }
+        private set
+        {
+            acceptedResults = value;
+        }
+    }
+
     int cursorPosition;
 
     protected int CursorPosition
@@ -81,7 +93,7 @@ public class NavigationMenu : IMenu
     {
         this.displayName = displayName;
         this.subMenus = subMenus;
-        Result = MenuResult.OK;
+        result = MenuResult.OK;
         acceptedResults = new List<MenuResult>()
         {
             MenuResult.OK
@@ -103,9 +115,9 @@ public class NavigationMenu : IMenu
 
     public void AddAcceptedResult(MenuResult result)
     {
-        if (!acceptedResults.Contains(result))
+        if (!AcceptedResults.Contains(result))
         {
-            acceptedResults.Add(result);
+            AcceptedResults.Add(result);
         }
     }
 
@@ -117,7 +129,7 @@ public class NavigationMenu : IMenu
             x >= SubMenus.Count ? 0 : x;
         int prevPos = 0;
         DrawMenu();
-        while (acceptedResults.Contains(navigation))
+        while (AcceptedResults.Contains(navigation))
         {
             SelectionChanged(prevPos);
             switch(HandleKeyboardInput())
