@@ -1,4 +1,5 @@
 using Game2048.Interfaces;
+using Game2048.Static;
 
 namespace Game2048.Classes;
 
@@ -201,15 +202,16 @@ class GameRepository : IGameRepository
 
     public static IGameRepository ConvertBack(SavedGameObject obj)
     {
+
         return new GameRepository
             (
                 obj.RemainingLives,
                 obj.Reached2048,
                 new LinkedList<IGridInstance>
                 (
-                    obj.GridUndoChain.Select
+                    Enumerable.Range(0, obj.GridUndoChain.Count()).Select
                     (
-                        item => new GridInstance(item.Grid, item.Score)
+                        idx => new GridInstance(obj.GridUndoChain[idx], obj.ScoreUndoChain[idx])
                     )
                 )
             );
@@ -221,7 +223,8 @@ class GameRepository : IGameRepository
         {
             RemainingLives = obj.Lives,
             Reached2048 = obj.Reached2048,
-            GridUndoChain = obj.UndoChain.Select(node => (node.Grid, node.Score)).ToList()
+            GridUndoChain = obj.UndoChain.Select(node => node.Grid.ToNestedLists()).ToList(),
+            ScoreUndoChain = obj.UndoChain.Select(node => node.Score).ToList()
         };
     }
 }
