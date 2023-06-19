@@ -58,4 +58,19 @@ public static class Resources
         Console.CursorVisible = true;
         Environment.Exit(0);
     }
+
+    public static List<List<int>> ToNestedLists(this int[,] grid)
+    {
+        var result = new List<List<int>>();
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            var partialResult = new List<int>();
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                partialResult.Add(grid[i, j]);
+            }
+            result.Add(partialResult);
+        }
+        return result;
+    }
 }
