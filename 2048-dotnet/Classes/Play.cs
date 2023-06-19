@@ -152,7 +152,7 @@ class Play
     {
         List<IMenu> subMenus = new List<IMenu>();
         subMenus.Add(new NamedReturnMenu("Resume game", MenuResult.Back));
-        subMenus.Add(new ObjectMenu("Save game", Save, "WIP"));
+        subMenus.Add(new ActionMenu("Save game", Save));
         subMenus.Add(new PromptMenu("Exit to main menu", new string[] { "Are you sure to exit to main menu?" }, LeaveGame));
         subMenus.Add(new PromptMenu("Quit game", new string[] { "Are you sure to quit the game?" }, Resources.GracefulExit));
 
@@ -183,8 +183,37 @@ class Play
         return true;
     }
 
-    void Save(object[] args)
+    void Save()
     {
+        if (savePath is not null)
+        {
+            fileHandler.SaveObject(savePath, fileHandler.Converter.SerializeRepository(repository));
+        }
+        else
+        {
+            try
+            {
+                string playerName = NameForm.Form();
+                if (fileHandler.SaveExists(playerName))
+                {
+                    new PromptObjectMenu("overwriteSave", new string[] { "This savefile already exists,", "would you like to overwrite it?" }, OverwriteSave, playerName).MenuAction();
+                }
+                else
+                {
+                    savePath = fileHandler.GetFullSavePath(playerName);
+                    fileHandler.SaveObject(savePath, fileHandler.Converter.SerializeRepository(repository));
+                }
+            }
+            catch (FormCancelledException)
+            {
+                return;
+            }
+        }
+    }
 
+    void OverwriteSave(object[] args)
+    {
+        savePath = fileHandler.GetFullSavePath((string)args[0]);
+        fileHandler.SaveObject(savePath, fileHandler.Converter.SerializeRepository(repository));
     }
 }
