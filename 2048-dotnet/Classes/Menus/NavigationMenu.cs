@@ -49,6 +49,18 @@ public class NavigationMenu : IMenu
 
     MenuResult result;
 
+    protected MenuResult Result
+    {
+        get
+        {
+            return result;
+        }
+        private set
+        {
+            result = value;
+        }
+    }
+
     List<MenuResult> acceptedResults;
 
     int cursorPosition;
@@ -69,7 +81,7 @@ public class NavigationMenu : IMenu
     {
         this.displayName = displayName;
         this.subMenus = subMenus;
-        result = MenuResult.OK;
+        Result = MenuResult.OK;
         acceptedResults = new List<MenuResult>()
         {
             MenuResult.OK
@@ -79,14 +91,14 @@ public class NavigationMenu : IMenu
     public virtual MenuResult MenuAction()
     {
         Display.NewLayout();
-        var result = Navigate();
+        Navigate();
         Display.PreviousLayout();
-        return result;
+        return Result;
     }
 
     public void SetReturnValue(MenuResult result)
     {
-        this.result = result;
+        Result = result;
     }
 
     public void AddAcceptedResult(MenuResult result)
@@ -129,7 +141,7 @@ public class NavigationMenu : IMenu
                     }
             }
         }
-        return result;
+        return Result;
     }
 
     protected void SelectionChanged(int prevPos)
