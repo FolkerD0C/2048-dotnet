@@ -1,6 +1,4 @@
-* Add ingame menu
-    * Solve saving the game via menu
-        * Add a form to get the name of the player
+* Add winning and losing notifications
 
 * Add description for the game
 
