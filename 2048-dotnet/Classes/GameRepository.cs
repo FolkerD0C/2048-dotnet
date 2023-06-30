@@ -183,7 +183,7 @@ class GameRepository : IGameRepository
         while(moveQueue.Count > 0)
         {
             var updateArgs = moveQueue.Dequeue();
-            GridUpdated?.Invoke(this, (updateArgs.Vertical, updateArgs.Horizontal, updateArgs.Value));
+            GridUpdated?.Invoke(this, updateArgs);
             if (!triggered2048 && updateArgs.Value >= 2048)
             {
                 reached2048 = true;
