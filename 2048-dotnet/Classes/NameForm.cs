@@ -48,7 +48,7 @@ public class NameForm
     {
         Display.NewLayout();
         Display.PrintText("Please enter your name below:", horizontalOffset, messagePosition, ConsoleColor.White, ConsoleColor.Black);
-        Display.PrintText(new string(' ', maxLength), horizontalOffset, formPosition, ConsoleColor.Black, ConsoleColor.White);
+        Display.PrintText(new string(' ', maxLength), horizontalOffset, formPosition, ConsoleColor.Black, ConsoleColor.Cyan);
         Display.ToggleCursor();
         Display.SetCursorPos(horizontalOffset, formPosition);
 
@@ -62,7 +62,7 @@ public class NameForm
         }
 
         Action<string, int> updateFormValue = (formValue, horizontalDisplayPosition) => {
-            Display.PrintText(formValue, horizontalDisplayPosition, formPosition, ConsoleColor.Black, ConsoleColor.White);
+            Display.PrintText(formValue, horizontalDisplayPosition, formPosition, ConsoleColor.Black, ConsoleColor.Cyan);
         };
         Action deleteBefore = () =>
         {
