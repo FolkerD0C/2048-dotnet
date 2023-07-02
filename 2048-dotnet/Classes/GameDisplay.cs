@@ -151,6 +151,10 @@ class GameDisplay : IGameDisplay
 
     public void PrintErrorMessage(string errorMessage)
     {
+        if (errorDisplayed)
+        {
+            ClearErrorMessage();
+        }
         string[] parsedMessage = ParseErrorMessage(errorMessage);
         for (int i = 0; i < parsedMessage.Length; i++)
         {
