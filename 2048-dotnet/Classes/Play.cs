@@ -140,7 +140,18 @@ class Play
 
     void GameOver()
     {
-
+        var highScores = fileHandler.Converter.DeserializeHighScores(fileHandler.GetSavedObject(fileHandler.HighscoresPath));
+        var playerScore = repository.UndoChain.First.Value.Score;
+        if (highScores.Select(t => t.Score).ToList()[^1] < playerScore)
+        {
+            display.PrintErrorMessage("You have reached a new high score!");
+            Thread.Sleep(1000);
+            string playerName = NameForm.Form();
+            var highScoresToSave = highScores.ToList();
+            highScoresToSave.Add((playerName, playerScore));
+            highScoresToSave = highScoresToSave.OrderByDescending(t => t.Score).Take(10).ToList();
+            fileHandler.SaveObject(fileHandler.HighscoresPath, fileHandler.Converter.SerializeHighScores(highScoresToSave));
+        }
     }
 
     void GameWon()
