@@ -34,6 +34,7 @@ class Play
         repository.GridUpdated += display.PrintTile;
         repository.ScoreUpdated += display.PrintScore;
         repository.UndoHappened += display.RedrawGridInstance;
+        repository.Reach2048 += GameWon;
         repository.Reach2048 += display.ScaleUp;
         repository.UndoCountChanged += display.PrintUndosCount;
         repository.LivesCountChanged += display.PrintLivesCount;
@@ -154,9 +155,11 @@ class Play
         }
     }
 
-    void GameWon()
+    void GameWon(object? o, int[,] grid)
     {
-
+        display.PrintErrorMessage("Congratulations! You have reached the goal of the game.");
+        Thread.Sleep(1000);
+        ConstructIngameMenu();
     }
 
     void ConstructIngameMenu()
