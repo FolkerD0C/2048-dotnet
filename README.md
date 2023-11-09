@@ -1,20 +1,4 @@
-<div align="center" id="top"> 
-  <img src="./.github/app.gif" alt="2048 Dotnet" />
-
-  &#xa0;>
-</div>
-
 <h1 align="center">2048 Dotnet</h1>
-
-<p align="center">
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/FolkerD0C/2048-dotnet?color=56BEB8">
-
-  <img alt="Github language count" src="https://img.shields.io/github/languages/count/FolkerD0C/2048-dotnet?color=56BEB8">
-
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/FolkerD0C/2048-dotnet?color=56BEB8">
-
-  <img alt="License" src="https://img.shields.io/github/license/FolkerD0C/2048-dotnet?color=56BEB8">
-</p>
 
 <h4 align="center"> 
 	🚧  2048 Dotnet 🚀 Under construction...  🚧
