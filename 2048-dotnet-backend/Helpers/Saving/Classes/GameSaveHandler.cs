@@ -38,8 +38,8 @@ public class GameSaveHandler : FileHandler, IGameSaveHandler
         int remainingLives = jsonRoot.GetProperty("remainingLives").GetInt32();
         int gridWidth = jsonRoot.GetProperty("gridWidth").GetInt32();
         int gridHeight = jsonRoot.GetProperty("gridHeight").GetInt32();
-        string playerName = jsonRoot.GetProperty("playerName").GetString()
-            ?? throw new ArgumentNullException(nameof(playerName), "Property can not be null");
+        string playerName = (jsonRoot.GetProperty("playerName").GetString()
+            ?? throw new ArgumentNullException(nameof(playerName), "Property can not be null")).Replace("\\\"", "\"");
         int goal = jsonRoot.GetProperty("goal").GetInt32();
         IList<int> acceptedSpawnables = new List<int>();
         var acceptedEnumerable = jsonRoot.GetProperty("acceptedSpawnables").EnumerateArray();
@@ -64,7 +64,7 @@ public class GameSaveHandler : FileHandler, IGameSaveHandler
         jsonRepository += $"\"remainingLives\":{gameRepository.RemainingLives},";
         jsonRepository += $"\"gridWidth\":{gameRepository.GridWidth},";
         jsonRepository += $"\"gridHeight\":{gameRepository.GridHeight},";
-        jsonRepository += $"\"playerName\":{gameRepository.PlayerName},";
+        jsonRepository += "\"playerName\":" + gameRepository.PlayerName.Replace("\"", "\\\"");
         jsonRepository += "\"acceptedSpawnables\":[" + string.Join(",", gameRepository.AcceptedSpawnables
             ?? throw new NullReferenceException("Accepted spawnables can not be null.")) + "]";
         jsonRepository += "\"undoChain\":[" + string.Join(",",
