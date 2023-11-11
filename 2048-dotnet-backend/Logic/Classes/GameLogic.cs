@@ -17,6 +17,7 @@ public class GameLogic : IGameLogic
     
     public GameLogic()
     {
+        new ConfigHandler().Load();
         highscoreHandler = new HighScoreHandler();
         saveFileInfos = new Dictionary<string, string>();
         logic = new PlayLogic();

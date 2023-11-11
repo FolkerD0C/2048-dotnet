@@ -10,5 +10,5 @@ internal static class GameData
 
     internal static readonly string HighscoresFilePath = (GameConfiguration.GameDataDirectory ?? "") + "highscores.json";
 
-    internal static readonly string ConfigFilePath = (GameConfiguration.GameDataDirectory ?? "") + "config.json";
+    internal static readonly string ConfigFilePath = "gameconfig.json";
 }

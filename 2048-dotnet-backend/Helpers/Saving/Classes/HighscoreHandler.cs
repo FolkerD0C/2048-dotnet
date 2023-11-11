@@ -40,7 +40,7 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
     public void Load()
     {
         string data = Read();
-        var jsonDoc = JsonDocument.Parse(data);
+        using var jsonDoc = JsonDocument.Parse(data);
         var jsonArray = jsonDoc.RootElement.EnumerateArray();
         highscoresData = new HighscoresRepository();
         foreach (var item in jsonArray)
