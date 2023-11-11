@@ -1,16 +1,14 @@
-using Game2048.Backend.Helpers.Config;
+namespace Game2048.Backend;
 
-namespace Game2048.Backend.Helpers.Static;
-
-public static class GameData
+internal static class GameData
 {
-    public static readonly string GameDescription = "";
+    internal static readonly string GameDescription = "";
 
-    public static readonly string GameHelp = "";
+    internal static readonly string GameHelp = "";
 
-    public static readonly string SaveGameDirectoryPath = (GameConfiguration.GameDataDirectory ?? "") + "saves";
+    internal static readonly string SaveGameDirectoryPath = (GameConfiguration.GameDataDirectory ?? "") + "saves";
 
-    public static readonly string HighscoresFilePath = (GameConfiguration.GameDataDirectory ?? "") + "highscores.json";
+    internal static readonly string HighscoresFilePath = (GameConfiguration.GameDataDirectory ?? "") + "highscores.json";
 
-    public static readonly string ConfigFilePath = (GameConfiguration.GameDataDirectory ?? "") + "config.json";
+    internal static readonly string ConfigFilePath = (GameConfiguration.GameDataDirectory ?? "") + "config.json";
 }
