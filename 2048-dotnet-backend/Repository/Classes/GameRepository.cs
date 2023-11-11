@@ -57,7 +57,7 @@ public class GameRepository : IGameRepository
         GetCurrentMaxNumber();
     }
 
-    public void MoveGrid(MoveDirection direction)
+    public IGamePosition MoveGrid(MoveDirection direction)
     {
         // Check if grid can move
         var firstPosition = (undoChain.First
@@ -96,6 +96,7 @@ public class GameRepository : IGameRepository
         // Perform after-move actions
         PlaceRandomNumber();
         GetCurrentMaxNumber();
+        return gamePositionCopy;
     }
 
     public IGamePosition Undo()

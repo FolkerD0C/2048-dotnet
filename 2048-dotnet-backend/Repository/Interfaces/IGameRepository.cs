@@ -17,6 +17,6 @@ public interface IGameRepository
     public string PlayerName { get; }
     public IList<int>? AcceptedSpawnables { get; }
     public int Goal { get; }
-    public void MoveGrid(MoveDirection input);
+    public IGamePosition MoveGrid(MoveDirection input);
     public IGamePosition Undo();
 }
