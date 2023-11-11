@@ -28,6 +28,11 @@ public class GamePosition : IGamePosition
         }
     }
 
+    public void PlaceTile(int vertical, int horizontal, int tileValue)
+    {
+        grid[vertical][horizontal] = tileValue;
+    }
+
     /// <summary>
     /// Returns true if movement is possible, else false.
     /// </summary>

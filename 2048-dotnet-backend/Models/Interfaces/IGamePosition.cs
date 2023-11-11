@@ -10,4 +10,5 @@ public interface IGamePosition : ISerializable
     public bool CanMove { get; }
     public void Move(MoveDirection direction);
     public IGamePosition Copy();
+    public void PlaceTile(int vertical, int horizontal, int tileValue);
 }
