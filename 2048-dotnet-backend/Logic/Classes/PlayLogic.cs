@@ -38,10 +38,16 @@ public class PlayLogic : IPlayLogic
         return new PlayLogic(repository);
     }
 
+    public void SetPlayerName(string playerName)
+    {
+        repository.SetPlayerName(playerName);
+    }
+
     public void HandleInput(GameInput input)
     {
         // Handle input
         bool unknownInputDetected = false;
+        bool pauseRequested = false;
         try
         {
             // Handle movement input
@@ -92,7 +98,7 @@ public class PlayLogic : IPlayLogic
                     case GameInput.Pause:
                     {
                         // Handle pause event, TODO: needs a callback
-                        MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(MiscEvent.Pause));
+                        pauseRequested = true;
                         break;
                     }
                     default:
@@ -130,6 +136,11 @@ public class PlayLogic : IPlayLogic
         if (unknownInputDetected)
         {
             throw new ArgumentOutOfRangeException(nameof(input), "Unknown input detected");
+        }
+
+        if (pauseRequested)
+        {
+            throw new PauseRequestedException();
         }
 
         // If the goal declared in the repository is reached an event should be triggered, but only once

@@ -9,6 +9,8 @@ public interface IPlayLogic
 {
     public IGameRepository Repository { get; }
     public void HandleInput(GameInput input);
+
+    public void SetPlayerName(string playerName);
     public event EventHandler<MoveHappenedEventArgs>? MoveHappened;
     public event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
