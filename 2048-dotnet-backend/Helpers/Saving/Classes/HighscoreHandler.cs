@@ -1,9 +1,8 @@
 using Game2048.Backend.Models;
 using Game2048.Backend.Repository;
-using System;
 using System.IO;
-using System.Text.Json.Nodes;
 using System.Linq;
+using System.Text.Json;
 
 namespace Game2048.Backend.Helpers.Saving;
 
@@ -16,6 +15,11 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
     public HighScoreHandler(string saveFilePath) : base(saveFilePath)
     {
         highscoresData = new HighscoresRepository();
+        if (!File.Exists(saveFilePath))
+        {
+            File.Create(saveFilePath).Close();
+            File.WriteAllText(saveFilePath, "[]");
+        }
     }
 
     public HighScoreHandler() : this(GameData.HighscoresFilePath)
@@ -36,15 +40,12 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
     public void Load()
     {
         string data = Read();
-        var jsonObjects = JsonNode.Parse(data)?.AsArray() ?? throw new NullReferenceException();
+        var jsonDoc = JsonDocument.Parse(data);
+        var jsonArray = jsonDoc.RootElement.EnumerateArray();
         highscoresData = new HighscoresRepository();
-        foreach (var item in jsonObjects)
+        foreach (var item in jsonArray)
         {
-            if (item is null)
-            {
-                throw new NullReferenceException();
-            }
-            highscoresData.AddHighscore(Deconvert(item.AsObject().ToString()));
+            highscoresData.AddHighscore(Deconvert(item.GetRawText()));
         }
     }
 
@@ -65,5 +66,10 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
         result += string.Join(",", highscoresData.HighScores.Select(hsdo => Convert(hsdo)));
         result += "]";
         Write(result);
+    }
+
+    public void AddNewHighscore(string playerName, int score)
+    {
+        highscoresData.AddNewHighscore(new Highscore(playerName, score));
     }
 }

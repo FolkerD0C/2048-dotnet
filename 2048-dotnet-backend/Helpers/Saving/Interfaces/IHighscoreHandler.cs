@@ -10,4 +10,6 @@ public interface IHighscoreHandler : ISerializerHandler<IHighscore>
     void Save();
 
     void Load();
+
+    void AddNewHighscore(string playerName, int score);
 }
