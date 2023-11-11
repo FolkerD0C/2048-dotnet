@@ -30,8 +30,7 @@ public class Highscore : IHighscore
 
     public string Serialize()
     {
-        var serializedData = JsonSerializer.Serialize<(string, int)>((playerName, playerScore));
-        return serializedData;
+        return JsonSerializer.Serialize<(string, int)>((playerName, playerScore));
     }
 
     public int CompareTo(object? obj)

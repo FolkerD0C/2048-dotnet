@@ -10,13 +10,13 @@ namespace Game2048.Backend.Helpers.Saving;
 
 public class HighScoreHandler : FileHandler, IHighscoreHandler
 {
-    IHighscoresData highscoresData;
+    IHighscoresRepository highscoresData;
 
-    IHighscoresData IHighscoreHandler.HighscoresData => highscoresData;
+    IHighscoresRepository IHighscoreHandler.HighscoresData => highscoresData;
 
     public HighScoreHandler(string saveFilePath) : base(saveFilePath)
     {
-        highscoresData = new HighscoresData();
+        highscoresData = new HighscoresRepository();
     }
 
     public HighScoreHandler() : this(GameData.HighscoresFilePath)
@@ -38,7 +38,7 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
     {
         string data = Read();
         var jsonObjects = JsonNode.Parse(data)?.AsArray() ?? throw new NullReferenceException();
-        IHighscoresData highscoresData = new HighscoresData();
+        IHighscoresRepository highscoresData = new HighscoresRepository();
         foreach (var item in jsonObjects)
         {
             if (item is null)

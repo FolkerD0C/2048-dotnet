@@ -3,7 +3,7 @@ using Game2048.Backend.Models;
 
 namespace Game2048.Backend.Repository;
 
-public interface IHighscoresData
+public interface IHighscoresRepository
 {
     IList<IHighscore> HighScores { get; }
 

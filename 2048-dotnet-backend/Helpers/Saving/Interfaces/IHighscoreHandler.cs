@@ -5,7 +5,7 @@ namespace Game2048.Backend.Helpers.Saving;
 
 public interface IHighscoreHandler : ISerializerHandler<IHighscore>
 {
-    IHighscoresData HighscoresData { get; }
+    IHighscoresRepository HighscoresData { get; }
     
     void Save();
 

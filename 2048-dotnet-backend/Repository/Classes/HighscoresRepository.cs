@@ -2,16 +2,15 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Game2048.Backend.Models;
-using Game2048.Backend.Helpers.Config;
 
 namespace Game2048.Backend.Repository;
 
-public class HighscoresData : IHighscoresData
+public class HighscoresRepository : IHighscoresRepository
 {
     IList<IHighscore> highScores;
     public IList<IHighscore> HighScores => highScores;
 
-    public HighscoresData()
+    public HighscoresRepository()
     {
         highScores = new List<IHighscore>();
     }
