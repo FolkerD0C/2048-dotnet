@@ -1,6 +1,5 @@
 using Game2048.Backend.Models;
 using Game2048.Backend.Repository;
-using Game2048.Backend.Helpers.Static;
 using System;
 using System.IO;
 using System.Text.Json.Nodes;
@@ -38,7 +37,7 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
     {
         string data = Read();
         var jsonObjects = JsonNode.Parse(data)?.AsArray() ?? throw new NullReferenceException();
-        IHighscoresRepository highscoresData = new HighscoresRepository();
+        highscoresData = new HighscoresRepository();
         foreach (var item in jsonObjects)
         {
             if (item is null)
