@@ -32,6 +32,11 @@ public class ConfigHandler : FileHandler
         GameConfiguration.DefaultMaxUndos = jsonRoot.GetProperty("defaultMaxUndos").GetInt32();
         GameConfiguration.DefaultGridWidth = jsonRoot.GetProperty("defaultGridWidth").GetInt32();
         GameConfiguration.DefaultGridHeight = jsonRoot.GetProperty("defaultGridHeight").GetInt32();
+        string? gameDataDirectory = jsonRoot.GetProperty("gameDataDirectory").GetString();
+        if (gameDataDirectory is not null)
+        {
+            GameConfiguration.GameDataDirectory = gameDataDirectory;
+        }
     }
 
     protected override string Read()

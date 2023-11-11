@@ -2,40 +2,31 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-backend",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/2048-dotnet/2048-dotnet.csproj",
+                "${workspaceFolder}/2048-dotnet-backend/2048-dotnet-backend.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "build-console-frontend",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "publish",
-                "${workspaceFolder}/2048-dotnet/2048-dotnet.csproj",
+                "build",
+                "${workspaceFolder}/2048-dotnet-frontend/2048-dotnet-frontend.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/2048-dotnet/2048-dotnet.csproj"
-            ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "dependsOn": [
+                "build-backend"
+            ]
         }
     ]
 }
