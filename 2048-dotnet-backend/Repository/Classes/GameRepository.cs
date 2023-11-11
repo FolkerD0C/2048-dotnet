@@ -38,23 +38,52 @@ public class GameRepository : IGameRepository
 
     Random randomNumberGenerator;
 
-    public GameRepository()
+    public GameRepository() : this(true)
+    { }
+
+    GameRepository(bool newGame)
     {
-        // Setting default values.
-        remainingLives = GameConfiguration.DefaultMaxLives;
-        gridWidth = GameConfiguration.DefaultGridWidth;
-        gridHeight = GameConfiguration.DefaultGridHeight;
+        randomNumberGenerator = new Random();
+        undoChain = new LinkedList<IGamePosition>();
         playerName = "";
         acceptedSpawnables = GameConfiguration.DefaultAcceptedSpawnables ?? throw new NullReferenceException("Accepted spawnables list can not be null.");
-        goal = GameConfiguration.DefaultGoal;
-        randomNumberGenerator = new Random();
+        if (newGame)
+        {
+            // Setting default values.
+            remainingLives = GameConfiguration.DefaultMaxLives;
+            gridWidth = GameConfiguration.DefaultGridWidth;
+            gridHeight = GameConfiguration.DefaultGridHeight;
+            goal = GameConfiguration.DefaultGoal;
 
-        // Setting up undochain and starter GamePosition object
-        undoChain = new LinkedList<IGamePosition>();
-        undoChain.AddFirst(new GamePosition());
-        PlaceRandomNumber();
-        PlaceRandomNumber();
-        GetCurrentMaxNumber();
+            // Setting up undochain and starter GamePosition object
+            undoChain.AddFirst(new GamePosition());
+            PlaceRandomNumber();
+            PlaceRandomNumber();
+            GetCurrentMaxNumber();
+        }
+    }
+
+    public static IGameRepository GetRepositoryFromSave(int remainingLives, int gridWidth, int gridHeight, string playerName, int goal, IList<int> acceptedSpawnables, IList<IGamePosition> undoChain)
+    {
+        var resultRepository = new GameRepository(false)
+        {
+            remainingLives = remainingLives,
+            gridWidth = gridWidth,
+            gridHeight = gridHeight,
+            playerName = playerName,
+            goal = goal,
+            acceptedSpawnables = acceptedSpawnables
+        };
+        foreach (var position in undoChain)
+        {
+            resultRepository.undoChain.AddLast(position);
+        }
+        return resultRepository;
+    }
+
+    public void SetPlayerName(string playerName)
+    {
+        this.playerName = playerName;
     }
 
     public IGamePosition MoveGrid(MoveDirection direction)

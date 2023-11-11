@@ -10,13 +10,14 @@ public interface IGameRepository
 {
     public int RemainingLives { get; }
     public int RemainingUndos { get; }
-    public LinkedList<IGamePosition> UndoChain { get; }
     public int HighestNumber { get; }
     public int GridWidth { get; }
     public int GridHeight { get; }
     public string PlayerName { get; }
-    public IList<int>? AcceptedSpawnables { get; }
     public int Goal { get; }
+    public IList<int>? AcceptedSpawnables { get; }
+    public LinkedList<IGamePosition> UndoChain { get; }
     public IGamePosition MoveGrid(MoveDirection input);
     public IGamePosition Undo();
+    public void SetPlayerName(string playerName);
 }
