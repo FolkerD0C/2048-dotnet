@@ -63,9 +63,9 @@ class GameDisplay : IGameDisplay
 
     Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet;
 
-    public GameDisplay(Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet)
+    public GameDisplay()
     {
-        this.colorSet = colorSet;
+        colorSet = InitColors();
         for (int i = 0; i < gridPositions.Length; i++)
         {
             Print(gridPositions[i], borderUntil2048[i]);
@@ -77,6 +77,36 @@ class GameDisplay : IGameDisplay
         Print(pointsPosition, points);
         Print(undosPosition, undos);
         Print(livesPosition, lives);
+    }
+
+    Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> InitColors()
+    {
+        Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)> colorSet =
+            new Dictionary<int, (ConsoleColor Fg, ConsoleColor Bg)>();
+        ConsoleColor[] fgColors = new ConsoleColor[]
+        {
+            ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
+            ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
+            ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
+            ConsoleColor.Black, ConsoleColor.Black, ConsoleColor.Black,
+            ConsoleColor.White, ConsoleColor.White, ConsoleColor.White,
+            ConsoleColor.White, ConsoleColor.White
+        };
+        ConsoleColor[] bgColors = new ConsoleColor[]
+        {
+            ConsoleColor.Gray, ConsoleColor.Gray, ConsoleColor.Gray,
+            ConsoleColor.White, ConsoleColor.White, ConsoleColor.White,
+            ConsoleColor.DarkGray, ConsoleColor.DarkGray, ConsoleColor.DarkGray,
+            ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
+            ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red,
+            ConsoleColor.Red, ConsoleColor.Red
+        };
+        colorSet.Add(0, (ConsoleColor.White, ConsoleColor.Black));
+        for (int i = 0; i < fgColors.Length; i++)
+        {
+            colorSet.Add((int)Math.Pow(2, i + 1), (fgColors[i], bgColors[i]));
+        }
+        return colorSet;
     }
 
     string NumberToDisplayWidth(int number, int maxSpace)
