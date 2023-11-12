@@ -27,6 +27,7 @@ public class PlayLogic : IPlayLogic
     PlayLogic(IGameRepository repository)
     {
         this.repository = repository;
+        repository.MiscEventHappened += GameRepositoryEventHappenedDispatcher;
         gameRepositoryEventQueue = new Queue<GameRepositoryEventHappenedEventArgs>();
     }
 
@@ -35,7 +36,9 @@ public class PlayLogic : IPlayLogic
 
     public static IPlayLogic GetLogicFromSave(IGameRepository repository)
     {
-        return new PlayLogic(repository);
+        IPlayLogic logicFromSave = new(repository);
+        logicFromSave.goalReached = repository.HighestNumber >= repository.Goal;
+        return logicFromSave;
     }
 
     public void SetPlayerName(string playerName)
