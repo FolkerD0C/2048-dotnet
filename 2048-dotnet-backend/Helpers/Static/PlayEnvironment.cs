@@ -17,7 +17,7 @@ internal static class PlayEnvironment
 
     internal static void LoadFromSave(IGameRepository gameRepository)
     {
-        GridHeight = gameRepository.UndoChain[0].Grid.Count;
-        GridWidth = gameRepository.UndoChain[0].Grid[0].Count;
+        GridHeight = gameRepository.GridHeight;
+        GridWidth = gameRepository.GridWidth;
     }
 }
