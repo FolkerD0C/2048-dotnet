@@ -31,6 +31,7 @@ static class Base
         offsetVertical = (Console.WindowHeight - height) / 2;
         DisplayStack = new Stack<IOverLay>();
     }
+    #pragma warning restore CS8618
 
     static void DrawEntireOverlay()
     {
@@ -89,19 +90,19 @@ static class Base
             DisplayPosition val = new DisplayPosition()
             {
                 Value = text[i],
-                ForeGroundColor = ForegroundColor,
-                BackGroundColor = BackgroundColor
+                ForegroundColor = ForegroundColor,
+                BackgroundColor = BackgroundColor
             };
             Print(i + relativeHorizontalPosition, relativeVerticalPosition, val);
             CurrentDisplay.DrawPositions[relativeVerticalPosition][relativeHorizontalPosition + i] = val;
         }
     }
 
-    static void Print(int relativHorizontalPosition, int relativeVerticalPosition, DisplayPosition toDraw)
+    static void Print(int relativHorizontalPosition, int relativeVerticalPosition, IDisplayPosition toDraw)
     {
         SetCursorPos(relativHorizontalPosition, relativeVerticalPosition);
-        Console.ForegroundColor = toDraw.ForeGroundColor;
-        Console.BackgroundColor = toDraw.BackGroundColor;
+        Console.ForegroundColor = toDraw.ForegroundColor;
+        Console.BackgroundColor = toDraw.BackgroundColor;
         Console.Write(toDraw.Value);
     }
 
