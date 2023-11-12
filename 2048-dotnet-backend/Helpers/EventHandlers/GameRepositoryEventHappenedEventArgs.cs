@@ -2,13 +2,13 @@ using System;
 
 namespace Game2048.Backend;
 
-internal class GameRepositoryEventHappenedEventArgs : EventArgs
+public class GameRepositoryEventHappenedEventArgs : EventArgs
 {
-    internal GameRepositoryEvent RepositoryEvent { get; }
+    public GameRepositoryEvent RepositoryEvent { get; }
     
-    internal int NumberArg { get; }
+    public int NumberArg { get; }
 
-    internal GameRepositoryEventHappenedEventArgs(GameRepositoryEvent repositoryEvent, int numberArg)
+    public GameRepositoryEventHappenedEventArgs(GameRepositoryEvent repositoryEvent, int numberArg)
     {
         RepositoryEvent = repositoryEvent;
         NumberArg = numberArg;

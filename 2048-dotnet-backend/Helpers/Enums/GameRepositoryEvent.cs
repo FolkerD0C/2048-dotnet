@@ -1,6 +1,6 @@
 namespace Game2048.Backend;
 
-internal enum GameRepositoryEvent
+public enum GameRepositoryEvent
 {
     MaxNumberChanged,
     UndoCountChanged,

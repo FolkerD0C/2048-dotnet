@@ -140,7 +140,7 @@ public class GameRepository : IGameRepository
         throw new UndoImpossibleException();
     }
 
-    internal event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
+    public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 
     void PlaceRandomNumber()
     {

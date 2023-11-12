@@ -27,7 +27,7 @@ public class PlayLogic : IPlayLogic
     PlayLogic(IGameRepository repository)
     {
         this.repository = repository;
-        repository.MiscEventHappened += GameRepositoryEventHappenedDispatcher;
+        repository.GameRepositoryEventHappened += GameRepositoryEventHappenedDispatcher;
         gameRepositoryEventQueue = new Queue<GameRepositoryEventHappenedEventArgs>();
     }
 
@@ -36,8 +36,10 @@ public class PlayLogic : IPlayLogic
 
     public static IPlayLogic GetLogicFromSave(IGameRepository repository)
     {
-        IPlayLogic logicFromSave = new(repository);
-        logicFromSave.goalReached = repository.HighestNumber >= repository.Goal;
+        IPlayLogic logicFromSave = new PlayLogic(repository)
+        {
+            goalReached = repository.HighestNumber >= repository.Goal
+        };
         return logicFromSave;
     }
 
@@ -188,7 +190,7 @@ public class PlayLogic : IPlayLogic
         }
     }
 
-    internal void GameRepositoryEventHappenedDispatcher(object sender, GameRepositoryEventHappenedEventArgs args)
+    internal void GameRepositoryEventHappenedDispatcher(object? sender, GameRepositoryEventHappenedEventArgs args)
     {
         gameRepositoryEventQueue.Enqueue(args);
     }

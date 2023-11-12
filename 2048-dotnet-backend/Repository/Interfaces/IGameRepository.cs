@@ -20,4 +20,5 @@ public interface IGameRepository
     public IGamePosition MoveGrid(MoveDirection input);
     public IGamePosition Undo();
     public void SetPlayerName(string playerName);
+    public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 }
