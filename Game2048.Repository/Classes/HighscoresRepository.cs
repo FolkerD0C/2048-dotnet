@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Game2048.Shared.Models;
 using Game2048.Config;
+using Game2048.Shared.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Game2048.Repository;
 

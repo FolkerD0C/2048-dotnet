@@ -35,20 +35,20 @@ public class MenuItem : IMenuItem
             switch (actionRequestedArgs.ActionType)
             {
                 case MenuActionType.SubMenu:
-                {
-                    menuResult = actionRequestedArgs.SubMenu.Navigate();
-                    break;
-                }
+                    {
+                        menuResult = actionRequestedArgs.SubMenu.Navigate();
+                        break;
+                    }
                 case MenuActionType.Action:
-                {
-                    actionRequestedArgs.Action?.Invoke();
-                    break;
-                }
+                    {
+                        actionRequestedArgs.Action?.Invoke();
+                        break;
+                    }
                 case MenuActionType.ActionWithStringArg:
-                {
-                    actionRequestedArgs.ActionWithStringArg?.Invoke(actionRequestedArgs.ActionStringArg);
-                    break;
-                }
+                    {
+                        actionRequestedArgs.ActionWithStringArg?.Invoke(actionRequestedArgs.ActionStringArg);
+                        break;
+                    }
                 default:
                     break;
             }

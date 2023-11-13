@@ -31,7 +31,7 @@ public class SameColorDisplayRow : ISameColorDisplayRow
     public int ColumnCount => displayPositions.Count;
 
     public bool IsSet => displayPositions.Any(dp => dp.IsSet);
-    
+
     public void SetAll()
     {
         foreach (var dp in displayPositions)

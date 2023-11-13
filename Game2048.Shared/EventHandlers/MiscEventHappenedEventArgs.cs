@@ -1,5 +1,5 @@
-using System;
 using Game2048.Shared.Enums;
+using System;
 
 namespace Game2048.Shared.EventHandlers;
 

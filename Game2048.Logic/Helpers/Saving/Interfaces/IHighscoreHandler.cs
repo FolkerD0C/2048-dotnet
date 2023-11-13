@@ -6,7 +6,7 @@ namespace Game2048.Logic.Saving;
 public interface IHighscoreHandler : ISerializerHandler<IHighscore>
 {
     IHighscoresRepository HighscoresData { get; }
-    
+
     void Save();
 
     void Load();

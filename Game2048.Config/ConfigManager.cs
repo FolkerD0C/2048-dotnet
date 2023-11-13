@@ -22,7 +22,7 @@ public static class ConfigManager
         configItemInfo?.SetValue(null, newValue);
     }
 
-    #pragma warning disable CS8600
+#pragma warning disable CS8600
     public static T GetConfigItem<T>(string configItemName, T configItemType)
     {
         var configItemInfo = GetConfigItem(configItemName);
@@ -33,7 +33,7 @@ public static class ConfigManager
         }
         throw new Exception("Wrong type request");
     }
-    #pragma warning restore CS8600
+#pragma warning restore CS8600
 
     public static void Load()
     {

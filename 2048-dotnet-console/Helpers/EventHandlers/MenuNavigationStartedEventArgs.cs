@@ -1,7 +1,6 @@
+using Game2048.ConsoleFrontend.Models;
 using System;
 using System.Collections.Generic;
-using Game2048.ConsoleFrontend.Models;
-using Game2048.ConsoleFrontend.Resources.Menus;
 
 namespace Game2048.ConsoleFrontend.Helpers.EventHandlers;
 

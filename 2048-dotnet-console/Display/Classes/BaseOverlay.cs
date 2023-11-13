@@ -1,6 +1,6 @@
+using Game2048.ConsoleFrontend.Models;
 using System;
 using System.Collections.Generic;
-using Game2048.ConsoleFrontend.Models;
 
 namespace Game2048.ConsoleFrontend.Display;
 
@@ -36,10 +36,10 @@ public class BaseOverlay : IOverLay
         }
     }
 
-    #pragma warning disable CA1816
+#pragma warning disable CA1816
     public void Dispose()
     {
         throw new InvalidOperationException("Base overlay can not be disposed.");
     }
-    #pragma warning restore CA1816
+#pragma warning restore CA1816
 }

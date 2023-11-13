@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Game2048.Logic;
 

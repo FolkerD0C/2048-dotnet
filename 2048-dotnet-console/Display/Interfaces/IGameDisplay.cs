@@ -1,6 +1,3 @@
-using Game2048.Backend.Helpers.EventHandlers;
-using Game2048.Backend.Repository;
-
 namespace Game2048.ConsoleFrontend.Display;
 
 public interface IGameDisplay : IOverLay

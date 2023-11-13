@@ -1,14 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Game2048.Logic.Enums;
-using Game2048.Shared.Enums;
 using Game2048.Repository;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
 using Game2048.Repository.Exceptions;
+using Game2048.Shared.Enums;
 using Game2048.Shared.EventHandlers;
 using Game2048.Shared.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Game2048.Logic;
 
@@ -66,29 +66,29 @@ public class PlayLogic : IPlayLogic
             // Handle movement input
             if (movementInputs.Contains(input))
             {
-                MoveDirection moveDirection = MoveDirection.Unknown;;
+                MoveDirection moveDirection = MoveDirection.Unknown; ;
                 switch (input)
                 {
                     case GameInput.Up:
-                    {
-                        moveDirection = MoveDirection.Up;
-                        break;
-                    }
+                        {
+                            moveDirection = MoveDirection.Up;
+                            break;
+                        }
                     case GameInput.Down:
-                    {
-                        moveDirection = MoveDirection.Down;
-                        break;
-                    }
+                        {
+                            moveDirection = MoveDirection.Down;
+                            break;
+                        }
                     case GameInput.Left:
-                    {
-                        moveDirection = MoveDirection.Left;
-                        break;
-                    }
+                        {
+                            moveDirection = MoveDirection.Left;
+                            break;
+                        }
                     case GameInput.Right:
-                    {
-                        moveDirection = MoveDirection.Right;
-                        break;
-                    }
+                        {
+                            moveDirection = MoveDirection.Right;
+                            break;
+                        }
                 }
                 IGamePosition moveResult = repository.MoveGrid(moveDirection);
 
@@ -102,24 +102,24 @@ public class PlayLogic : IPlayLogic
                 switch (input)
                 {
                     case GameInput.Undo:
-                    {
-                        IGamePosition undoResult = repository.Undo();
+                        {
+                            IGamePosition undoResult = repository.Undo();
 
-                        // If an exception is not thrown from the 'repository.Undo' call, then handle event
-                        UndoHappened?.Invoke(this, new UndoHappenedEventArgs(undoResult));
-                        inputResult = InputResult.Continue;
-                        break;
-                    }
+                            // If an exception is not thrown from the 'repository.Undo' call, then handle event
+                            UndoHappened?.Invoke(this, new UndoHappenedEventArgs(undoResult));
+                            inputResult = InputResult.Continue;
+                            break;
+                        }
                     case GameInput.Pause:
-                    {
-                        inputResult = InputResult.Pause;
-                        break;
-                    }
+                        {
+                            inputResult = InputResult.Pause;
+                            break;
+                        }
                     default:
-                    {
-                        unknownInputDetected = true;
-                        break;
-                    }
+                        {
+                            unknownInputDetected = true;
+                            break;
+                        }
                 }
             }
         }
@@ -172,24 +172,24 @@ public class PlayLogic : IPlayLogic
             switch (eventArgs.RepositoryEvent)
             {
                 case GameRepositoryEvent.MaxLivesChanged:
-                {
-                    eventType = MiscEvent.MaxLivesChanged;
-                    break;
-                }
+                    {
+                        eventType = MiscEvent.MaxLivesChanged;
+                        break;
+                    }
                 case GameRepositoryEvent.MaxNumberChanged:
-                {
-                    eventType = MiscEvent.MaxNumberChanged;
-                    break;
-                }
+                    {
+                        eventType = MiscEvent.MaxNumberChanged;
+                        break;
+                    }
                 case GameRepositoryEvent.UndoCountChanged:
-                {
-                    eventType = MiscEvent.UndoCountChanged;
-                    break;
-                }
+                    {
+                        eventType = MiscEvent.UndoCountChanged;
+                        break;
+                    }
                 default:
-                {
-                    throw new InvalidOperationException($"{nameof(eventArgs.RepositoryEvent)} is an invalid event type.");
-                }
+                    {
+                        throw new InvalidOperationException($"{nameof(eventArgs.RepositoryEvent)} is an invalid event type.");
+                    }
             }
             MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(eventType, eventArgs.NumberArg));
         }

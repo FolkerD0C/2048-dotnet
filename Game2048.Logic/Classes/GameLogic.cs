@@ -1,12 +1,12 @@
+using Game2048.Config;
+using Game2048.Logic.Enums;
+using Game2048.Logic.Saving;
+using Game2048.Repository.Exceptions;
+using Game2048.Shared.Enums;
+using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game2048.Repository.Exceptions;
-using Game2048.Logic.Saving;
-using Game2048.Config;
-using Game2048.Shared.Enums;
-using Game2048.Shared.Models;
-using Game2048.Logic.Enums;
 
 namespace Game2048.Logic;
 
@@ -15,15 +15,15 @@ public class GameLogic : IGameLogic
     readonly Dictionary<string, string> saveFileInfos;
     readonly IHighscoreHandler highscoreHandler;
     IPlayLogic logic;
-    
-    #pragma warning disable CS8618
+
+#pragma warning disable CS8618
     public GameLogic()
     {
         highscoreHandler = new HighScoreHandler();
         saveFileInfos = new Dictionary<string, string>();
         GameSaveHandler.CheckOrCreateSaveDirectory();
     }
-    #pragma warning restore CS8618
+#pragma warning restore CS8618
 
     public void AddHighscore(string playerName, int score)
     {

@@ -1,6 +1,6 @@
+using Game2048.ConsoleFrontend.Models;
 using System;
 using System.Collections.Generic;
-using Game2048.ConsoleFrontend.Models;
 
 namespace Game2048.ConsoleFrontend.Display;
 

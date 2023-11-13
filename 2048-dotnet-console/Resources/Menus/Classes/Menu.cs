@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Game2048.ConsoleFrontend.Helpers;
 using Game2048.ConsoleFrontend.Helpers.Enums;
 using Game2048.ConsoleFrontend.Helpers.EventHandlers;
 using Game2048.ConsoleFrontend.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Game2048.ConsoleFrontend.Resources.Menus;
 
@@ -37,24 +37,24 @@ public class Menu : IMenu
             switch (InputProvider.ProvideMenuInput())
             {
                 case MenuInput.Up:
-                {
-                    int previoslySelectedMenuItemIndex = selectedMenuItemIndex;
-                    selectedMenuItemIndex = selectionHelper(selectedMenuItemIndex - 1);
-                    MenuSelectionChanged?.Invoke(this, new MenuSelectionChangedEventArgs(previoslySelectedMenuItemIndex, selectedMenuItemIndex));
-                    break;
-                }
+                    {
+                        int previoslySelectedMenuItemIndex = selectedMenuItemIndex;
+                        selectedMenuItemIndex = selectionHelper(selectedMenuItemIndex - 1);
+                        MenuSelectionChanged?.Invoke(this, new MenuSelectionChangedEventArgs(previoslySelectedMenuItemIndex, selectedMenuItemIndex));
+                        break;
+                    }
                 case MenuInput.Down:
-                {
-                    int previoslySelectedMenuItemIndex = selectedMenuItemIndex;
-                    selectedMenuItemIndex = selectionHelper(selectedMenuItemIndex + 1);
-                    MenuSelectionChanged?.Invoke(this, new MenuSelectionChangedEventArgs(previoslySelectedMenuItemIndex, selectedMenuItemIndex));
-                    break;
-                }
+                    {
+                        int previoslySelectedMenuItemIndex = selectedMenuItemIndex;
+                        selectedMenuItemIndex = selectionHelper(selectedMenuItemIndex + 1);
+                        MenuSelectionChanged?.Invoke(this, new MenuSelectionChangedEventArgs(previoslySelectedMenuItemIndex, selectedMenuItemIndex));
+                        break;
+                    }
                 case MenuInput.Select:
-                {
-                    menuResult = menuItems[selectedMenuItemIndex].Select();
-                    break;
-                }
+                    {
+                        menuResult = menuItems[selectedMenuItemIndex].Select();
+                        break;
+                    }
                 default:
                     break;
             }

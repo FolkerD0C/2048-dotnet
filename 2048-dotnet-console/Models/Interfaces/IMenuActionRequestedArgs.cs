@@ -1,6 +1,6 @@
-using System;
 using Game2048.ConsoleFrontend.Helpers.Enums;
 using Game2048.ConsoleFrontend.Resources.Menus;
+using System;
 
 namespace Game2048.ConsoleFrontend.Models;
 

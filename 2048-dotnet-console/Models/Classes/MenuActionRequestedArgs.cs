@@ -1,6 +1,6 @@
-using System;
 using Game2048.ConsoleFrontend.Helpers.Enums;
 using Game2048.ConsoleFrontend.Resources.Menus;
+using System;
 
 namespace Game2048.ConsoleFrontend.Models;
 
@@ -30,12 +30,12 @@ public class MenuActionRequestedArgs : IMenuActionRequestedArgs
         this.actionStringArg = actionStringArg;
     }
 
-    public MenuActionRequestedArgs(IMenu subMenu) : this(MenuActionType.SubMenu, subMenu, () => {}, (s) => {}, "")
+    public MenuActionRequestedArgs(IMenu subMenu) : this(MenuActionType.SubMenu, subMenu, () => { }, (s) => { }, "")
     { }
 
-    public MenuActionRequestedArgs(Action action) : this(MenuActionType.Action, new Menu(), action, (s) => {}, "")
+    public MenuActionRequestedArgs(Action action) : this(MenuActionType.Action, new Menu(), action, (s) => { }, "")
     { }
 
-    public MenuActionRequestedArgs(Action<string> actionWithStringArg, string actionStringArg) : this(MenuActionType.ActionWithStringArg, new Menu(), () => {}, actionWithStringArg, actionStringArg)
+    public MenuActionRequestedArgs(Action<string> actionWithStringArg, string actionStringArg) : this(MenuActionType.ActionWithStringArg, new Menu(), () => { }, actionWithStringArg, actionStringArg)
     { }
 }

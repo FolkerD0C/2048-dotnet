@@ -1,9 +1,9 @@
+using Game2048.Config;
+using Game2048.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using Game2048.Shared.Enums;
-using Game2048.Config;
 
 namespace Game2048.Shared.Models;
 
@@ -107,35 +107,35 @@ public class GamePosition : IGamePosition
         switch (direction)
         {
             case MoveDirection.Right:
-            {
-                Move();
-                break;
-            }
+                {
+                    Move();
+                    break;
+                }
             case MoveDirection.Down:
-            {
-                Rotate();
-                Move();
-                RotateCounter();
-                break;
-            }
+                {
+                    Rotate();
+                    Move();
+                    RotateCounter();
+                    break;
+                }
             case MoveDirection.Left:
-            {
-                RotateHalf();
-                Move();
-                RotateHalf();
-                break;
-            }
+                {
+                    RotateHalf();
+                    Move();
+                    RotateHalf();
+                    break;
+                }
             case MoveDirection.Up:
-            {
-                RotateCounter();
-                Move();
-                Rotate();
-                break;
-            }
+                {
+                    RotateCounter();
+                    Move();
+                    Rotate();
+                    break;
+                }
             default:
-            {
-                throw new ArgumentException("Invalid direction.");
-            }
+                {
+                    throw new ArgumentException("Invalid direction.");
+                }
         }
     }
 

@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace Game2048.Logic.Models;
 
 internal interface ISaveMetaData

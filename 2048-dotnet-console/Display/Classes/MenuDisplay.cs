@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using Game2048.ConsoleFrontend.Helpers;
 using Game2048.ConsoleFrontend.Helpers.EventHandlers;
 using Game2048.ConsoleFrontend.Models;
+using System.Collections.Generic;
 
 namespace Game2048.ConsoleFrontend.Display;
 

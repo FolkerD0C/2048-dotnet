@@ -1,6 +1,4 @@
-﻿using Game2048.Backend.Logic;
-
-namespace Game2048.ConsoleFrontend;
+﻿namespace Game2048.ConsoleFrontend;
 
 class App
 {

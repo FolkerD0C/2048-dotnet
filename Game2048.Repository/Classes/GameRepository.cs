@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Game2048.Shared.Enums;
+using Game2048.Config;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
 using Game2048.Repository.Exceptions;
+using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
-using Game2048.Config;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Game2048.Repository;
 
