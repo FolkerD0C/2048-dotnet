@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../2048-dotnet-backend/2048-dotnet-backend.csproj"/>
-    <Content Include="gameconfig.json" CopyToOutputDirectory="Always"/>
-    <Content Include="highscores.json" CopyToOutputDirectory="Always"/>
+    <ProjectReference Include="..\2048-dotnet-backend\Game2048.Backend.csproj" />
+    <Content Include="gameconfig.json" CopyToOutputDirectory="Always" />
+    <Content Include="highscores.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>
