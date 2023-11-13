@@ -1,6 +1,5 @@
 using System;
 using System.Text.Json;
-using Game2048.Backend.Helpers.Exceptions;
 
 namespace Game2048.Shared.Models;
 
