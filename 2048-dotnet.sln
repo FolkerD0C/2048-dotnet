@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048-dotnet-backend", "2048-dotnet-backend\2048-dotnet-backend.csproj", "{284DAD0F-E4B2-4290-840E-44D525D0FC75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Backend", "Game2048.Backend\Game2048.Backend.csproj", "{284DAD0F-E4B2-4290-840E-44D525D0FC75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2048-dotnet-console", "2048-dotnet-console\2048-dotnet-console.csproj", "{94676E22-E29A-4B48-A4DA-7DE945F0B685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048-dotnet-console", "2048-dotnet-console\2048-dotnet-console.csproj", "{94676E22-E29A-4B48-A4DA-7DE945F0B685}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game2048.Shared", "Game2048.Shared\Game2048.Shared.csproj", "{C94466CC-E496-4D62-9AAD-1B528806B798}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game2048.Config", "Game2048.Config\Game2048.Config.csproj", "{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C94466CC-E496-4D62-9AAD-1B528806B798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C94466CC-E496-4D62-9AAD-1B528806B798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C94466CC-E496-4D62-9AAD-1B528806B798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C94466CC-E496-4D62-9AAD-1B528806B798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

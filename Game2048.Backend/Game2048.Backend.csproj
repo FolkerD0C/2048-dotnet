@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Dll</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Game2048.Backend</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Game2048.Config\Game2048.Config.csproj" />
+    <ProjectReference Include="..\Game2048.Shared\Game2048.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
