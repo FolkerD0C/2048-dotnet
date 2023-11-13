@@ -12,7 +12,7 @@ public interface IGameLogic
     public IEnumerable<string> GetSavedGames();
     public void SaveCurrentGame();
     public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause);
-    public IList<IHighscore> ShowHighscores();
+    public IList<IHighscore> GetHighscores();
     public void AddHighscore(string playerName, int score);
     public string GetGameDescription();
     public string GetGameHelp();

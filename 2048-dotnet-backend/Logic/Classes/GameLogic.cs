@@ -5,7 +5,6 @@ using Game2048.Backend.Helpers.Enums;
 using Game2048.Backend.Helpers.Exceptions;
 using Game2048.Backend.Helpers.Saving;
 using Game2048.Backend.Models;
-using Game2048.Backend.Repository;
 
 namespace Game2048.Backend.Logic;
 
@@ -15,14 +14,16 @@ public class GameLogic : IGameLogic
     readonly IHighscoreHandler highscoreHandler;
     IPlayLogic logic;
     
+    #pragma warning disable CS8618
     public GameLogic()
     {
         new ConfigHandler().Load();
         highscoreHandler = new HighScoreHandler();
         saveFileInfos = new Dictionary<string, string>();
-        logic = new PlayLogic();
         GameSaveHandler.CheckOrCreateSaveDirectory();
     }
+    #pragma warning restore CS8618
+
     public void AddHighscore(string playerName, int score)
     {
         highscoreHandler.AddNewHighscore(playerName, score);
@@ -60,6 +61,7 @@ public class GameLogic : IGameLogic
 
     public IPlayLogic NewGame()
     {
+        logic = new PlayLogic();
         PlayEnvironment.LoadFromConfig();
         return logic;
     }
@@ -104,7 +106,7 @@ public class GameLogic : IGameLogic
         saveHandler.Save();
     }
 
-    public IList<IHighscore> ShowHighscores()
+    public IList<IHighscore> GetHighscores()
     {
         return highscoreHandler.HighscoresData.HighScores;
     }

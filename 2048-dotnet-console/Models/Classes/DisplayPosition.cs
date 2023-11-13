@@ -8,5 +8,4 @@ public class DisplayPosition : IDisplayPosition
     public ConsoleColor BackgroundColor { get; set; }
     public char Value { get; set; }
     public bool IsSet { get; set; }
-    public IDisplayPosition? UnderLay { get; set; }
 }
