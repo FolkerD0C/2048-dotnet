@@ -1,0 +1,19 @@
+using System;
+using System.Collections.Generic;
+using Game2048.Shared.Enums;
+using Game2048.Shared.Models;
+
+namespace Game2048.Logic;
+
+public interface IGameLogic
+{
+    public IPlayLogic NewGame();
+    public IPlayLogic LoadGame(string saveGameName);
+    public IEnumerable<string> GetSavedGames();
+    public void SaveCurrentGame();
+    public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause);
+    public IList<IHighscore> GetHighscores();
+    public void AddHighscore(string playerName, int score);
+    public string GetGameDescription();
+    public string GetGameHelp();
+}
