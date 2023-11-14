@@ -9,6 +9,18 @@ namespace Game2048.Config;
 
 public static class ConfigManager
 {
+    public static IEnumerable<(string Name, object? Value, Type Type)> GetConfigItems()
+    {
+        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
+        var result = new List<(string Name, object? Value, Type Type)>();
+        return configItems.Select(configItemAsFieldInfo => new()
+        {
+            Name = configItemAsFieldInfo.Name,
+            Value = configItemAsFieldInfo.GetValue(null) ?? throw new Exception("Config item can not be null."),
+            Type = configItemAsFieldInfo.FieldType
+        }).ToList();
+    }
+
     static FieldInfo? GetConfigItem(string configItemName)
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
