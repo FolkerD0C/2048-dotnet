@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Shared", "Game2048
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "Game2048.Config\Game2048.Config.csproj", "{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game2048.Repository", "Game2048.Repository\Game2048.Repository.csproj", "{71FF0FC9-2836-4453-93B5-C05E48CEBEA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Repository", "Game2048.Repository\Game2048.Repository.csproj", "{71FF0FC9-2836-4453-93B5-C05E48CEBEA0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.Display", "ConsoleClient.Display\ConsoleClient.Display.csproj", "{1F689BAD-2FBB-45C5-AE53-F3A2DCED2D60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient.Shared", "ConsoleClient.Shared\ConsoleClient.Shared.csproj", "{EAFD5C2E-8BE6-4EFC-B4E4-B1967FFF78F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{71FF0FC9-2836-4453-93B5-C05E48CEBEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71FF0FC9-2836-4453-93B5-C05E48CEBEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71FF0FC9-2836-4453-93B5-C05E48CEBEA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F689BAD-2FBB-45C5-AE53-F3A2DCED2D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F689BAD-2FBB-45C5-AE53-F3A2DCED2D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F689BAD-2FBB-45C5-AE53-F3A2DCED2D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F689BAD-2FBB-45C5-AE53-F3A2DCED2D60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAFD5C2E-8BE6-4EFC-B4E4-B1967FFF78F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAFD5C2E-8BE6-4EFC-B4E4-B1967FFF78F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAFD5C2E-8BE6-4EFC-B4E4-B1967FFF78F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAFD5C2E-8BE6-4EFC-B4E4-B1967FFF78F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
