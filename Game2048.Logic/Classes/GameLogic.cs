@@ -77,7 +77,7 @@ public class GameLogic : IGameLogic
             try
             {
                 var input = inputMethod();
-                logic.HandleInput(input);
+                inputResult = logic.HandleInput(input);
             }
             catch (GameOverException)
             {
