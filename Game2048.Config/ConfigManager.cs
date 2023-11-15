@@ -16,7 +16,7 @@ public static class ConfigManager
         return configItems.Select(configItemAsFieldInfo => new()
         {
             Name = configItemAsFieldInfo.Name,
-            Value = configItemAsFieldInfo.GetValue(null) ?? throw new Exception("Config item can not be null."),
+            Value = configItemAsFieldInfo.GetValue(null),
             Type = configItemAsFieldInfo.FieldType
         }).ToList();
     }
