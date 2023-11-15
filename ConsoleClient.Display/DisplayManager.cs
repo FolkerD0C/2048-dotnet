@@ -129,7 +129,11 @@ public static class DisplayManager
             }
             for (int j = 0; j < CurrentOverlay[i].ColumnCount; j++)
             {
-                if (CurrentOverlay[i][j].IsSet && overlay.IsPositionSet(i, j))
+                if (!CurrentOverlay[i][j].IsSet))
+                {
+                    continue;
+                }
+                if (overlay.IsPositionSet(i, j))
                 {
                     PrintDisplayPosition(i, j, overlay[i][j]);
                     continue;
