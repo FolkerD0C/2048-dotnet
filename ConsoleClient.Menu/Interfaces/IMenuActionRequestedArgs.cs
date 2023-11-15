@@ -1,8 +1,7 @@
-using Game2048.ConsoleFrontend.Helpers.Enums;
-using Game2048.ConsoleFrontend.Resources.Menus;
+using ConsoleClient.Menu.Enums;
 using System;
 
-namespace Game2048.ConsoleFrontend.Models;
+namespace ConsoleClient.Menu;
 
 public interface IMenuActionRequestedArgs
 {

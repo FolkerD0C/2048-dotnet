@@ -1,28 +1,37 @@
-using Game2048.ConsoleFrontend.Helpers;
-using Game2048.ConsoleFrontend.Helpers.Enums;
-using Game2048.ConsoleFrontend.Helpers.EventHandlers;
-using Game2048.ConsoleFrontend.Models;
+using ConsoleClient.Menu.Enums;
+using ConsoleClient.Menu.EventHandlers;
 using System;
 using System.Collections.Generic;
 
-namespace Game2048.ConsoleFrontend.Resources.Menus;
+namespace ConsoleClient.Menu;
 
 public class Menu : IMenu
 {
     readonly IList<IMenuItem> menuItems;
     public IList<IMenuItem> MenuItems => menuItems;
 
+    readonly IList<string>? displayText;
+    public IList<string>? DisplayText => displayText;
+
+    readonly Func<MenuInput> inputFunction;
+
     public event EventHandler<MenuNavigationStartedEventArgs>? MenuNavigationStarted;
     public event EventHandler<MenuSelectionChangedEventArgs>? MenuSelectionChanged;
-    public event EventHandler<MenuNavigationEndedEventArgs>? MenuNavigationEnded;
+    public event EventHandler? MenuNavigationEnded;
+    public event EventHandler? MenuItemReturnedYes;
 
-    public Menu(IList<IMenuItem> menuItems)
+    public Menu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction)
     {
         this.menuItems = menuItems;
-        MenuNavigationStarted += MenuDisplayProvider.OnMenuNavigationStarted;
+        this.inputFunction = inputFunction;
     }
 
-    public Menu() : this(new List<IMenuItem>())
+    public Menu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction, IList<string> displayText) : this(menuItems, inputFunction)
+    {
+        this.displayText = displayText;
+    }
+
+    internal Menu() : this(new List<IMenuItem>(), () => MenuInput.Unknown)
     { }
 
     public MenuItemResult Navigate()
@@ -34,7 +43,7 @@ public class Menu : IMenu
         MenuNavigationStarted?.Invoke(this, new MenuNavigationStartedEventArgs(menuItems, selectedMenuItemIndex, new List<string>()));
         while (menuResult != MenuItemResult.Back)
         {
-            switch (InputProvider.ProvideMenuInput())
+            switch (inputFunction())
             {
                 case MenuInput.Up:
                     {
@@ -58,8 +67,12 @@ public class Menu : IMenu
                 default:
                     break;
             }
+            if (menuItems[selectedMenuItemIndex].ItemType == MenuItemType.YesNo && menuResult == MenuItemResult.Yes)
+            {
+                MenuItemReturnedYes?.Invoke(this, new EventArgs());
+            }
         }
-        MenuNavigationEnded?.Invoke(this, new MenuNavigationEndedEventArgs());
+        MenuNavigationEnded?.Invoke(this, new EventArgs());
         return menuResult;
     }
 }

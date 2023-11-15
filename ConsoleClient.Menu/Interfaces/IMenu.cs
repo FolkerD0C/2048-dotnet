@@ -1,16 +1,17 @@
-using Game2048.ConsoleFrontend.Helpers.Enums;
-using Game2048.ConsoleFrontend.Helpers.EventHandlers;
-using Game2048.ConsoleFrontend.Models;
+using ConsoleClient.Menu.Enums;
+using ConsoleClient.Menu.EventHandlers;
 using System;
 using System.Collections.Generic;
 
-namespace Game2048.ConsoleFrontend.Resources.Menus;
+namespace ConsoleClient.Menu;
 
 public interface IMenu
 {
     IList<IMenuItem> MenuItems { get; }
+    IList<string>? DisplayText { get; }
     MenuItemResult Navigate();
     event EventHandler<MenuNavigationStartedEventArgs>? MenuNavigationStarted;
     event EventHandler<MenuSelectionChangedEventArgs>? MenuSelectionChanged;
-    event EventHandler<MenuNavigationEndedEventArgs>? MenuNavigationEnded;
+    event EventHandler? MenuNavigationEnded;
+    event EventHandler? MenuItemReturnedYes;
 }

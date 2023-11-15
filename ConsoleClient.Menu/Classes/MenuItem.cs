@@ -1,9 +1,12 @@
-using Game2048.ConsoleFrontend.Helpers.Enums;
+using ConsoleClient.Menu.Enums;
 
-namespace Game2048.ConsoleFrontend.Models;
+namespace ConsoleClient.Menu;
 
 public class MenuItem : IMenuItem
 {
+    readonly string name;
+    public string Name => name;
+
     readonly MenuItemType itemType;
     public MenuItemType ItemType => itemType;
 
@@ -12,20 +15,21 @@ public class MenuItem : IMenuItem
     readonly IMenuActionRequestedArgs actionRequestedArgs;
     public IMenuActionRequestedArgs ActionRequestedArgs => actionRequestedArgs;
 
-    MenuItem(MenuItemType itemType, MenuItemResult menuResult, IMenuActionRequestedArgs actionRequestedArgs)
+    MenuItem(string name, MenuItemType itemType, MenuItemResult menuResult, IMenuActionRequestedArgs actionRequestedArgs)
     {
+        this.name = name;
         this.itemType = itemType;
         this.menuResult = menuResult;
         this.actionRequestedArgs = actionRequestedArgs;
     }
 
-    public MenuItem() : this(MenuItemType.Back, MenuItemResult.Back, new MenuActionRequestedArgs(() => { }))
+    public MenuItem(string name) : this(name, MenuItemType.Back, MenuItemResult.Back, new MenuActionRequestedArgs(() => { }))
     { }
 
-    public MenuItem(MenuItemResult menuResult) : this(MenuItemType.YesNo, menuResult, new MenuActionRequestedArgs(() => { }))
+    public MenuItem(string name, MenuItemResult menuResult) : this(name, MenuItemType.YesNo, menuResult, new MenuActionRequestedArgs(() => { }))
     { }
 
-    public MenuItem(IMenuActionRequestedArgs actionRequestedArgs) : this(MenuItemType.Action, MenuItemResult.Ok, actionRequestedArgs)
+    public MenuItem(string name, IMenuActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, MenuItemResult.Ok, actionRequestedArgs)
     { }
 
     public MenuItemResult Select()

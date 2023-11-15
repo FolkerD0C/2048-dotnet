@@ -1,9 +1,9 @@
-using Game2048.ConsoleFrontend.Helpers.Enums;
+using ConsoleClient.Menu.Enums;
 
-namespace Game2048.ConsoleFrontend.Models;
-
+namespace ConsoleClient.Menu;
 public interface IMenuItem
 {
+    string Name { get; }
     IMenuActionRequestedArgs ActionRequestedArgs { get; }
     MenuItemType ItemType { get; }
     MenuItemResult Select();
