@@ -9,8 +9,6 @@ namespace Game2048.Config;
 
 public static class ConfigManager
 {
-<<<<<<< Updated upstream
-=======
     public static IEnumerable<(string Name, object? Value, Type Type)> GetConfigItems()
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
@@ -23,7 +21,6 @@ public static class ConfigManager
         )).ToList();
     }
 
->>>>>>> Stashed changes
     static FieldInfo? GetConfigItem(string configItemName)
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
