@@ -50,7 +50,7 @@ public class DisplayRow : IDisplayRow
         return displayPositions.Any(dp => dp.IsSet);
     }
 
-    public IDisplayRow PadRight(int width, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+    public IDisplayRow PadRight(int width, ConsoleColor foregroundColor, ConsoleColor backgroundColor, char value)
     {
         while (ColumnCount < width)
         {
@@ -58,7 +58,7 @@ public class DisplayRow : IDisplayRow
             {
                 BackgroundColor = backgroundColor,
                 ForegroundColor = foregroundColor,
-                Value = ' ',
+                Value = value,
                 IsSet = false
             });
         }

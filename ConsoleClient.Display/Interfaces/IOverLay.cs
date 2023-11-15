@@ -6,7 +6,8 @@ namespace ConsoleClient.Display;
 
 public interface IOverLay : IDisposable
 {
-    public IList<IDisplayRow> DisplayRows { get; }
-    public int RowCount { get; }
-    public IDisplayRow this[int index] { get; set; }
+    IList<IDisplayRow> DisplayRows { get; }
+    int RowCount { get; }
+    bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition);
+    IDisplayRow this[int index] { get; set; }
 }

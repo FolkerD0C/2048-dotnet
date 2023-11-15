@@ -1,3 +1,4 @@
+using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,18 @@ internal class BaseOverlay : IOverLay
         displayRows = new List<IDisplayRow>();
         for (int i = 0; i < DisplayManager.Height; i++)
         {
-            displayRows.Add(new DisplayRow().PadRight(DisplayManager.Width, DisplayManager.DefaultForegroundColor, DisplayManager.DefaultBackgroundColor));
+            displayRows.Add(new DisplayRow().PadRight(DisplayManager.Width, DisplayManager.DefaultForegroundColor, DisplayManager.DefaultBackgroundColor, DisplayManager.DefaultDisplayPositionValue));
         }
     }
 
-#pragma warning disable CA1816
     public void Dispose()
     {
-        throw new InvalidOperationException("Base overlay can not be disposed.");
+        displayRows.Dispose();
+        GC.SuppressFinalize(this);
     }
-#pragma warning restore CA1816
+
+    public bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition)
+    {
+        return false;
+    }
 }

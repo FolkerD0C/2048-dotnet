@@ -1,6 +1,7 @@
 using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleClient.Display;
 
@@ -8,20 +9,20 @@ public static class DisplayManager
 {
     public static readonly ConsoleColor DefaultForegroundColor = ConsoleColor.White;
     public static readonly ConsoleColor DefaultBackgroundColor = ConsoleColor.Black;
+    public static readonly char DefaultDisplayPositionValue = ' ';
     static readonly int offsetHorizontal;
     static readonly int offsetVertical;
-
-    static readonly int width;
-    public static int Width => width;
 
     static readonly int height;
     public static int Height => height;
 
-    static readonly Stack<IOverLay> OverlayStack;
+    static readonly int width;
+    public static int Width => width;
 
+    static DisplayPosition defaultDisplayPosition;
     static IOverLay CurrentOverlay;
-    static bool[,] currentDisplayPositionsSet;
 
+    static readonly Stack<IOverLay> OverlayStack;
 
     static DisplayManager()
     {
@@ -32,12 +33,18 @@ public static class DisplayManager
         offsetVertical = (Console.WindowHeight - height) / 2;
         OverlayStack = new Stack<IOverLay>();
         CurrentOverlay = new BaseOverlay();
-        currentDisplayPositionsSet = new bool[height, width];
+
+        defaultDisplayPosition = new DisplayPosition()
+        {
+            BackgroundColor = DefaultBackgroundColor,
+            ForegroundColor = DefaultForegroundColor,
+            Value = DefaultDisplayPositionValue,
+            IsSet = true
+        };
     }
 
     public static void NewOverlay(IOverLay overlay)
     {
-        ResetDisplayPositions();
         overlay.PrintAsNew();
         OverlayStack.Push(CurrentOverlay);
         CurrentOverlay = overlay;
@@ -45,32 +52,36 @@ public static class DisplayManager
 
     public static void RollBackOverLay()
     {
-        CurrentOverlay.Dispose();
         var previous = OverlayStack.Pop();
         previous.PrintAsPrevious();
+        CurrentOverlay.Dispose();
         CurrentOverlay = previous;
     }
 
-    // TODO
-    public static void PrintText(string text, int relativeHorizontalPosition, int relativeVerticalPosition,
-            ConsoleColor ForegroundColor, ConsoleColor BackgroundColor)
+    public static void PrintText(string text, int relativeVerticalPosition, int relativeHorizontalPosition,
+            ConsoleColor foregroundColor, ConsoleColor backgroundColor)
     {
+        if (relativeHorizontalPosition + text.Length - 1 > width)
+        {
+            throw new InvalidOperationException("Text is wider then the display");
+        }
+        SetCursorPos(relativeHorizontalPosition, relativeVerticalPosition);
+        Console.ForegroundColor = foregroundColor;
+        Console.BackgroundColor = backgroundColor;
+        Console.Write(text);
+
         for (int i = 0; i < text.Length; i++)
         {
             DisplayPosition displayPosition = new DisplayPosition()
             {
                 Value = text[i],
-                ForegroundColor = ForegroundColor,
-                BackgroundColor = BackgroundColor
+                ForegroundColor = foregroundColor,
+                BackgroundColor = backgroundColor
             };
-            PrintDisplayPosition(i + relativeHorizontalPosition, relativeVerticalPosition, displayPosition);
             CurrentOverlay[relativeVerticalPosition][relativeHorizontalPosition + i] = displayPosition;
         }
     }
 
-    // TODO write a method that handles rows with same color text
-    // (eg. append this method with a bool or an enum that manages this inside this method)
-    // new method would be better
     static void PrintDisplayPosition(int relativeVerticalPosition, int relativeHorizontalPosition, DisplayPosition toDraw)
     {
         SetCursorPos(relativeHorizontalPosition, relativeVerticalPosition);
@@ -85,14 +96,9 @@ public static class DisplayManager
         Console.CursorVisible = visible;
     }
 
-    public static void SetCursorPos(int relativeHorizontalPosition, int relativeVerticalPosition)
+    static void SetCursorPos(int relativeHorizontalPosition, int relativeVerticalPosition)
     {
         Console.SetCursorPosition(offsetHorizontal + relativeHorizontalPosition, offsetVertical + relativeVerticalPosition);
-    }
-
-    static void ResetDisplayPositions()
-    {
-        currentDisplayPositionsSet = new bool[height, width];
     }
 
     static void PrintAsNew(this IOverLay overlay)
@@ -108,7 +114,6 @@ public static class DisplayManager
                 if (overlay[i][j].IsSet)
                 {
                     PrintDisplayPosition(i, j, overlay[i][j]);
-                    currentDisplayPositionsSet[i, j] = true;
                 }
             }
         }
@@ -116,6 +121,23 @@ public static class DisplayManager
 
     static void PrintAsPrevious(this IOverLay overlay)
     {
-        // TODO
+        for (int i = 0; i < CurrentOverlay.RowCount; i++)
+        {
+            if (!CurrentOverlay[i].IsSet)
+            {
+                continue;
+            }
+            for (int j = 0; j < CurrentOverlay[i].ColumnCount; j++)
+            {
+                if (CurrentOverlay[i][j].IsSet && overlay.IsPositionSet(i, j))
+                {
+                    PrintDisplayPosition(i, j, overlay[i][j]);
+                    continue;
+                }
+                var firstDrawableOverlay = OverlayStack.First(overlay => overlay.IsPositionSet(i, j));
+                var displayPositionToPrint = firstDrawableOverlay is not null ? firstDrawableOverlay[i][j] : defaultDisplayPosition;
+                PrintDisplayPosition(i, j, displayPositionToPrint);
+            }
+        }
     }
 }
