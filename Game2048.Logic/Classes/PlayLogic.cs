@@ -30,8 +30,7 @@ public class PlayLogic : IPlayLogic
 
     public string PlayerName { get { return repository.PlayerName; } set { repository.PlayerName = value; } }
 
-    public IGamePosition CurrentPosition => throw new NotImplementedException();
-
+    public event EventHandler<PlayStartedEventArgs>? PlayStarted;
     public event EventHandler<MoveHappenedEventArgs>? MoveHappened;
     public event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
@@ -54,6 +53,17 @@ public class PlayLogic : IPlayLogic
             goalReached = repository.HighestNumber >= repository.Goal
         };
         return logicFromSave;
+    }
+
+    public void Start()
+    {
+        if (repository.UndoChain.First is null)
+        {
+            throw new InvalidOperationException("First game position can not be null.");
+        }
+        PlayStarted?.Invoke(this, new PlayStartedEventArgs(
+            repository.UndoChain.First.Value, repository.RemainingUndos, repository.RemainingLives
+        ));
     }
 
     public InputResult HandleInput(GameInput input)
