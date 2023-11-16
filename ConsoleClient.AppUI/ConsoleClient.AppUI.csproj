@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleClient.Display\ConsoleClient.Display.csproj" />
+    <ProjectReference Include="..\ConsoleClient.Menu\ConsoleClient.Menu.csproj" />
+    <ProjectReference Include="..\ConsoleClient.Shared\ConsoleClient.Shared.csproj" />
+    <ProjectReference Include="..\Game2048.Shared\Game2048.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
