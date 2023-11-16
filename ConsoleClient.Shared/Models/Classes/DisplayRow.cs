@@ -68,6 +68,16 @@ public class DisplayRow : IDisplayRow
     public DisplayPosition this[int index]
     {
         get { return displayPositions[index]; }
-        set { displayPositions[index] = value; }
+        set
+        {
+            while (displayPositions.Count <= index)
+            {
+                displayPositions.Add(new DisplayPosition()
+                {
+                    IsSet = false
+                });
+            }
+            displayPositions[index] = value;
+        }
     }
 }
