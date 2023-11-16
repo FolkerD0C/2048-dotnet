@@ -13,12 +13,12 @@ public static class ConfigManager
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
         var result = new List<(string Name, object? Value, Type Type)>();
-        return configItems.Select(configItemAsFieldInfo => new()
-        {
-            Name = configItemAsFieldInfo.Name,
-            Value = configItemAsFieldInfo.GetValue(null),
-            Type = configItemAsFieldInfo.FieldType
-        }).ToList();
+        return configItems.Select(configItemAsFieldInfo => 
+        (
+            configItemAsFieldInfo.Name,
+            configItemAsFieldInfo.GetValue(null),
+            configItemAsFieldInfo.FieldType
+        )).ToList();
     }
 
     static FieldInfo? GetConfigItem(string configItemName)
