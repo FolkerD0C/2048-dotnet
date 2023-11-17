@@ -16,7 +16,14 @@ public class PlayErrorMessageOverlay : IPlayErrorMessageOverlay
 
     public IDisplayRow this[int index]
     {
-        get { return displayRows[index]; }
+        get
+        {
+            while (displayRows.Count <= index)
+            {
+                displayRows.Add(new DisplayRow());
+            }
+            return displayRows[index];
+        }
         set { displayRows[index] = value; }
     }
     
@@ -32,6 +39,7 @@ public class PlayErrorMessageOverlay : IPlayErrorMessageOverlay
 
     public PlayErrorMessageOverlay(string error)
     {
+        displayRows = new List<IDisplayRow>();
         errorMessage = SplitErrorMessage(error);
     }
 

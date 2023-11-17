@@ -129,7 +129,7 @@ public static class DisplayManager
             }
             for (int j = 0; j < CurrentOverlay[i].ColumnCount; j++)
             {
-                if (!CurrentOverlay[i][j].IsSet))
+                if (!CurrentOverlay[i][j].IsSet)
                 {
                     continue;
                 }
