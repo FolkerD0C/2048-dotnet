@@ -18,7 +18,7 @@ public static class ConfigManager
             configItemAsFieldInfo.Name,
             configItemAsFieldInfo.GetValue(null),
             configItemAsFieldInfo.FieldType
-        )).ToList();
+        ));
     }
 
     static FieldInfo? GetConfigItem(string configItemName)
