@@ -5,19 +5,25 @@ namespace Game2048.Shared.EventHandlers;
 
 public class PlayStartedEventArgs : EventArgs
 {
-    IGamePosition Position { get; }
+    public IGamePosition Position { get; }
 
-    int RemainingUndos { get; }
+    public int RemainingUndos { get; }
 
-    int RemainingLives { get; }
+    public int RemainingLives { get; }
 
-    int HighestNumber { get; }
+    public int HighestNumber { get; }
 
-    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives, int highestNumber)
+    public int GridHeight { get; }
+
+    public int GridWidth { get; }
+
+    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth)
     {
         Position = position;
         RemainingUndos = remainingUndos;
         RemainingLives = remainingLives;
         HighestNumber = highestNumber;
+        GridHeight = gridHeight;
+        GridWidth = gridWidth;
     }
 }

@@ -63,7 +63,8 @@ public class PlayLogic : IPlayLogic
             throw new InvalidOperationException("First game position can not be null.");
         }
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
-            repository.UndoChain.First.Value, repository.RemainingUndos, repository.RemainingLives, repository.HighestNumber
+            repository.UndoChain.First.Value, repository.RemainingUndos, repository.RemainingLives,
+            repository.HighestNumber, repository.GridHeight, repository.GridWidth
         ));
     }
 
