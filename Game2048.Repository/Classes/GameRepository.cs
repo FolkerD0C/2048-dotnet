@@ -149,7 +149,7 @@ public class GameRepository : IGameRepository
 
     void PlaceRandomNumber()
     {
-        // Fix random number possibly overwriting existing data
+        // FIXME random number possibly overwriting existing data
         int vertical = randomNumberGenerator.Next(gridHeight);
         int horizontal = randomNumberGenerator.Next(gridWidth);
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
