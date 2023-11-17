@@ -11,10 +11,13 @@ public class PlayStartedEventArgs : EventArgs
 
     int RemainingLives { get; }
 
-    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives)
+    int HighestNumber { get; }
+
+    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives, int highestNumber)
     {
         Position = position;
         RemainingUndos = remainingUndos;
         RemainingLives = remainingLives;
+        HighestNumber = highestNumber;
     }
 }
