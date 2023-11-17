@@ -3,6 +3,7 @@ using Game2048.Logic.Enums;
 using Game2048.Logic.Saving;
 using Game2048.Repository.Exceptions;
 using Game2048.Shared.Enums;
+using Game2048.Shared.EventHandlers;
 using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -71,6 +72,7 @@ public class GameLogic : IGameLogic
     {
         bool inGame = true;
         var endReason = PlayEndedReason.Unknown;
+        logic.Start();
         while (inGame)
         {
             var inputResult = InputResult.Unknown;

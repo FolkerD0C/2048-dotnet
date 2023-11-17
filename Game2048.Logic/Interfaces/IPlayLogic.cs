@@ -8,14 +8,15 @@ namespace Game2048.Logic;
 
 public interface IPlayLogic
 {
-    public int RemainingLives { get; }
-    public int RemainingUndos { get; }
-    public int HighestNumber { get; }
-    public string PlayerName { get; set; }
-    public IGamePosition CurrentPosition { get; }
+    int RemainingLives { get; }
+    int RemainingUndos { get; }
+    int HighestNumber { get; }
+    string PlayerName { get; set; }
+    void Start();
     InputResult HandleInput(GameInput input);
-    public event EventHandler<MoveHappenedEventArgs>? MoveHappened;
-    public event EventHandler<UndoHappenedEventArgs>? UndoHappened;
-    public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
-    public event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
+    event EventHandler<PlayStartedEventArgs>? PlayStarted;
+    event EventHandler<MoveHappenedEventArgs>? MoveHappened;
+    event EventHandler<UndoHappenedEventArgs>? UndoHappened;
+    event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
+    event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
 }
