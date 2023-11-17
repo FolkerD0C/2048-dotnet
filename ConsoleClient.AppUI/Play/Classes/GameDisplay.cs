@@ -336,7 +336,7 @@ public class GameDisplay : IGameDisplay
 
     public void OnErrorHappened(object? sender, ErrorHappenedEventArgs args)
     {
-        // TODO make PlayErrorMessageOverlay class that implements IPlayErrorMessageOverlay
+        new PlayErrorMessageOverlay(args.ErrorMessage).PrintErrorMessage();
     }
 
     #region Handle move event
