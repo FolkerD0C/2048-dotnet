@@ -35,6 +35,7 @@ public static class ConfigManager
     }
 
 #pragma warning disable CS8600
+    // FIXME make returntype nullable
     public static T GetConfigItem<T>(string configItemName, T configItemType)
     {
         var configItemInfo = GetConfigItem(configItemName);
