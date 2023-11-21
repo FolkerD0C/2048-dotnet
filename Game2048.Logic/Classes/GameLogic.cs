@@ -56,15 +56,15 @@ public class GameLogic : IGameLogic
     {
         IGameSaveHandler saveHandler = new GameSaveHandler(saveFileInfos[saveGameName]);
         saveHandler.Load();
-        logic = PlayLogic.GetLogicFromSave(saveHandler.GameRepository);
         PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
+        logic = PlayLogic.GetLogicFromSave(saveHandler.GameRepository);
         return logic;
     }
 
     public IPlayLogic NewGame()
     {
-        logic = new PlayLogic();
         PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem("DefaultGridHeight", default(int)), ConfigManager.GetConfigItem("DefaultGridWidth", default(int)));
+        logic = new PlayLogic();
         return logic;
     }
 
