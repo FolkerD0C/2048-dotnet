@@ -21,10 +21,15 @@ public static class ConfigManager
         ));
     }
 
-    static FieldInfo? GetConfigItem(string configItemName)
+    static FieldInfo GetConfigItem(string configItemName)
     {
-        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
-        return configItems?.Where(item => item.Name == configItemName).FirstOrDefault();
+        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new Exception("Config can not be null.");
+        var matchingConfigItems = configItems.Where(item => item.Name == configItemName);
+        if (matchingConfigItems is null)
+        {
+            throw new Exception($"Config item '{configItemName}' not found");
+        }
+        return matchingConfigItems.FirstOrDefault();
     }
 
     public static void SetConfigItem<T>(string configItemName, T newValue)
@@ -35,14 +40,13 @@ public static class ConfigManager
     }
 
 #pragma warning disable CS8600
-    // FIXME make returntype nullable
-    public static T GetConfigItem<T>(string configItemName, T configItemType)
+    public static T? GetConfigItem<T>(string configItemName, T configItemType)
     {
         var configItemInfo = GetConfigItem(configItemName);
-        if (configItemInfo?.DeclaringType == configItemType?.GetType())
+        if (configItemInfo?.GetValue(null) is T configItemValue)
         {
             // https://stackoverflow.com/questions/2330026/is-it-possible-to-set-this-static-private-member-of-a-static-class-with-reflecti
-            return (T)configItemInfo?.GetValue(null) ?? throw new NullReferenceException("Config item can not be null");
+            return configItemValue;
         }
         throw new Exception("Wrong type request");
     }
