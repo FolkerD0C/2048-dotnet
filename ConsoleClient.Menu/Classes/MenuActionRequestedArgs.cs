@@ -8,8 +8,8 @@ public class MenuActionRequestedArgs : IMenuActionRequestedArgs
     readonly MenuActionType menuActionType;
     public MenuActionType ActionType => menuActionType;
 
-    readonly IMenu subMenu;
-    public IMenu SubMenu => subMenu;
+    readonly IConsoleMenu subMenu;
+    public IConsoleMenu SubMenu => subMenu;
 
     readonly Action action;
     public Action Action => action;
@@ -20,7 +20,7 @@ public class MenuActionRequestedArgs : IMenuActionRequestedArgs
     readonly string actionStringArg;
     public string ActionStringArg => actionStringArg;
 
-    MenuActionRequestedArgs(MenuActionType menuActionType, IMenu subMenu, Action action, Action<string> actionWithStringArg, string actionStringArg)
+    MenuActionRequestedArgs(MenuActionType menuActionType, IConsoleMenu subMenu, Action action, Action<string> actionWithStringArg, string actionStringArg)
     {
         this.menuActionType = menuActionType;
         this.subMenu = subMenu;
@@ -29,12 +29,12 @@ public class MenuActionRequestedArgs : IMenuActionRequestedArgs
         this.actionStringArg = actionStringArg;
     }
 
-    public MenuActionRequestedArgs(IMenu subMenu) : this(MenuActionType.SubMenu, subMenu, () => { }, (s) => { }, "")
+    public MenuActionRequestedArgs(IConsoleMenu subMenu) : this(MenuActionType.SubMenu, subMenu, () => { }, (s) => { }, "")
     { }
 
-    public MenuActionRequestedArgs(Action action) : this(MenuActionType.Action, new Menu(), action, (s) => { }, "")
+    public MenuActionRequestedArgs(Action action) : this(MenuActionType.Action, new ConsoleMenu(), action, (s) => { }, "")
     { }
 
-    public MenuActionRequestedArgs(Action<string> actionWithStringArg, string actionStringArg) : this(MenuActionType.ActionWithStringArg, new Menu(), () => { }, actionWithStringArg, actionStringArg)
+    public MenuActionRequestedArgs(Action<string> actionWithStringArg, string actionStringArg) : this(MenuActionType.ActionWithStringArg, new ConsoleMenu(), () => { }, actionWithStringArg, actionStringArg)
     { }
 }
