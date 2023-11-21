@@ -202,6 +202,7 @@ public class GameDisplay : IGameDisplay
     void ConstructGridFrame()
     {
         string rowfull = "";
+        tilePositions = new Coord[gridHeight, gridWidth];
         for (int i = 0; i < gridHeight; i++)
         {
             rowfull = "" +  GridCornerElement;

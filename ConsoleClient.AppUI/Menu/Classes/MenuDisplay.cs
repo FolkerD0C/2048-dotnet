@@ -86,6 +86,8 @@ public class MenuDisplay : IMenuDisplay
         horizontalOffset = longestRowLength < DisplayManager.Width
             ? (DisplayManager.Width - longestRowLength) / 2 : 0;
 
+        DisplayManager.NewOverlay(this);
+
         for (int i = 0; i < displayTextRowCount; i++)
         {
             DisplayManager.PrintText(
