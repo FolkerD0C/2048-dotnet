@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +13,7 @@ public static class ConfigManager
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
         var result = new List<(string Name, object? Value, Type Type)>();
-        return configItems.Select(configItemAsFieldInfo => 
+        return configItems.Select(configItemAsFieldInfo =>
         (
             configItemAsFieldInfo.Name,
             configItemAsFieldInfo.GetValue(null),
@@ -25,11 +25,11 @@ public static class ConfigManager
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new Exception("Config can not be null.");
         var matchingConfigItems = configItems.Where(item => item.Name == configItemName);
-        if (matchingConfigItems is null)
+        if (!matchingConfigItems.Any())
         {
             throw new Exception($"Config item '{configItemName}' not found");
         }
-        return matchingConfigItems.FirstOrDefault();
+        return matchingConfigItems.First();
     }
 
     public static void SetConfigItem<T>(string configItemName, T newValue)

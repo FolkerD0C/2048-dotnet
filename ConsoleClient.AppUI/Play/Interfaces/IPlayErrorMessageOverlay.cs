@@ -1,5 +1,4 @@
 using ConsoleClient.Display;
-using System.Collections.Generic;
 
 namespace Game2048.ConsoleFrontend.Display;
 

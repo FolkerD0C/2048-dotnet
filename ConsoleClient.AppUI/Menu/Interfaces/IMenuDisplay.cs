@@ -1,8 +1,6 @@
 using ConsoleClient.Display;
-using ConsoleClient.Menu;
 using ConsoleClient.Menu.EventHandlers;
 using System;
-using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Menu;
 

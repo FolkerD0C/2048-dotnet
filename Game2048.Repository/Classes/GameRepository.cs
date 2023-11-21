@@ -55,7 +55,7 @@ public class GameRepository : IGameRepository
         randomNumberGenerator = new Random();
         undoChain = new LinkedList<IGamePosition>();
         playerName = "";
-        acceptedSpawnables = ConfigManager.GetConfigItem("DefaultAcceptedSpawnables", new List<int>());
+        acceptedSpawnables = ConfigManager.GetConfigItem("DefaultAcceptedSpawnables", new List<int>()) ?? throw new NullReferenceException("Default accepted spawnables config item can not be null.");
         maxUndos = ConfigManager.GetConfigItem("DefaultMaxUndos", default(int));
         if (newGame)
         {

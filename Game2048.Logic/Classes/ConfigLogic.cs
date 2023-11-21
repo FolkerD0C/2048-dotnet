@@ -18,7 +18,7 @@ public class ConfigLogic : IConfigLogic
         });
     }
 
-    public T GetConfigValue<T>(string configItemName, T configItemType)
+    public T? GetConfigValue<T>(string configItemName, T configItemType)
     {
         return ConfigManager.GetConfigItem(configItemName, configItemType);
     }

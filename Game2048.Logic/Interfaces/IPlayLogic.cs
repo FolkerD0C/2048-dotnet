@@ -1,7 +1,6 @@
 using Game2048.Logic.Enums;
 using Game2048.Shared.Enums;
 using Game2048.Shared.EventHandlers;
-using Game2048.Shared.Models;
 using System;
 
 namespace Game2048.Logic;
