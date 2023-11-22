@@ -50,8 +50,8 @@ public class MenuDisplay : IMenuDisplay
 
     public bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition)
     {
-        return displayRows.Count >= relativeVerticalPosition
-            && displayRows[relativeVerticalPosition].ColumnCount >= relativeHorizontalPosition
+        return displayRows.Count > relativeVerticalPosition
+            && displayRows[relativeVerticalPosition].ColumnCount > relativeHorizontalPosition
             && displayRows[relativeVerticalPosition][relativeHorizontalPosition].IsSet;
     }
 

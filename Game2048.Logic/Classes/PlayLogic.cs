@@ -2,7 +2,6 @@ using Game2048.Logic.Enums;
 using Game2048.Repository;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
-using Game2048.Repository.Exceptions;
 using Game2048.Shared.Enums;
 using Game2048.Shared.EventHandlers;
 using Game2048.Shared.Models;
@@ -102,11 +101,20 @@ public class PlayLogic : IPlayLogic
                             break;
                         }
                 }
-                IGamePosition moveResult = repository.MoveGrid(moveDirection);
-
-                // If an exception is not thrown from the 'repository.MoveGrid' call, then handle event queue
-                eventQueue.Enqueue(new MoveHappenedEventArgs(moveResult, moveDirection), 2);
-                inputResult = InputResult.Continue;
+                var moveReturnValue = repository.MoveGrid(moveDirection);
+                eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
+                if (moveReturnValue != MoveResult.NoError)
+                {
+                    eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
+                }
+                if (moveReturnValue == MoveResult.GameOverError)
+                {
+                    inputResult = InputResult.GameOver;
+                }
+                else
+                {
+                    inputResult = InputResult.Continue;
+                }
             }
             else
             {
@@ -115,10 +123,11 @@ public class PlayLogic : IPlayLogic
                 {
                     case GameInput.Undo:
                         {
-                            IGamePosition undoResult = repository.Undo();
-
-                            // If an exception is not thrown from the 'repository.Undo' call, then handle event queue
-                            eventQueue.Enqueue(new UndoHappenedEventArgs(undoResult), 2);
+                            IGamePosition? undoResult = repository.Undo();
+                            if (undoResult is not null)
+                            {
+                                eventQueue.Enqueue(new UndoHappenedEventArgs(undoResult), 2);
+                            }
                             inputResult = InputResult.Continue;
                             break;
                         }
@@ -134,24 +143,9 @@ public class PlayLogic : IPlayLogic
                 }
             }
         }
-        catch (NotPlayEndingException exc)
-        {
-            // When a 'NotPlayEndingException' is caught, the 'ErrorHappened' event needs to be invoked,
-            // but there is no need to throw an exception
-            eventQueue.Enqueue(new ErrorHappenedEventArgs(exc.Message), 0);
-        }
-        catch (GameOverException)
-        {
-            // and then another event needs to be invoked because the frontend needs to be informed
-            MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(MiscEvent.GameOver));
-
-            // and then the exception must be thrown
-            // because the logic above this method needs to be informed about this
-            throw;
-        }
         catch (Exception exc)
         {
-            eventQueue.Enqueue(new ErrorHappenedEventArgs(exc.Message), 0);
+            ErrorHappened?.Invoke(this, new ErrorHappenedEventArgs(exc.Message));
             throw;
         }
 
@@ -191,6 +185,33 @@ public class PlayLogic : IPlayLogic
             else if (eventargs is MiscEventHappenedEventArgs miscEventHappenedEventArgs)
             {
                 MiscEventHappened?.Invoke(this, miscEventHappenedEventArgs);
+            }
+            else if (eventargs is GameRepositoryEventHappenedEventArgs gameRepositoryEventHappenedEventArgs)
+            {
+                MiscEventHappenedEventArgs? convertedRepositoryEventArgs;
+                switch (gameRepositoryEventHappenedEventArgs.RepositoryEvent)
+                {
+                    case GameRepositoryEvent.MaxNumberChanged:
+                        {
+                            convertedRepositoryEventArgs = new MiscEventHappenedEventArgs(MiscEvent.MaxNumberChanged, gameRepositoryEventHappenedEventArgs.NumberArg);
+                            break;
+                        }
+                    case GameRepositoryEvent.UndoCountChanged:
+                        {
+                            convertedRepositoryEventArgs = new MiscEventHappenedEventArgs(MiscEvent.UndoCountChanged, gameRepositoryEventHappenedEventArgs.NumberArg);
+                            break;
+                        }
+                    case GameRepositoryEvent.MaxLivesChanged:
+                        {
+                            convertedRepositoryEventArgs = new MiscEventHappenedEventArgs(MiscEvent.MaxLivesChanged, gameRepositoryEventHappenedEventArgs.NumberArg);
+                            break;
+                        }
+                    default:
+                        {
+                            throw new InvalidOperationException("Unkown event type detected");
+                        }
+                }
+                MiscEventHappened?.Invoke(this, convertedRepositoryEventArgs);
             }
         }
     }
