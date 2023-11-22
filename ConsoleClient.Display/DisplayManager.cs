@@ -76,7 +76,8 @@ public static class DisplayManager
             {
                 Value = text[i],
                 ForegroundColor = foregroundColor,
-                BackgroundColor = backgroundColor
+                BackgroundColor = backgroundColor,
+                IsSet = true
             };
             CurrentOverlay[relativeVerticalPosition][relativeHorizontalPosition + i] = displayPosition;
         }
@@ -138,7 +139,7 @@ public static class DisplayManager
                     PrintDisplayPosition(i, j, overlay[i][j]);
                     continue;
                 }
-                var firstDrawableOverlay = OverlayStack.First(overlay => overlay.IsPositionSet(i, j));
+                var firstDrawableOverlay = OverlayStack.FirstOrDefault(overlay => overlay.IsPositionSet(i, j));
                 var displayPositionToPrint = firstDrawableOverlay is not null ? firstDrawableOverlay[i][j] : defaultDisplayPosition;
                 PrintDisplayPosition(i, j, displayPositionToPrint);
             }
