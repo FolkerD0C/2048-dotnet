@@ -5,6 +5,7 @@ using System;
 
 namespace Game2048.Logic;
 
+// TODO add another interface for handling events
 public interface IPlayLogic
 {
     int RemainingLives { get; }
@@ -18,4 +19,5 @@ public interface IPlayLogic
     event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
+    // TODO add event for playended
 }
