@@ -50,8 +50,8 @@ public class MenuDisplay : IMenuDisplay
 
     public bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition)
     {
-        return displayRows.Count >= relativeVerticalPosition
-            && displayRows[relativeVerticalPosition].ColumnCount >= relativeHorizontalPosition
+        return displayRows.Count > relativeVerticalPosition
+            && displayRows[relativeVerticalPosition].ColumnCount > relativeHorizontalPosition
             && displayRows[relativeVerticalPosition][relativeHorizontalPosition].IsSet;
     }
 
@@ -85,6 +85,8 @@ public class MenuDisplay : IMenuDisplay
         }
         horizontalOffset = longestRowLength < DisplayManager.Width
             ? (DisplayManager.Width - longestRowLength) / 2 : 0;
+
+        DisplayManager.NewOverlay(this);
 
         for (int i = 0; i < displayTextRowCount; i++)
         {

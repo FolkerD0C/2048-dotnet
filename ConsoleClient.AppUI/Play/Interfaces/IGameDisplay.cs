@@ -1,5 +1,4 @@
 using ConsoleClient.Display;
-using Game2048.Logic;
 using Game2048.Shared.EventHandlers;
 
 namespace ConsoleClient.AppUI.Play;

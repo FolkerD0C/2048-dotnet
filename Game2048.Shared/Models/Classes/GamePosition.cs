@@ -16,6 +16,11 @@ public class GamePosition : IGamePosition
 
     public int Score { get => score; protected set { score = value; } }
 
+    /// <summary>
+    /// Returns true if movement is possible, else false.
+    /// </summary>
+    public bool CanMove => CheckIfCanMove();
+
     public GamePosition()
     {
         grid = new List<IList<int>>();
@@ -34,10 +39,21 @@ public class GamePosition : IGamePosition
         grid[vertical][horizontal] = tileValue;
     }
 
-    /// <summary>
-    /// Returns true if movement is possible, else false.
-    /// </summary>
-    public bool CanMove => CheckIfCanMove();
+    public IList<(int Vertical, int Horizontal)> GetEmptyTiles()
+    {
+        var result = new List<(int Vertical, int Horizontal)>();
+        for (int i = 0; i < grid.Count; i++)
+        {
+            for (int j = 0; j < grid[i].Count; j++)
+            {
+                if (grid[i][j] == 0)
+                {
+                    result.Add((i, j));
+                }
+            }
+        }
+        return result;
+    }
 
     bool CheckIfCanMove()
     {
@@ -57,12 +73,12 @@ public class GamePosition : IGamePosition
                 }
             }
         }
-        // Check if there are similar tiles horizontally
+        // Check if there are similar tiles vertically
         for (int i = 0; i < PlayEnvironment.GridWidth; i++)
         {
             for (int j = 0; j < PlayEnvironment.GridHeight - 1; j++)
             {
-                if (grid[j][i] == grid[j][i + 1])
+                if (grid[j][i] == grid[j + 1][i])
                 {
                     return true;
                 }
@@ -80,7 +96,7 @@ public class GamePosition : IGamePosition
             resultGrid.Add(new List<int>());
             for (int j = 0; j < grid[i].Count; j++)
             {
-                resultGrid[i][j] = grid[i][j];
+                resultGrid[i].Add(grid[i][j]);
             }
         }
         int resultScore = score;
@@ -103,33 +119,26 @@ public class GamePosition : IGamePosition
 
     public void Move(MoveDirection direction)
     {
-        // Default movement direction is right, so we need to rotate
         switch (direction)
         {
             case MoveDirection.Right:
                 {
-                    Move();
+                    MoveRigth();
                     break;
                 }
             case MoveDirection.Down:
                 {
-                    Rotate();
-                    Move();
-                    RotateCounter();
+                    MoveDown();
                     break;
                 }
             case MoveDirection.Left:
                 {
-                    RotateHalf();
-                    Move();
-                    RotateHalf();
+                    MoveLeft();
                     break;
                 }
             case MoveDirection.Up:
                 {
-                    RotateCounter();
-                    Move();
-                    Rotate();
+                    MoveUp();
                     break;
                 }
             default:
@@ -143,84 +152,47 @@ public class GamePosition : IGamePosition
     {
         if (obj is not null && obj is GamePosition other)
         {
-            return grid.Equals(other.Grid) && score == other.Score;
+            for (int i = 0; i < grid.Count; i++)
+            {
+                for (int j = 0; j < grid[i].Count; j++)
+                {
+                    if (grid[i][j] != other.Grid[i][j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            if (score != other.Score)
+            {
+                return false;
+            }
+            return true;
         }
         return false;
     }
 
     /// <summary>
-    /// Rotate the grid 90 degrees clockwise
+    /// Performs movement on the grid to the right.
     /// </summary>
-    void Rotate()
-    {
-        // Moving down
-        IList<IList<int>> result = new List<IList<int>>();
-        for (int i = 0; i < grid[0].Count; i++)
-        {
-            result.Add(new List<int>());
-            for (int j = grid.Count - 1; j > -1; j--)
-            {
-                result[i].Add(grid[j][i]);
-            }
-        }
-        grid = result;
-    }
-
-    /// <summary>
-    /// Rotate the grid 180 degrees
-    /// </summary>
-    void RotateHalf()
-    {
-        // Moving left
-        IList<IList<int>> result = new List<IList<int>>();
-        for (int i = grid.Count - 1; i > -1; i--)
-        {
-            result.Add(new List<int>());
-            for (int j = grid[0].Count - 1; j > -1; j--)
-            {
-                result[grid.Count - i - 1].Add(grid[i][j]);
-            }
-        }
-        grid = result;
-    }
-
-    /// <summary>
-    /// Rotate the grid 90 degrees counter clockwise
-    /// </summary>
-    void RotateCounter()
-    {
-        // Moving up
-        IList<IList<int>> result = new List<IList<int>>();
-        for (int i = grid[0].Count - 1; i > -1; i--)
-        {
-            result.Add(new List<int>());
-            for (int j = 0; j < grid.Count; j++)
-            {
-                result[grid[0].Count - i - 1].Add(grid[j][i]);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Performs the movement on the grid, to the right direction.
-    /// </summary>
-    void Move()
+    void MoveRigth()
     {
         // We need to iterate over all rows
-        for (int row = 0; row < Grid.Count; row++)
+        for (int row = 0; row < grid.Count; row++)
         {
-            int firstColumn = PlayEnvironment.GridWidth - 2;
+            //Setting first column to be the rightmost index - 1
+            int firstColumn = grid[row].Count - 2;
+            //Setting last column to be the leftmost index
             int lastColumn = 0;
-            int rightmostColumn = PlayEnvironment.GridWidth - 1;
+            int rightmostColumn = grid[row].Count - 1;
             // First we need to sweep all tiles right, to remove empty tiles
             for (int column = firstColumn; column >= lastColumn; column--)
             {
                 int currentColumn = column;
                 while (currentColumn < rightmostColumn && EmptyLogic(row, currentColumn, row, currentColumn + 1))
                 {
-                    int numberToMove = Grid[row][currentColumn];
-                    Grid[row][currentColumn] = 0;
-                    Grid[row][currentColumn + 1] = numberToMove;
+                    int numberToMove = grid[row][currentColumn];
+                    grid[row][currentColumn] = 0;
+                    grid[row][currentColumn + 1] = numberToMove;
                     currentColumn++;
                 }
             }
@@ -229,9 +201,9 @@ public class GamePosition : IGamePosition
             {
                 if (AdditionLogic(row, column, row, column + 1))
                 {
-                    int numberToMove = Grid[row][column];
-                    Grid[row][column] = 0;
-                    Grid[row][column + 1] = numberToMove * 2;
+                    int numberToMove = grid[row][column];
+                    grid[row][column] = 0;
+                    grid[row][column + 1] = numberToMove * 2;
                     column--;
                 }
             }
@@ -241,10 +213,163 @@ public class GamePosition : IGamePosition
                 int currentColumn = column;
                 while (currentColumn < rightmostColumn - 1 && EmptyLogic(row, currentColumn, row, currentColumn + 1))
                 {
-                    int numberToMove = Grid[row][currentColumn];
-                    Grid[row][currentColumn] = 0;
-                    Grid[row][currentColumn + 1] = numberToMove;
+                    int numberToMove = grid[row][currentColumn];
+                    grid[row][currentColumn] = 0;
+                    grid[row][currentColumn + 1] = numberToMove;
                     currentColumn++;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Performs movement on the grid to the left.
+    /// </summary>
+    void MoveLeft()
+    {
+        // We need to iterate over all rows
+        for (int row = grid.Count - 1; row >= 0; row--)
+        {
+            //Setting first column to be the leftmost index + 1
+            int firstColumn = 1;
+            //Setting last column to be the rightmost index
+            int lastColumn = grid[row].Count - 1;
+            int leftmostColumn = 0;
+            // First we need to sweep all tiles left, to remove empty tiles
+            for (int column = firstColumn; column <= lastColumn; column++)
+            {
+                int currentColumn = column;
+                while (currentColumn > leftmostColumn && EmptyLogic(row, currentColumn, row, currentColumn - 1))
+                {
+                    int numberToMove = grid[row][currentColumn];
+                    grid[row][currentColumn] = 0;
+                    grid[row][currentColumn - 1] = numberToMove;
+                    currentColumn--;
+                }
+            }
+            // Then we need to check and perform additions
+            for (int column = firstColumn; column <= lastColumn; column++)
+            {
+                if (AdditionLogic(row, column, row, column - 1))
+                {
+                    int numberToMove = grid[row][column];
+                    grid[row][column] = 0;
+                    grid[row][column - 1] = numberToMove * 2;
+                    column++;
+                }
+            }
+            // And last we need to perform an empty check and sweep again
+            for (int column = firstColumn + 1; column <= lastColumn; column++)
+            {
+                int currentColumn = column;
+                while (currentColumn > leftmostColumn + 1 && EmptyLogic(row, currentColumn, row, currentColumn - 1))
+                {
+                    int numberToMove = grid[row][currentColumn];
+                    grid[row][currentColumn] = 0;
+                    grid[row][currentColumn - 1] = numberToMove;
+                    currentColumn--;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Performs movement on the grid upwards.
+    /// </summary>
+    void MoveUp()
+    {
+        // We need to iterate over all columns
+        for (int column = 0; column < grid[0].Count; column++)
+        {
+            //Setting first row to be the upmost index + 1
+            int firstRow = 1;
+            //Setting last row to be the downmost index
+            int lastRow = grid.Count - 1;
+            int upmostRow = 0;
+            // First we need to sweep all tiles up, to remove empty tiles
+            for (int row = firstRow; row <= lastRow; row++)
+            {
+                int currentRow = row;
+                while (currentRow > upmostRow && EmptyLogic(currentRow, column, currentRow - 1, column))
+                {
+                    int numberToMove = grid[currentRow][column];
+                    grid[currentRow][column] = 0;
+                    grid[currentRow - 1][column] = numberToMove;
+                    currentRow--;
+                }
+            }
+            // Then we need to check and perform additions
+            for (int row = firstRow; row <= lastRow; row++)
+            {
+                if (AdditionLogic(row, column, row - 1, column))
+                {
+                    int numberToMove = grid[row][column];
+                    grid[row][column] = 0;
+                    grid[row - 1][column] = numberToMove * 2;
+                    row++;
+                }
+            }
+            // And last we need to perform an empty check and sweep again
+            for (int row = firstRow + 1; row <= lastRow; row++)
+            {
+                int currentRow = row;
+                while (currentRow > upmostRow + 1 && EmptyLogic(currentRow, column, currentRow - 1, column))
+                {
+                    int numberToMove = grid[currentRow][column];
+                    grid[currentRow][column] = 0;
+                    grid[currentRow - 1][column] = numberToMove;
+                    currentRow--;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Performs movement on the grid downwards.
+    /// </summary>
+    void MoveDown()
+    {
+        // We need to iterate over all columns
+        for (int column = grid[0].Count - 1; column >= 0; column--)
+        {
+            //Setting first row to be the downmost index - 1
+            int firstRow = grid[0].Count - 2;
+            //Setting last row to be the upmost index
+            int lastRow = 0;
+            int downmostRow = grid[0].Count - 1;
+            // First we need to sweep all tiles down, to remove empty tiles
+            for (int row = firstRow; row >= lastRow; row--)
+            {
+                int currentRow = row;
+                while (currentRow < downmostRow && EmptyLogic(currentRow, column, currentRow + 1, column))
+                {
+                    int numberToMove = grid[currentRow][column];
+                    grid[currentRow][column] = 0;
+                    grid[currentRow + 1][column] = numberToMove;
+                    currentRow++;
+                }
+            }
+            // Then we need to check and perform additions
+            for (int row = firstRow; row >= lastRow; row--)
+            {
+                if (AdditionLogic(row, column, row + 1, column))
+                {
+                    int numberToMove = grid[row][column];
+                    grid[row][column] = 0;
+                    grid[row + 1][column] = numberToMove * 2;
+                    row--;
+                }
+            }
+            // And last we need to perform an empty check and sweep again
+            for (int row = firstRow - 1; row >= lastRow; row--)
+            {
+                int currentRow = row;
+                while (currentRow < downmostRow - 1 && EmptyLogic(currentRow, column, currentRow + 1, column))
+                {
+                    int numberToMove = grid[currentRow][column];
+                    grid[currentRow][column] = 0;
+                    grid[currentRow + 1][column] = numberToMove;
+                    currentRow++;
                 }
             }
         }
@@ -261,9 +386,9 @@ public class GamePosition : IGamePosition
     bool AdditionLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
-        return Grid[currentVerticalPosition][currentHorizontalPosition] != 0 &&
-            Grid[nextVerticalPosition][nextHorizontalPosition] ==
-            Grid[currentVerticalPosition][currentHorizontalPosition];
+        return grid[currentVerticalPosition][currentHorizontalPosition] != 0 &&
+            grid[nextVerticalPosition][nextHorizontalPosition] ==
+            grid[currentVerticalPosition][currentHorizontalPosition];
     }
 
     /// <summary>
@@ -277,8 +402,8 @@ public class GamePosition : IGamePosition
     bool EmptyLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
-        return Grid[nextVerticalPosition][nextHorizontalPosition] == 0 &&
-            Grid[currentVerticalPosition][currentHorizontalPosition] != 0;
+        return grid[nextVerticalPosition][nextHorizontalPosition] == 0 &&
+            grid[currentVerticalPosition][currentHorizontalPosition] != 0;
     }
 
     public override int GetHashCode()

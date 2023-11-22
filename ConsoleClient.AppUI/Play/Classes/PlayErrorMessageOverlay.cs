@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
 using Game2048.ConsoleFrontend.Display;
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Play;
 
@@ -26,7 +24,7 @@ public class PlayErrorMessageOverlay : IPlayErrorMessageOverlay
         }
         set { displayRows[index] = value; }
     }
-    
+
     readonly IList<string> errorMessage;
     int verticalOffset;
     int horizontalOffset;
@@ -49,12 +47,12 @@ public class PlayErrorMessageOverlay : IPlayErrorMessageOverlay
         rowLength = DisplayManager.Width / 2;
         horizontalOffset = (DisplayManager.Width - rowLength) / 2;
         IList<string> result = new List<string>();
-        while (error.Length > 0)
+        while (error.Length >= rowLength)
         {
-            string currentRow = string.Concat(error.Take(rowLength));
-            error = error.Remove(0, rowLength);
-            result.Add(currentRow);
+            result.Add(error[..rowLength]);
+            error = error[rowLength..];
         }
+        result.Add(error);
         verticalOffset = (DisplayManager.Height - result.Count) / 2;
         return result;
     }

@@ -50,7 +50,7 @@ public class DisplayRow : IDisplayRow
         return displayPositions.Any(dp => dp.IsSet);
     }
 
-    public IDisplayRow PadRight(int width, ConsoleColor foregroundColor, ConsoleColor backgroundColor, char value)
+    public IDisplayRow PadRight(int width, ConsoleColor foregroundColor, ConsoleColor backgroundColor, char value, bool isSet = false)
     {
         while (ColumnCount < width)
         {
@@ -59,7 +59,7 @@ public class DisplayRow : IDisplayRow
                 BackgroundColor = backgroundColor,
                 ForegroundColor = foregroundColor,
                 Value = value,
-                IsSet = false
+                IsSet = isSet
             });
         }
         return this;
@@ -67,7 +67,17 @@ public class DisplayRow : IDisplayRow
 
     public DisplayPosition this[int index]
     {
-        get { return displayPositions[index]; }
+        get
+        {
+            while (displayPositions.Count <= index)
+            {
+                displayPositions.Add(new DisplayPosition()
+                {
+                    IsSet = false
+                });
+            }
+            return displayPositions[index];
+        }
         set
         {
             while (displayPositions.Count <= index)

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Logic", "Game2048.Logic\Game2048.Logic.csproj", "{284DAD0F-E4B2-4290-840E-44D525D0FC75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048-dotnet-console", "2048-dotnet-console\2048-dotnet-console.csproj", "{94676E22-E29A-4B48-A4DA-7DE945F0B685}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Shared", "Game2048.Shared\Game2048.Shared.csproj", "{C94466CC-E496-4D62-9AAD-1B528806B798}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "Game2048.Config\Game2048.Config.csproj", "{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}"
@@ -17,11 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.Display", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.Shared", "ConsoleClient.Shared\ConsoleClient.Shared.csproj", "{EAFD5C2E-8BE6-4EFC-B4E4-B1967FFF78F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient.Menu", "ConsoleClient.Menu\ConsoleClient.Menu.csproj", "{C77DE883-A115-46C5-A2E3-D0C6BB4BB2A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.Menu", "ConsoleClient.Menu\ConsoleClient.Menu.csproj", "{C77DE883-A115-46C5-A2E3-D0C6BB4BB2A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient.AppUI", "ConsoleClient.AppUI\ConsoleClient.AppUI.csproj", "{DBB45F59-0085-4573-84B9-5A48535EB57E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.AppUI", "ConsoleClient.AppUI\ConsoleClient.AppUI.csproj", "{DBB45F59-0085-4573-84B9-5A48535EB57E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient.App", "ConsoleClient.App\ConsoleClient.App.csproj", "{CC18608A-A987-4F89-95C3-E8E9FED46999}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.App", "ConsoleClient.App\ConsoleClient.App.csproj", "{CC18608A-A987-4F89-95C3-E8E9FED46999}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +31,6 @@ Global
 		{284DAD0F-E4B2-4290-840E-44D525D0FC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{284DAD0F-E4B2-4290-840E-44D525D0FC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{284DAD0F-E4B2-4290-840E-44D525D0FC75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94676E22-E29A-4B48-A4DA-7DE945F0B685}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C94466CC-E496-4D62-9AAD-1B528806B798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C94466CC-E496-4D62-9AAD-1B528806B798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C94466CC-E496-4D62-9AAD-1B528806B798}.Release|Any CPU.ActiveCfg = Release|Any CPU

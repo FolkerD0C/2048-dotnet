@@ -89,7 +89,8 @@ public class GameDisplay : IGameDisplay
                 DisplayManager.Width,
                 DisplayManager.DefaultForegroundColor,
                 DisplayManager.DefaultBackgroundColor,
-                DisplayManager.DefaultDisplayPositionValue
+                DisplayManager.DefaultDisplayPositionValue,
+                true
             ));
         }
         tilePositions = new Coord[0, 0];
@@ -108,7 +109,7 @@ public class GameDisplay : IGameDisplay
             && displayRows[relativeVerticalPosition][relativeHorizontalPosition].IsSet;
     }
 
-#region Initializer/grid drawer
+    #region Initializer/grid drawer
     void InitializeInfos()
     {
         var helpInfos = new string[]
@@ -119,7 +120,7 @@ public class GameDisplay : IGameDisplay
         {
             DisplayManager.PrintText(
                 helpInfos[i],
-                DisplayManager.Height - helpInfos.Length -1 + i,
+                DisplayManager.Height - helpInfos.Length - 1 + i,
                 DisplayManager.Width - helpInfos[i].Length - 1,
                 DisplayManager.DefaultForegroundColor,
                 DisplayManager.DefaultBackgroundColor
@@ -202,9 +203,10 @@ public class GameDisplay : IGameDisplay
     void ConstructGridFrame()
     {
         string rowfull = "";
+        tilePositions = new Coord[gridHeight, gridWidth];
         for (int i = 0; i < gridHeight; i++)
         {
-            rowfull = "" +  GridCornerElement;
+            rowfull = "" + GridCornerElement;
             string rowEmpty = "" + GridVerticalElement;
             for (int j = 0; j < gridWidth; j++)
             {
@@ -213,7 +215,7 @@ public class GameDisplay : IGameDisplay
                 tilePositions[i, j] = new Coord()
                 {
                     Vertical = GridVerticalOffset + 1 + i * 2,
-                    Horizontal = GridHorizontalOffset + 1  + j * (highestNumberWidth + 1)
+                    Horizontal = GridHorizontalOffset + 1 + j * (highestNumberWidth + 1)
                 };
             }
             DisplayManager.PrintText(
@@ -225,7 +227,7 @@ public class GameDisplay : IGameDisplay
             );
             DisplayManager.PrintText(
                 rowEmpty,
-                GridVerticalOffset + 1 * 2 + 1,
+                GridVerticalOffset + i * 2 + 1,
                 GridHorizontalOffset,
                 DisplayManager.DefaultForegroundColor,
                 DisplayManager.DefaultBackgroundColor
@@ -239,9 +241,9 @@ public class GameDisplay : IGameDisplay
             DisplayManager.DefaultBackgroundColor
         );
     }
-#endregion
+    #endregion
 
-#region Print individual values
+    #region Print individual values
     void PrintTile(int tileValue, Coord tilePosition)
     {
         ConsoleColor foregroundColor = defaultTileForeground;
@@ -259,7 +261,7 @@ public class GameDisplay : IGameDisplay
             backgroundColor
         );
     }
-    
+
     void PrintScore(int score)
     {
         DisplayManager.PrintText(
@@ -292,43 +294,43 @@ public class GameDisplay : IGameDisplay
             defaultTileBackground
         );
     }
-#endregion
+    #endregion
 
     public void MiscEventHappenedDispatcher(object? sender, MiscEventHappenedEventArgs args)
     {
         switch (args.Event)
         {
             case MiscEvent.GameOver:
-            {
-                DisplayManager.RollBackOverLay();
-                // TODO do something, like print error message
-                break;
-            }
-            case MiscEvent.GoalReached:
-            {
-                // TODO print congrats
-                break;
-            }
-            case MiscEvent.MaxNumberChanged:
-            {
-                if ($"{args.NumberArg}".Length > highestNumberWidth)
                 {
-                    highestNumberWidth = $"{args.NumberArg}".Length;
-                    ConstructGridFrame();
+                    DisplayManager.RollBackOverLay();
+                    // TODO do something, like print error message
+                    break;
                 }
-                PrintTile(args.NumberArg, highestNumberValueLabelPosition);
-                break;
-            }
+            case MiscEvent.GoalReached:
+                {
+                    // TODO print congrats
+                    break;
+                }
+            case MiscEvent.MaxNumberChanged:
+                {
+                    if ($"{args.NumberArg}".Length > highestNumberWidth)
+                    {
+                        highestNumberWidth = $"{args.NumberArg}".Length;
+                        ConstructGridFrame();
+                    }
+                    PrintTile(args.NumberArg, highestNumberValueLabelPosition);
+                    break;
+                }
             case MiscEvent.UndoCountChanged:
-            {
-                PrintRemainingUndos(args.NumberArg);
-                break;
-            }
+                {
+                    PrintRemainingUndos(args.NumberArg);
+                    break;
+                }
             case MiscEvent.MaxLivesChanged:
-            {
-                PrintRemainingLives(args.NumberArg);
-                break;
-            }
+                {
+                    PrintRemainingLives(args.NumberArg);
+                    break;
+                }
             default:
                 break;
         }
@@ -345,25 +347,25 @@ public class GameDisplay : IGameDisplay
         switch (args.Direction)
         {
             case MoveDirection.Up:
-            {
-                MoveUp(args.Position.Grid);
-                break;
-            }
+                {
+                    MoveUp(args.Position.Grid);
+                    break;
+                }
             case MoveDirection.Down:
-            {
-                MoveDown(args.Position.Grid);
-                break;
-            }
+                {
+                    MoveDown(args.Position.Grid);
+                    break;
+                }
             case MoveDirection.Left:
-            {
-                MoveLeft(args.Position.Grid);
-                break;
-            }
+                {
+                    MoveLeft(args.Position.Grid);
+                    break;
+                }
             case MoveDirection.Right:
-            {
-                MoveRight(args.Position.Grid);
-                break;
-            }
+                {
+                    MoveRight(args.Position.Grid);
+                    break;
+                }
             default:
                 break;
         }
@@ -420,7 +422,7 @@ public class GameDisplay : IGameDisplay
         gridHeight = args.GridHeight;
         gridWidth = args.GridWidth;
         highestNumberWidth = $"{args.HighestNumber}".Length;
-        
+
         DisplayManager.NewOverlay(this);
 
         InitializeInfos();

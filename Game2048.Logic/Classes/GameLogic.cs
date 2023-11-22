@@ -1,9 +1,7 @@
 using Game2048.Config;
 using Game2048.Logic.Enums;
 using Game2048.Logic.Saving;
-using Game2048.Repository.Exceptions;
 using Game2048.Shared.Enums;
-using Game2048.Shared.EventHandlers;
 using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -56,15 +54,15 @@ public class GameLogic : IGameLogic
     {
         IGameSaveHandler saveHandler = new GameSaveHandler(saveFileInfos[saveGameName]);
         saveHandler.Load();
-        logic = PlayLogic.GetLogicFromSave(saveHandler.GameRepository);
         PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
+        logic = PlayLogic.GetLogicFromSave(saveHandler.GameRepository);
         return logic;
     }
 
     public IPlayLogic NewGame()
     {
-        logic = new PlayLogic();
         PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem("DefaultGridHeight", default(int)), ConfigManager.GetConfigItem("DefaultGridWidth", default(int)));
+        logic = new PlayLogic();
         return logic;
     }
 
@@ -75,17 +73,8 @@ public class GameLogic : IGameLogic
         logic.Start();
         while (inGame)
         {
-            var inputResult = InputResult.Unknown;
-            try
-            {
-                var input = inputMethod();
-                inputResult = logic.HandleInput(input);
-            }
-            catch (GameOverException)
-            {
-                inGame = false;
-                endReason = PlayEndedReason.GameOver;
-            }
+            var input = inputMethod();
+            var inputResult = logic.HandleInput(input);
 
             if (inputResult == InputResult.Pause)
             {
@@ -99,6 +88,10 @@ public class GameLogic : IGameLogic
                     inGame = false;
                     endReason = PlayEndedReason.Exit;
                 }
+            }
+            else if (inputResult == InputResult.GameOver)
+            {
+                inGame = false;
             }
         }
         return endReason;

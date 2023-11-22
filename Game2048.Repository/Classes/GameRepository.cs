@@ -1,7 +1,6 @@
 using Game2048.Config;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
-using Game2048.Repository.Exceptions;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
 using System;
@@ -42,6 +41,11 @@ public class GameRepository : IGameRepository
     LinkedList<IGamePosition> undoChain;
     public LinkedList<IGamePosition> UndoChain => undoChain;
 
+    public IGamePosition CurrentGameState => undoChain.First();
+
+    string moveResultErrorMessage;
+    public string MoveResultErrorMessage => moveResultErrorMessage;
+
     // TODO save me??
     readonly int maxUndos;
 
@@ -55,8 +59,9 @@ public class GameRepository : IGameRepository
         randomNumberGenerator = new Random();
         undoChain = new LinkedList<IGamePosition>();
         playerName = "";
-        acceptedSpawnables = ConfigManager.GetConfigItem("DefaultAcceptedSpawnables", new List<int>());
+        acceptedSpawnables = ConfigManager.GetConfigItem("DefaultAcceptedSpawnables", new List<int>()) ?? throw new NullReferenceException("Default accepted spawnables config item can not be null.");
         maxUndos = ConfigManager.GetConfigItem("DefaultMaxUndos", default(int));
+        moveResultErrorMessage = "";
         if (newGame)
         {
             // Setting default values.
@@ -91,29 +96,15 @@ public class GameRepository : IGameRepository
         return resultRepository;
     }
 
-    public IGamePosition MoveGrid(MoveDirection direction)
+    public MoveResult MoveGrid(MoveDirection direction)
     {
         // Check if grid can move
         var firstPosition = (undoChain.First
             ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value;
-        if (!firstPosition.CanMove)
-        {
-            if (--remainingLives <= 0)
-            {
-                throw new GameOverException();
-            }
-            GameRepositoryEventHappened?.Invoke(this,
-                new GameRepositoryEventHappenedEventArgs(GameRepositoryEvent.MaxLivesChanged, RemainingLives));
-            throw new GridStuckException();
-        }
 
         // Perform move on a copy
         IGamePosition gamePositionCopy = firstPosition.Copy();
         gamePositionCopy.Move(direction);
-        if (firstPosition.Equals(gamePositionCopy))
-        {
-            throw new CannotMoveException();
-        }
 
         // If move happened then add current position to the undochain
         undoChain.AddFirst(gamePositionCopy);
@@ -130,10 +121,24 @@ public class GameRepository : IGameRepository
         // Perform after-move actions
         PlaceRandomNumber();
         GetCurrentMaxNumber();
-        return gamePositionCopy;
+        if (!gamePositionCopy.CanMove)
+        {
+            if (--remainingLives <= 0)
+            {
+                moveResultErrorMessage = "You have ran out of lives, game is over";
+                return MoveResult.GameOverError;
+            }
+            GameRepositoryEventHappened?.Invoke(this,
+                new GameRepositoryEventHappenedEventArgs(GameRepositoryEvent.MaxLivesChanged, RemainingLives));
+            moveResultErrorMessage = "The grid is stuck, you can not " +
+                "move, you lose a life. If you run out of lives it is GAME OVER. " +
+                "You can undo if you have lives.";
+            return MoveResult.NotGameEndingError;
+        }
+        return MoveResult.NoError;
     }
 
-    public IGamePosition Undo()
+    public IGamePosition? Undo()
     {
         if (undoChain.Count > 1)
         {
@@ -142,19 +147,26 @@ public class GameRepository : IGameRepository
                 new GameRepositoryEventHappenedEventArgs(GameRepositoryEvent.UndoCountChanged, RemainingUndos));
             return (undoChain.First ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value;
         }
-        throw new UndoImpossibleException();
+        return null;
     }
 
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 
     void PlaceRandomNumber()
     {
-        // FIXME random number possibly overwriting existing data
-        int vertical = randomNumberGenerator.Next(gridHeight);
-        int horizontal = randomNumberGenerator.Next(gridWidth);
+        if (undoChain.First is null)
+        {
+            throw new NullReferenceException("Game repository can not have empty undo chain.");
+        }
+        var emptyTiles = undoChain.First.Value.GetEmptyTiles();
+        if (emptyTiles.Count == 0)
+        {
+            return;
+        }
+        var targetTile = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
-        (undoChain.First ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value
-            .PlaceTile(vertical, horizontal, tileValue);
+        undoChain.First.Value
+            .PlaceTile(targetTile.Vertical, targetTile.Horizontal, tileValue);
     }
 
     void GetCurrentMaxNumber()

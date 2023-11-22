@@ -1,10 +1,12 @@
-using Game2048.ConsoleFrontend.Helpers.Enums;
+﻿using ConsoleClient.Menu.Enums;
+using Game2048.Shared.Enums;
 using System;
 
-namespace Game2048.ConsoleFrontend.Helpers;
-public static class InputProvider
+namespace ConsoleClient.App.Resources;
+
+internal static class InputProvider
 {
-    public static GameInput ProvidePlayInput()
+    internal static GameInput ProvidePlayInput()
     {
         GameInput input = GameInput.Unknown;
         while (input == GameInput.Unknown)
@@ -48,7 +50,7 @@ public static class InputProvider
         throw new InvalidOperationException("Invalid input.");
     }
 
-    public static MenuInput ProvideMenuInput()
+    internal static MenuInput ProvideMenuInput()
     {
         MenuInput input = MenuInput.Unknown;
         while (input == MenuInput.Unknown)

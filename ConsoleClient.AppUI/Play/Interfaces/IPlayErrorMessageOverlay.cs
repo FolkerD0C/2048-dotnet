@@ -1,8 +1,8 @@
 using ConsoleClient.Display;
-using System.Collections.Generic;
 
 namespace Game2048.ConsoleFrontend.Display;
 
+// TODO do I need this interface
 public interface IPlayErrorMessageOverlay : IOverLay
 {
     void PrintErrorMessage();

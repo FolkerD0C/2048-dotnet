@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.Menu;
 
-public class Menu : IMenu
+public class ConsoleMenu : IConsoleMenu
 {
+    bool inNavigation;
+
     readonly IList<IMenuItem> menuItems;
     public IList<IMenuItem> MenuItems => menuItems;
 
@@ -20,18 +22,19 @@ public class Menu : IMenu
     public event EventHandler? MenuNavigationEnded;
     public event EventHandler? MenuItemReturnedYes;
 
-    public Menu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction)
+    public ConsoleMenu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction)
     {
         this.menuItems = menuItems;
         this.inputFunction = inputFunction;
+        inNavigation = false;
     }
 
-    public Menu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction, IList<string> displayText) : this(menuItems, inputFunction)
+    public ConsoleMenu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction, IList<string> displayText) : this(menuItems, inputFunction)
     {
         this.displayText = displayText;
     }
 
-    internal Menu() : this(new List<IMenuItem>(), () => MenuInput.Unknown)
+    internal ConsoleMenu() : this(new List<IMenuItem>(), () => MenuInput.Unknown)
     { }
 
     public MenuItemResult Navigate()
@@ -40,8 +43,9 @@ public class Menu : IMenu
         int selectionHelper(int idx) =>
             idx < 0 ? menuItems.Count - 1 : idx >= menuItems.Count ? 0 : idx;
         MenuItemResult menuResult = MenuItemResult.Unknown;
-        MenuNavigationStarted?.Invoke(this, new MenuNavigationStartedEventArgs(menuItems, selectedMenuItemIndex, new List<string>()));
-        while (menuResult != MenuItemResult.Back)
+        MenuNavigationStarted?.Invoke(this, new MenuNavigationStartedEventArgs(menuItems, selectedMenuItemIndex, displayText));
+        inNavigation = true;
+        while (inNavigation)
         {
             switch (inputFunction())
             {
@@ -71,8 +75,21 @@ public class Menu : IMenu
             {
                 MenuItemReturnedYes?.Invoke(this, new EventArgs());
             }
+            if (menuResult == MenuItemResult.Back)
+            {
+                inNavigation = false;
+            }
         }
         MenuNavigationEnded?.Invoke(this, new EventArgs());
         return menuResult;
+    }
+
+    public void EndNavigation()
+    {
+        if (!inNavigation)
+        {
+            throw new InvalidOperationException("Can not end navigation in menu where there is no navigation.");
+        }
+        inNavigation = false;
     }
 }

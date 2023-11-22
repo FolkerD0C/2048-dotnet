@@ -1,3 +1,4 @@
+using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
@@ -16,8 +17,10 @@ public interface IGameRepository
     public string PlayerName { get; set; }
     public int Goal { get; }
     public IList<int>? AcceptedSpawnables { get; }
+    IGamePosition CurrentGameState { get; }
     public LinkedList<IGamePosition> UndoChain { get; }
-    public IGamePosition MoveGrid(MoveDirection input);
-    public IGamePosition Undo();
+    public string MoveResultErrorMessage { get; }
+    public MoveResult MoveGrid(MoveDirection input);
+    public IGamePosition? Undo();
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 }
