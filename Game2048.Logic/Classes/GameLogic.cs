@@ -1,7 +1,6 @@
 using Game2048.Config;
 using Game2048.Logic.Enums;
 using Game2048.Logic.Saving;
-using Game2048.Repository.Exceptions;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
 using System;
@@ -74,17 +73,8 @@ public class GameLogic : IGameLogic
         logic.Start();
         while (inGame)
         {
-            var inputResult = InputResult.Unknown;
-            try
-            {
-                var input = inputMethod();
-                inputResult = logic.HandleInput(input);
-            }
-            catch (GameOverException)
-            {
-                inGame = false;
-                endReason = PlayEndedReason.GameOver;
-            }
+            var input = inputMethod();
+            var inputResult = logic.HandleInput(input);
 
             if (inputResult == InputResult.Pause)
             {
@@ -98,6 +88,10 @@ public class GameLogic : IGameLogic
                     inGame = false;
                     endReason = PlayEndedReason.Exit;
                 }
+            }
+            else if (inputResult == InputResult.GameOver)
+            {
+                inGame = false;
             }
         }
         return endReason;

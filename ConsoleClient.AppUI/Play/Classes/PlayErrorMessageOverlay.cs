@@ -4,7 +4,6 @@ using ConsoleClient.Shared.Models;
 using Game2048.ConsoleFrontend.Display;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ConsoleClient.AppUI.Play;
 
