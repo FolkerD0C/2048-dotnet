@@ -48,12 +48,12 @@ public class PlayErrorMessageOverlay : IPlayErrorMessageOverlay
         rowLength = DisplayManager.Width / 2;
         horizontalOffset = (DisplayManager.Width - rowLength) / 2;
         IList<string> result = new List<string>();
-        while (error.Length > 0)
+        while (error.Length >= rowLength)
         {
-            string currentRow = string.Concat(error.Take(rowLength));
-            error = error.Remove(0, rowLength);
-            result.Add(currentRow);
+            result.Add(error[..rowLength]);
+            error = error[rowLength..];
         }
+        result.Add(error);
         verticalOffset = (DisplayManager.Height - result.Count) / 2;
         return result;
     }

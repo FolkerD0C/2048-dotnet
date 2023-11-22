@@ -89,7 +89,8 @@ public class GameDisplay : IGameDisplay
                 DisplayManager.Width,
                 DisplayManager.DefaultForegroundColor,
                 DisplayManager.DefaultBackgroundColor,
-                DisplayManager.DefaultDisplayPositionValue
+                DisplayManager.DefaultDisplayPositionValue,
+                true
             ));
         }
         tilePositions = new Coord[0, 0];
@@ -226,7 +227,7 @@ public class GameDisplay : IGameDisplay
             );
             DisplayManager.PrintText(
                 rowEmpty,
-                GridVerticalOffset + 1 * 2 + 1,
+                GridVerticalOffset + i * 2 + 1,
                 GridHorizontalOffset,
                 DisplayManager.DefaultForegroundColor,
                 DisplayManager.DefaultBackgroundColor

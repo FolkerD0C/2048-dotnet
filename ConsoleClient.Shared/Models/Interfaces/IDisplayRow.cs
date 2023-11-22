@@ -9,5 +9,5 @@ public interface IDisplayRow
     int ColumnCount { get; }
     bool IsSet { get; }
     DisplayPosition this[int index] { get; set; }
-    IDisplayRow PadRight(int width, ConsoleColor foregroundColor, ConsoleColor backgroundColor, char value);
+    IDisplayRow PadRight(int width, ConsoleColor foregroundColor, ConsoleColor backgroundColor, char value, bool isSet);
 }
