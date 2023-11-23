@@ -1,3 +1,4 @@
+using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
@@ -333,7 +334,7 @@ public class GameDisplay : IGameDisplay
 
     public void OnErrorHappened(object? sender, ErrorHappenedEventArgs args)
     {
-        new PlayErrorMessageOverlay(args.ErrorMessage).PrintErrorMessage();
+        new ErrorMessageOverlay(args.ErrorMessage).PrintErrorMessage();
     }
 
     #region Handle move event

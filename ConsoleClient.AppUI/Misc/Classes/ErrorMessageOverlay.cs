@@ -4,9 +4,9 @@ using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
 
-namespace ConsoleClient.AppUI.Play;
+namespace ConsoleClient.AppUI.Misc;
 
-public class PlayErrorMessageOverlay : IOverLay
+public class ErrorMessageOverlay : IOverLay
 {
     const ConsoleColor defaultForegroundColor = ConsoleColor.White;
     const ConsoleColor defaltBackgroundColor = ConsoleColor.Red;
@@ -34,7 +34,7 @@ public class PlayErrorMessageOverlay : IOverLay
 
     public int RowCount => displayRows.Count;
 
-    public PlayErrorMessageOverlay(string error)
+    public ErrorMessageOverlay(string error)
     {
         displayRows = new List<IDisplayRow>();
         errorMessage = SplitErrorMessage(error);
