@@ -1,13 +1,12 @@
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
-using Game2048.ConsoleFrontend.Display;
 using System;
 using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Play;
 
-public class PlayErrorMessageOverlay : IPlayErrorMessageOverlay
+public class PlayErrorMessageOverlay : IOverLay
 {
     const ConsoleColor defaultForegroundColor = ConsoleColor.White;
     const ConsoleColor defaltBackgroundColor = ConsoleColor.Red;
