@@ -8,3 +8,4 @@
 * TODO add NameForm to AppUI
     * It can also have a NameFormInput enum and a NameFormInputProvider (in ConsoleClient.App)
 * TODO add unit tests for all DLLs where needed
+* TODO write class, interface and method documentation
