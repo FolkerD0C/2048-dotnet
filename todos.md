@@ -11,3 +11,4 @@
 * TODO add unit tests for all DLLs where needed
 * TODO write class, interface and method documentation
 * TODO add a way to roll back multiple overlays without displaying them
+* TODO add folders Game2048 and ConsoleClient and store folders in them, refactor solution
