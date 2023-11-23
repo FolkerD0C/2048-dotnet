@@ -9,6 +9,7 @@ public interface IConsoleMenu
 {
     IList<IMenuItem> MenuItems { get; }
     IList<string>? DisplayText { get; }
+    void AddNavigationBreaker(MenuItemResult result);
     MenuItemResult Navigate();
     void EndNavigation();
     event EventHandler<MenuNavigationStartedEventArgs>? MenuNavigationStarted;

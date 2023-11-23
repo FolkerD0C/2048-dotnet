@@ -22,11 +22,17 @@ public class ConsoleMenu : IConsoleMenu
     public event EventHandler? MenuNavigationEnded;
     public event EventHandler? MenuItemReturnedYes;
 
+    readonly IList<MenuItemResult> navigationBreakers;
+
     public ConsoleMenu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction)
     {
         this.menuItems = menuItems;
         this.inputFunction = inputFunction;
         inNavigation = false;
+        navigationBreakers = new List<MenuItemResult>()
+        {
+            MenuItemResult.Back
+        };
     }
 
     public ConsoleMenu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction, IList<string> displayText) : this(menuItems, inputFunction)
@@ -36,6 +42,11 @@ public class ConsoleMenu : IConsoleMenu
 
     internal ConsoleMenu() : this(new List<IMenuItem>(), () => MenuInput.Unknown)
     { }
+
+    public void AddNavigationBreaker(MenuItemResult navigationBreaker)
+    {
+        navigationBreakers.Add(navigationBreaker);
+    }
 
     public MenuItemResult Navigate()
     {
@@ -75,7 +86,7 @@ public class ConsoleMenu : IConsoleMenu
             {
                 MenuItemReturnedYes?.Invoke(this, new EventArgs());
             }
-            if (menuResult == MenuItemResult.Back)
+            if (navigationBreakers.Contains(menuResult))
             {
                 inNavigation = false;
             }
