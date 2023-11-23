@@ -32,6 +32,9 @@ public class MenuItem : IMenuItem
     public MenuItem(string name, IMenuActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, MenuItemResult.Ok, actionRequestedArgs)
     { }
 
+    public MenuItem(string name, MenuItemResult menuResult, IMenuActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, menuResult, actionRequestedArgs)
+    { }
+
     public MenuItemResult Select()
     {
         if (itemType == MenuItemType.Action)

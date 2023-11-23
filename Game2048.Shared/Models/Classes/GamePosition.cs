@@ -204,6 +204,7 @@ public class GamePosition : IGamePosition
                     int numberToMove = grid[row][column];
                     grid[row][column] = 0;
                     grid[row][column + 1] = numberToMove * 2;
+                    score += numberToMove * 2;
                     column--;
                 }
             }
@@ -255,6 +256,7 @@ public class GamePosition : IGamePosition
                     int numberToMove = grid[row][column];
                     grid[row][column] = 0;
                     grid[row][column - 1] = numberToMove * 2;
+                    score += numberToMove * 2;
                     column++;
                 }
             }
@@ -306,6 +308,7 @@ public class GamePosition : IGamePosition
                     int numberToMove = grid[row][column];
                     grid[row][column] = 0;
                     grid[row - 1][column] = numberToMove * 2;
+                    score += numberToMove * 2;
                     row++;
                 }
             }
@@ -357,6 +360,7 @@ public class GamePosition : IGamePosition
                     int numberToMove = grid[row][column];
                     grid[row][column] = 0;
                     grid[row + 1][column] = numberToMove * 2;
+                    score += numberToMove * 2;
                     row--;
                 }
             }

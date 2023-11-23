@@ -76,22 +76,33 @@ public class GameLogic : IGameLogic
             var input = inputMethod();
             var inputResult = logic.HandleInput(input);
 
+            if (inputResult == InputResult.Continue)
+            {
+                continue;
+            }
+
             if (inputResult == InputResult.Pause)
             {
                 var pauseResult = handlePause();
-                if (pauseResult == PauseResult.Save || pauseResult == PauseResult.SaveAndExit)
+                if (pauseResult == PauseResult.Continue)
                 {
-                    SaveCurrentGame();
+                    continue;
                 }
-                if (pauseResult == PauseResult.SaveAndExit || pauseResult == PauseResult.Exit)
+                if (pauseResult == PauseResult.EndPlay)
                 {
                     inGame = false;
-                    endReason = PlayEndedReason.Exit;
+                    endReason = PlayEndedReason.ExitPlay;
+                }
+                else if (pauseResult == PauseResult.ExitGame)
+                {
+                    inGame = false;
+                    endReason = PlayEndedReason.QuitGame;
                 }
             }
             else if (inputResult == InputResult.GameOver)
             {
                 inGame = false;
+                endReason = PlayEndedReason.GameOver;
             }
         }
         return endReason;

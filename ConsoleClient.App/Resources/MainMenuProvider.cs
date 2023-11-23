@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;
 
-internal static class MenuProvider
+internal static class MainMenuProvider
 {
-    static string gameLogicIsNullErrorMessage = "Game logic can not be null";
+    static readonly string gameLogicIsNullErrorMessage = "Game logic can not be null";
 
     internal static void ProvideMainMenuAction()
     {
@@ -24,6 +24,7 @@ internal static class MenuProvider
             new MenuItem("Exit") // TODO prompt user about exiting (=> Are you sure ...? Y/N)
         };
         IConsoleMenu mainMenu = new ConsoleMenu(mainMenuItems, InputProvider.ProvideMenuInput);
+        PlayProvider.SetMainMenu(mainMenu);
         IMenuDisplay menuDisplay = new MenuDisplay();
         mainMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
         mainMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
@@ -88,7 +89,7 @@ internal static class MenuProvider
         IList<string> displayText = new List<string>();
         foreach (var highscore in highscores)
         {
-            displayText.Add(string.Format("<{}>: [{}]", highscore.PlayerName, highscore.PlayerScore));
+            displayText.Add(string.Format("<{0}>: [{1}]", highscore.PlayerName, highscore.PlayerScore));
         }
         IConsoleMenu highscoresMenu = new ConsoleMenu(new List<IMenuItem>() { back }, InputProvider.ProvideMenuInput, displayText);
         IMenuDisplay menuDisplay = new MenuDisplay();
@@ -146,10 +147,5 @@ internal static class MenuProvider
         gameHelpMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
         gameHelpMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
         gameHelpMenu.Navigate();
-    }
-
-    internal static IConsoleMenu ProvidePauseMenu()
-    {
-        throw new System.NotImplementedException();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ConsoleClient.AppUI.Play;
+using ConsoleClient.Menu;
 using Game2048.Logic;
 using Game2048.Shared.Enums;
 using System;
@@ -7,6 +8,13 @@ namespace ConsoleClient.App.Resources;
 
 internal static class PlayProvider
 {
+    static IConsoleMenu? mainMenu;
+
+    internal static void SetMainMenu(IConsoleMenu? consoleMenu)
+    {
+        mainMenu = consoleMenu;
+    }
+
     internal static void ProvideNewGame()
     {
         if (AppEnvironment.GameLogic is null)
@@ -20,7 +28,11 @@ internal static class PlayProvider
         playLogic.UndoHappened += gameDisplay.OnUndoHappened;
         playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
         playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
-        AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
+        if (endedReason == PlayEndedReason.QuitGame)
+        {
+            mainMenu?.EndNavigation();
+        }
     }
 
     internal static void ProvideLoadedGame(string saveGameName)
@@ -36,11 +48,20 @@ internal static class PlayProvider
         playLogic.UndoHappened += gameDisplay.OnUndoHappened;
         playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
         playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
-        AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
+        if (endedReason == PlayEndedReason.QuitGame)
+        {
+            mainMenu?.EndNavigation();
+        }
     }
 
-    // TODO
     static PauseResult Pause()
+    {
+        return PauseMenuProvider.ProvidePauseMenuAction(ProvideSaveGameAction);
+    }
+
+    // TODO needs NameForm
+    static void ProvideSaveGameAction()
     {
         throw new NotImplementedException();
     }

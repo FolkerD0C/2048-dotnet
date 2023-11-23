@@ -7,6 +7,6 @@ class Run
     static void Main(string[] args)
     {
         AppEnvironment.Initialize();
-        MenuProvider.ProvideMainMenuAction();
+        MainMenuProvider.ProvideMainMenuAction();
     }
 }
