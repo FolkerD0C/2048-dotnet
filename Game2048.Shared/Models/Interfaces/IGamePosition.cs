@@ -8,6 +8,7 @@ public interface IGamePosition : ISerializable
     // TODO make separate interface for backend and frontend
     // frontend interface should contain Grid and Score
     // backend should contain everything else and inherit from ISerializable
+    //     and it should be in Game2048.Repository.Models
     public IList<IList<int>> Grid { get; }
     public int Score { get; }
     public bool CanMove { get; }
