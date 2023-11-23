@@ -296,6 +296,7 @@ public class GameDisplay : IGameDisplay
     }
     #endregion
 
+    #region EventHandling
     public void MiscEventHappenedDispatcher(object? sender, MiscEventHappenedEventArgs args)
     {
         switch (args.Event)
@@ -451,4 +452,5 @@ public class GameDisplay : IGameDisplay
     {
         DisplayManager.RollBackOverLay();
     }
+    #endregion
 }
