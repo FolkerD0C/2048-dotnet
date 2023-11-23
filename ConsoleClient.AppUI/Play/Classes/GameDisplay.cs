@@ -300,12 +300,6 @@ public class GameDisplay : IGameDisplay
     {
         switch (args.Event)
         {
-            case MiscEvent.GameOver:
-                {
-                    DisplayManager.RollBackOverLay();
-                    // TODO do something, like print error message
-                    break;
-                }
             case MiscEvent.GoalReached:
                 {
                     // TODO print congrats
@@ -451,5 +445,10 @@ public class GameDisplay : IGameDisplay
             }
         }
         PrintScore(args.Position.Score);
+    }
+
+    public void OnPlayEnded(object? sender, EventArgs args)
+    {
+        DisplayManager.RollBackOverLay();
     }
 }

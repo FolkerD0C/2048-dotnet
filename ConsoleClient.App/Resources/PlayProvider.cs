@@ -28,6 +28,7 @@ internal static class PlayProvider
         playLogic.UndoHappened += gameDisplay.OnUndoHappened;
         playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
         playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
+        playLogic.PlayEnded += gameDisplay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
         if (endedReason == PlayEndedReason.QuitGame)
         {
@@ -48,6 +49,7 @@ internal static class PlayProvider
         playLogic.UndoHappened += gameDisplay.OnUndoHappened;
         playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
         playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
+        playLogic.PlayEnded += gameDisplay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
         if (endedReason == PlayEndedReason.QuitGame)
         {

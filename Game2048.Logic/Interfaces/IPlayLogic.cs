@@ -13,11 +13,12 @@ public interface IPlayLogic
     int HighestNumber { get; }
     string PlayerName { get; set; }
     void Start();
+    void End();
     InputResult HandleInput(GameInput input);
     event EventHandler<PlayStartedEventArgs>? PlayStarted;
     event EventHandler<MoveHappenedEventArgs>? MoveHappened;
     event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
-    // TODO add event for playended
+    event EventHandler? PlayEnded;
 }

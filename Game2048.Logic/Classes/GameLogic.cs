@@ -105,6 +105,7 @@ public class GameLogic : IGameLogic
                 endReason = PlayEndedReason.GameOver;
             }
         }
+        logic.End();
         return endReason;
     }
 

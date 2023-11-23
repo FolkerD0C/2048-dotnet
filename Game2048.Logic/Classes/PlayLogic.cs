@@ -35,6 +35,7 @@ public class PlayLogic : IPlayLogic
     public event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     public event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
+    public event EventHandler? PlayEnded;
 
     PlayLogic(IGameRepository repository)
     {
@@ -65,6 +66,11 @@ public class PlayLogic : IPlayLogic
             repository.UndoChain.First.Value, repository.RemainingUndos, repository.RemainingLives,
             repository.HighestNumber, repository.GridHeight, repository.GridWidth
         ));
+    }
+
+    public void End()
+    {
+        PlayEnded?.Invoke(this, new EventArgs());
     }
 
     public InputResult HandleInput(GameInput input)
@@ -101,13 +107,13 @@ public class PlayLogic : IPlayLogic
                             break;
                         }
                 }
-                var moveReturnValue = repository.MoveGrid(moveDirection);
+                var moveResult = repository.MoveGrid(moveDirection);
                 eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
-                if (moveReturnValue != MoveResult.NoError)
+                if (moveResult != MoveResult.NoError)
                 {
                     eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
                 }
-                if (moveReturnValue == MoveResult.GameOverError)
+                if (moveResult == MoveResult.GameOverError)
                 {
                     inputResult = InputResult.GameOver;
                 }
