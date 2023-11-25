@@ -22,14 +22,14 @@ public class Highscore : IHighscore
 
     public void Deserialize(string deserializee)
     {
-        var deserializedData = JsonSerializer.Deserialize<(string, int)>(deserializee);
+        var deserializedData = JsonSerializer.Deserialize<Tuple<string, int>>(deserializee) ?? throw new InvalidOperationException($"'{deserializee}' can not be deserialized.");
         playerName = deserializedData.Item1;
         playerScore = deserializedData.Item2;
     }
 
     public string Serialize()
     {
-        return JsonSerializer.Serialize<(string, int)>((playerName, playerScore));
+        return JsonSerializer.Serialize(Tuple.Create(playerName, playerScore));
     }
 
     public int CompareTo(object? obj)

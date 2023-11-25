@@ -108,14 +108,14 @@ public class GameState : IRepositoryState, IGameState
 
     public void Deserialize(string deserializee)
     {
-        var deserializedData = JsonSerializer.Deserialize<(IList<IList<int>>, int)>(deserializee);
+        var deserializedData = JsonSerializer.Deserialize<Tuple<IList<IList<int>>, int>>(deserializee) ?? throw new InvalidOperationException($"'{deserializee}' can not be deserialized.");
         grid = deserializedData.Item1;
         score = deserializedData.Item2;
     }
 
     public string Serialize()
     {
-        return JsonSerializer.Serialize<(IList<IList<int>>, int)>((grid, score));
+        return JsonSerializer.Serialize(Tuple.Create(grid, score));
     }
 
     public void Move(MoveDirection direction)
