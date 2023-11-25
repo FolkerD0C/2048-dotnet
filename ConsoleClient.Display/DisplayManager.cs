@@ -97,7 +97,7 @@ public static class DisplayManager
         Console.CursorVisible = visible;
     }
 
-    static void SetCursorPos(int relativeHorizontalPosition, int relativeVerticalPosition)
+    public static void SetCursorPos(int relativeHorizontalPosition, int relativeVerticalPosition)
     {
         Console.SetCursorPosition(offsetHorizontal + relativeHorizontalPosition, offsetVertical + relativeVerticalPosition);
     }
