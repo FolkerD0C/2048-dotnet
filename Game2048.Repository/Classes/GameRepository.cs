@@ -96,6 +96,15 @@ public class GameRepository : IGameRepository
         return resultRepository;
     }
 
+    public int GetScore()
+    {
+        if (undoChain.First is not null)
+        {
+            return undoChain.First.Value.Score;
+        }
+        throw new InvalidOperationException("There are no game state object left in the undo chain.");
+    }
+
     public MoveResult MoveGrid(MoveDirection direction)
     {
         // Check if grid can move

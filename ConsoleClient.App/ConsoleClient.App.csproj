@@ -11,6 +11,7 @@
     <ProjectReference Include="..\ConsoleClient.AppUI\ConsoleClient.AppUI.csproj" />
     <ProjectReference Include="..\ConsoleClient.Menu\ConsoleClient.Menu.csproj" />
     <ProjectReference Include="..\Game2048.Logic\Game2048.Logic.csproj" />
+    <ProjectReference Include="..\Game2048.Shared\Game2048.Shared.csproj" />
     <Content Include="gameconfig.json" CopyToOutputDirectory="Always" />
     <Content Include="highscores.json" CopyToOutputDirectory="Always" />
   </ItemGroup>

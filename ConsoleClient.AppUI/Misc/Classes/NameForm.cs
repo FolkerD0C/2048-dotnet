@@ -137,6 +137,7 @@ public class NameForm : INameForm
             }
         }
         DisplayManager.SetCursorVisibility(false);
+        DisplayManager.RollBackOverLay();
         return formResult;
     }
 
@@ -165,7 +166,7 @@ public class NameForm : INameForm
     {
         formVerticalOffset = DisplayManager.Height / 2 + 1;
         formHorizontalOffset = (DisplayManager.Width - NameFormLength) / 2;
-        for (int i = 0; i < name.Length && i < NameFormLength;  i++)
+        for (int i = 0; i < name.Length && i < NameFormLength; i++)
         {
             nameFormValue[i] = name[i];
         }

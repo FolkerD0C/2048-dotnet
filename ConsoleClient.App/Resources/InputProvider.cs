@@ -4,7 +4,6 @@ using ConsoleClient.Menu.Enums;
 using Game2048.Shared.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ConsoleClient.App.Resources;
 
@@ -83,7 +82,7 @@ internal static class InputProvider
         throw new InvalidOperationException("Invalid input.");
     }
 
-    readonly static Dictionary<ConsoleKey, NameFormInputType> acceptedNameFormSpecialInputs = new ()
+    readonly static Dictionary<ConsoleKey, NameFormInputType> acceptedNameFormSpecialInputs = new()
     {
         { ConsoleKey.LeftArrow, NameFormInputType.MoveLeft },
         { ConsoleKey.RightArrow, NameFormInputType.MoveRight },

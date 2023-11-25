@@ -20,6 +20,7 @@ public interface IGameRepository
     IGamePosition CurrentGameState { get; }
     public LinkedList<IGamePosition> UndoChain { get; }
     public string MoveResultErrorMessage { get; }
+    int GetScore();
     public MoveResult MoveGrid(MoveDirection input);
     public IGamePosition? Undo();
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;

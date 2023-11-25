@@ -298,6 +298,7 @@ public class GameDisplay : IGameDisplay
     #endregion
 
     #region EventHandling
+    // TODO add event and evenhandler for player name change and also print playername with InitializeInfos()
     public void MiscEventHappenedDispatcher(object? sender, MiscEventHappenedEventArgs args)
     {
         switch (args.Event)

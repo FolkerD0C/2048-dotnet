@@ -11,6 +11,7 @@ public interface IPlayLogic
     int RemainingLives { get; }
     int RemainingUndos { get; }
     int HighestNumber { get; }
+    int PlayerScore { get; }
     string PlayerName { get; set; }
     void Start();
     void End();

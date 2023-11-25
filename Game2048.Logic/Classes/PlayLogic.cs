@@ -26,6 +26,8 @@ public class PlayLogic : IPlayLogic
 
     public int HighestNumber => repository.HighestNumber;
 
+    public int PlayerScore => repository.GetScore();
+
     public string PlayerName { get { return repository.PlayerName; } set { repository.PlayerName = value; } }
 
     readonly PriorityQueue<EventArgs, int> eventQueue;
