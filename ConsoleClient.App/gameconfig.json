@@ -1,0 +1,12 @@
+{
+    "defaultAcceptedSpawnables": [
+        2,
+        4
+    ],
+    "defaultGoal": 2048,
+    "maxHighscoresListLength": 10,
+    "defaultMaxLives": 5,
+    "defaultMaxUndos": 6,
+    "defaultGridWidth": 4,
+    "defaultGridHeight": 4
+}
