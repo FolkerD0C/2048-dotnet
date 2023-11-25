@@ -3,6 +3,7 @@
 public enum MoveResult
 {
     NoError,
+    CannotMoveInthatDirection,
     NotGameEndingError,
     GameOverError,
     Unkown

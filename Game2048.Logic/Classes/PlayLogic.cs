@@ -133,18 +133,34 @@ public class PlayLogic : IPlayLogic
                         }
                 }
                 var moveResult = repository.MoveGrid(moveDirection);
-                eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
-                if (moveResult != MoveResult.NoError)
+                switch (moveResult)
                 {
-                    eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
-                }
-                if (moveResult == MoveResult.GameOverError)
-                {
-                    inputResult = InputResult.GameOver;
-                }
-                else
-                {
-                    inputResult = InputResult.Continue;
+                    case MoveResult.NoError:
+                        {
+                            eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
+                            inputResult = InputResult.Continue;
+                            break;
+                        }
+                    case MoveResult.NotGameEndingError:
+                        {
+                            eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
+                            eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
+                            inputResult = InputResult.Continue;
+                            break;
+                        }
+                    case MoveResult.GameOverError:
+                        {
+                            eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
+                            inputResult = InputResult.GameOver;
+                            break;
+                        }
+                    case MoveResult.CannotMoveInthatDirection:
+                        {
+                            inputResult = InputResult.Continue;
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
             else

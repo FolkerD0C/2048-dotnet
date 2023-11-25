@@ -108,13 +108,17 @@ public class GameRepository : IGameRepository
 
     public MoveResult MoveGrid(MoveDirection direction)
     {
-        // Check if grid can move
         var firstPosition = (undoChain.First
             ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value;
 
         // Perform move on a copy
         IRepositoryState gameStateCopy = firstPosition.AsRepositoryGameState().Copy();
         gameStateCopy.Move(direction);
+
+        if (firstPosition.Equals(gameStateCopy))
+        {
+            return MoveResult.CannotMoveInthatDirection;
+        }
 
         // If move happened then add current position to the undochain
         undoChain.AddFirst(gameStateCopy.AsPublicGameState());
