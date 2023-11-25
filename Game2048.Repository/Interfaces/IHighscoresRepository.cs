@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace Game2048.Repository;
 
-public interface IHighscoresRepository
+public interface IHighscoresRepository : ISerializable
 {
     IList<IHighscore> HighScores { get; }
-
-    void AddHighscore(IHighscore highscoreObject);
 
     void AddNewHighscore(IHighscore highscoreObject);
 }

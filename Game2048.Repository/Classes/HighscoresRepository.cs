@@ -1,8 +1,8 @@
 using Game2048.Config;
 using Game2048.Shared.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 namespace Game2048.Repository;
 
@@ -16,12 +16,8 @@ public class HighscoresRepository : IHighscoresRepository
         highScores = new List<IHighscore>();
     }
 
-    public void AddHighscore(IHighscore highscoreObject)
+    void AddHighscore(IHighscore highscoreObject)
     {
-        if (highScores.Count >= ConfigManager.GetConfigItem<int>("MaxHighscoresListLength"))
-        {
-            throw new ArgumentException("Highscore object can not be added because the list is full.");
-        }
         highScores.Add(highscoreObject);
         highScores = highScores.OrderBy(item => item).ToList();
     }
@@ -30,5 +26,25 @@ public class HighscoresRepository : IHighscoresRepository
     {
         highScores.Add(highscoreObject);
         highScores = highScores.OrderBy(item => item).Take(ConfigManager.GetConfigItem<int>("MaxHighscoresListLength")).ToList();
+    }
+
+    public string Serialize()
+    {
+        string jsonResult = "[";
+        jsonResult += string.Join(",", highScores.Select(hsdo => hsdo.Serialize()));
+        jsonResult += "]";
+        return jsonResult;
+    }
+
+    public void Deserialize(string deserializee)
+    {
+        using var jsonDoc = JsonDocument.Parse(deserializee);
+        var jsonArray = jsonDoc.RootElement.EnumerateArray();
+        foreach (var item in jsonArray)
+        {
+            IHighscore highscore = new Highscore();
+            highscore.Deserialize(item.GetRawText());
+            AddHighscore(highscore);
+        }
     }
 }

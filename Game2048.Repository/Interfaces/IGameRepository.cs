@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Game2048.Repository;
 
-public interface IGameRepository
+public interface IGameRepository : ISerializable
 {
     public int RemainingLives { get; }
     public int RemainingUndos { get; }

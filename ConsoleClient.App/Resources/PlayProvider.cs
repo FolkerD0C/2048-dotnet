@@ -123,6 +123,21 @@ internal static class PlayProvider
         {
             ProvideChangePlayerNameAction();
         }
-        AppEnvironment.GameLogic.SaveCurrentGame();
+        var saveResult = AppEnvironment.GameLogic.SaveCurrentGame();
+        switch (saveResult.ResultType)
+        {
+            case SaveResultType.Success:
+                {
+                    new MessageOverlay(saveResult.Message, MessageType.Success).PrintMessage();
+                    break;
+                }
+            case SaveResultType.Failure:
+                {
+                    new MessageOverlay(saveResult.Message, MessageType.Error).PrintMessage();
+                    break;
+                }
+            default:
+                break;
+        }
     }
 }

@@ -7,6 +7,7 @@ using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 namespace Game2048.Repository;
 
@@ -39,7 +40,7 @@ public class GameRepository : IGameRepository
     int goal;
     public int Goal => goal;
 
-    readonly LinkedList<IGameState> undoChain;
+    LinkedList<IGameState> undoChain;
     public LinkedList<IGameState> UndoChain => undoChain;
 
     public IGameState CurrentGameState => undoChain.First();
@@ -47,15 +48,11 @@ public class GameRepository : IGameRepository
     string moveResultErrorMessage;
     public string MoveResultErrorMessage => moveResultErrorMessage;
 
-    // TODO save me??
-    readonly int maxUndos;
+    int maxUndos;
 
     readonly Random randomNumberGenerator;
 
-    public GameRepository() : this(true)
-    { }
-
-    GameRepository(bool newGame)
+    public GameRepository(bool newGame)
     {
         randomNumberGenerator = new Random();
         undoChain = new LinkedList<IGameState>();
@@ -77,24 +74,6 @@ public class GameRepository : IGameRepository
             PlaceRandomNumber();
             GetCurrentMaxNumber();
         }
-    }
-
-    public static IGameRepository GetRepositoryFromSave(int remainingLives, int gridWidth, int gridHeight, string playerName, int goal, IList<int> acceptedSpawnables, IList<IGameState> undoChain)
-    {
-        var resultRepository = new GameRepository(false)
-        {
-            remainingLives = remainingLives,
-            gridWidth = gridWidth,
-            gridHeight = gridHeight,
-            playerName = playerName,
-            goal = goal,
-            acceptedSpawnables = acceptedSpawnables
-        };
-        foreach (var position in undoChain)
-        {
-            resultRepository.undoChain.AddLast(position);
-        }
-        return resultRepository;
     }
 
     public int GetScore()
@@ -168,19 +147,15 @@ public class GameRepository : IGameRepository
 
     void PlaceRandomNumber()
     {
-        if (undoChain.First is null)
-        {
-            throw new NullReferenceException("Game repository can not have empty undo chain.");
-        }
         var emptyTiles = undoChain.First().AsRepositoryGameState().GetEmptyTiles();
         if (emptyTiles.Count == 0)
         {
             return;
         }
-        var targetTile = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
+        var (Vertical, Horizontal) = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
         undoChain.First().AsRepositoryGameState()
-            .PlaceTile(targetTile.Vertical, targetTile.Horizontal, tileValue);
+            .PlaceTile(Vertical, Horizontal, tileValue);
     }
 
     void GetCurrentMaxNumber()
@@ -192,5 +167,48 @@ public class GameRepository : IGameRepository
             GameRepositoryEventHappened?.Invoke(this,
                 new GameRepositoryEventHappenedEventArgs(GameRepositoryEvent.MaxNumberChanged, currentMaxNumber));
         }
+    }
+
+    public string Serialize()
+    {
+        var jsonRepository = "{";
+        jsonRepository += $"\"remainingLives\":{remainingLives},";
+        jsonRepository += $"\"gridWidth\":{gridWidth},";
+        jsonRepository += $"\"gridHeight\":{gridHeight},";
+        jsonRepository += $"\"goal\":{goal},";
+        jsonRepository += $"\"playerName\":\"{playerName}\",";
+        jsonRepository += "\"acceptedSpawnables\":[" + string.Join(",", acceptedSpawnables) + "],";
+        jsonRepository += $"\"maxUndos\": {maxUndos},";
+        jsonRepository += "\"undoChain\":[" + string.Join(",", undoChain.Select(state => state.Serialize())) + "]";
+        jsonRepository += "}";
+        return jsonRepository;
+    }
+
+    public void Deserialize(string deserializee)
+    {
+        using var jsonDoc = JsonDocument.Parse(deserializee);
+        var jsonRoot = jsonDoc.RootElement;
+        remainingLives = jsonRoot.GetProperty("remainingLives").GetInt32();
+        gridWidth = jsonRoot.GetProperty("gridWidth").GetInt32();
+        gridHeight = jsonRoot.GetProperty("gridHeight").GetInt32();
+        playerName = jsonRoot.GetProperty("playerName").GetString()
+            ?? throw new ArgumentNullException("Player name can not be null");
+        goal = jsonRoot.GetProperty("goal").GetInt32();
+        acceptedSpawnables = new List<int>();
+        var acceptedEnumerable = jsonRoot.GetProperty("acceptedSpawnables").EnumerateArray();
+        foreach (var accepted in acceptedEnumerable)
+        {
+            acceptedSpawnables.Add(accepted.GetInt32());
+        }
+        maxUndos = jsonRoot.GetProperty("maxUndos").GetInt32();
+        undoChain = new LinkedList<IGameState>();
+        var chainEnumerable = jsonRoot.GetProperty("undoChain").EnumerateArray();
+        foreach (var chainElement in chainEnumerable)
+        {
+            IGameState gameState = new GameState();
+            gameState.Deserialize(chainElement.GetRawText());
+            undoChain.AddLast(gameState);
+        }
+        GetCurrentMaxNumber();
     }
 }

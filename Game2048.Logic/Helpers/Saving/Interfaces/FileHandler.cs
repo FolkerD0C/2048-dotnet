@@ -2,7 +2,7 @@ namespace Game2048.Logic.Saving;
 
 public abstract class FileHandler
 {
-    public readonly string saveFilePath;
+    protected string saveFilePath;
 
     public string SaveFilePath { get { return saveFilePath; } }
 

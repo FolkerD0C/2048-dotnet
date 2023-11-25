@@ -1,6 +1,7 @@
 using Game2048.Config;
 using Game2048.Logic.Enums;
 using Game2048.Logic.Saving;
+using Game2048.Repository;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
 using System;
@@ -13,6 +14,7 @@ public class GameLogic : IGameLogic
 {
     readonly Dictionary<string, string> saveFileInfos;
     readonly IHighscoreHandler highscoreHandler;
+    IGameSaveHandler saveHandler;
     IPlayLogic playLogic;
 
 #pragma warning disable CS8618
@@ -52,7 +54,7 @@ public class GameLogic : IGameLogic
 
     public IPlayInstance LoadGame(string saveGameName)
     {
-        IGameSaveHandler saveHandler = new GameSaveHandler(saveFileInfos[saveGameName]);
+        saveHandler = new GameSaveHandler(saveFileInfos[saveGameName], new GameRepository(false));
         saveHandler.Load();
         PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
         playLogic = new PlayLogic(saveHandler.GameRepository);
@@ -62,7 +64,8 @@ public class GameLogic : IGameLogic
     public IPlayInstance NewGame()
     {
         PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem<int>("DefaultGridHeight"), ConfigManager.GetConfigItem<int>("DefaultGridWidth"));
-        playLogic = new PlayLogic();
+        saveHandler = new GameSaveHandler("", new GameRepository(true));
+        playLogic = new PlayLogic(saveHandler.GameRepository);
         return playLogic;
     }
 
@@ -110,15 +113,16 @@ public class GameLogic : IGameLogic
         return endReason;
     }
 
-    public void SaveCurrentGame()
+    public SaveResult SaveCurrentGame()
     {
         string filePath = GameSaveHandler.GetFullPathFromName(playLogic.PlayerName);
-        IGameSaveHandler saveHandler = new GameSaveHandler(filePath);
-        saveHandler.Save();
+        saveHandler.UpdateFilePath(filePath);
+        return saveHandler.Save();
     }
 
     public IList<IHighscore> GetHighscores()
     {
+        highscoreHandler.Load();
         return highscoreHandler.HighscoresData.HighScores;
     }
 }

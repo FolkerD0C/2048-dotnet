@@ -3,10 +3,11 @@ using Game2048.Shared.Models;
 
 namespace Game2048.Logic.Saving;
 
-public interface IGameSaveHandler : ISerializerHandler<IGameState>
+public interface IGameSaveHandler
 {
     IGameRepository GameRepository { get; }
-    void Save();
+    void UpdateFilePath(string filePath);
+    SaveResult Save();
 
     void Load();
 }

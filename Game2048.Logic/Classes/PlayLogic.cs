@@ -17,6 +17,7 @@ public class PlayLogic : IPlayLogic
     {
         GameInput.Up, GameInput.Down, GameInput.Left, GameInput.Right
     };
+
     bool goalReached;
     readonly IGameRepository repository;
 
@@ -51,9 +52,6 @@ public class PlayLogic : IPlayLogic
         eventQueue = new PriorityQueue<EventArgs, int>();
         goalReached = repository.HighestNumber >= repository.Goal;
     }
-
-    public PlayLogic() : this(new GameRepository())
-    { }
 
     public void Start()
     {
