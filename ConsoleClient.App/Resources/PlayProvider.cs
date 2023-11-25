@@ -12,7 +12,7 @@ namespace ConsoleClient.App.Resources;
 internal static class PlayProvider
 {
     static IConsoleMenu? mainMenu;
-    static IPlayLogic? playLogic;
+    static IPlayInstance? playLogic;
 
     internal static void SetMainMenu(IConsoleMenu? consoleMenu)
     {

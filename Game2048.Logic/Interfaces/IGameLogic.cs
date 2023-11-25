@@ -7,8 +7,8 @@ namespace Game2048.Logic;
 
 public interface IGameLogic
 {
-    public IPlayLogic NewGame();
-    public IPlayLogic LoadGame(string saveGameName);
+    public IPlayInstance NewGame();
+    public IPlayInstance LoadGame(string saveGameName);
     public IEnumerable<string> GetSavedGames();
     public void SaveCurrentGame();
     public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause);

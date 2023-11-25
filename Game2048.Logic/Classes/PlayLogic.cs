@@ -20,12 +20,6 @@ public class PlayLogic : IPlayLogic
     bool goalReached;
     readonly IGameRepository repository;
 
-    public int RemainingLives => repository.RemainingLives;
-
-    public int RemainingUndos => repository.RemainingUndos;
-
-    public int HighestNumber => repository.HighestNumber;
-
     public int PlayerScore => repository.GetScore();
 
     public string PlayerName
@@ -49,25 +43,17 @@ public class PlayLogic : IPlayLogic
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
     public event EventHandler? PlayEnded;
 
-    PlayLogic(IGameRepository repository)
+    public PlayLogic(IGameRepository repository)
     {
         this.repository = repository;
         repository.GameRepositoryEventHappened += GameRepositoryEventHappenedDispatcher;
         preinputEventQueue = new PriorityQueue<EventArgs, int>();
         eventQueue = new PriorityQueue<EventArgs, int>();
+        goalReached = repository.HighestNumber >= repository.Goal;
     }
 
     public PlayLogic() : this(new GameRepository())
     { }
-
-    public static IPlayLogic GetLogicFromSave(IGameRepository repository)
-    {
-        IPlayLogic logicFromSave = new PlayLogic(repository)
-        {
-            goalReached = repository.HighestNumber >= repository.Goal
-        };
-        return logicFromSave;
-    }
 
     public void Start()
     {
@@ -86,7 +72,7 @@ public class PlayLogic : IPlayLogic
         PlayEnded?.Invoke(this, new EventArgs());
     }
 
-    public void HandlePreinputEvents()
+    public void PreInput()
     {
         while (preinputEventQueue.Count > 0)
         {

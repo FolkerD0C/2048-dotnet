@@ -13,16 +13,15 @@ public class GameLogic : IGameLogic
 {
     readonly Dictionary<string, string> saveFileInfos;
     readonly IHighscoreHandler highscoreHandler;
-    IPlayLogic logic;
+    IPlayLogic playLogic;
 
-#pragma warning disable CS8618
     public GameLogic()
     {
         highscoreHandler = new HighScoreHandler();
         saveFileInfos = new Dictionary<string, string>();
         GameSaveHandler.CheckOrCreateSaveDirectory();
+        playLogic = new PlayLogic();
     }
-#pragma warning restore CS8618
 
     public void AddHighscore(string playerName, int score)
     {
@@ -50,32 +49,32 @@ public class GameLogic : IGameLogic
         return saveFiles.Select(saveFile => saveFile.Name);
     }
 
-    public IPlayLogic LoadGame(string saveGameName)
+    public IPlayInstance LoadGame(string saveGameName)
     {
         IGameSaveHandler saveHandler = new GameSaveHandler(saveFileInfos[saveGameName]);
         saveHandler.Load();
         PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
-        logic = PlayLogic.GetLogicFromSave(saveHandler.GameRepository);
-        return logic;
+        playLogic = new PlayLogic(saveHandler.GameRepository);
+        return playLogic;
     }
 
-    public IPlayLogic NewGame()
+    public IPlayInstance NewGame()
     {
         PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem<int>("DefaultGridHeight"), ConfigManager.GetConfigItem<int>("DefaultGridWidth"));
-        logic = new PlayLogic();
-        return logic;
+        playLogic = new PlayLogic();
+        return playLogic;
     }
 
     public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause)
     {
         bool inGame = true;
         var endReason = PlayEndedReason.Unknown;
-        logic.Start();
+        playLogic.Start();
         while (inGame)
         {
-            logic.HandlePreinputEvents();
+            playLogic.PreInput();
             var input = inputMethod();
-            var inputResult = logic.HandleInput(input);
+            var inputResult = playLogic.HandleInput(input);
 
             if (inputResult == InputResult.Continue)
             {
@@ -106,13 +105,13 @@ public class GameLogic : IGameLogic
                 endReason = PlayEndedReason.GameOver;
             }
         }
-        logic.End();
+        playLogic.End();
         return endReason;
     }
 
     public void SaveCurrentGame()
     {
-        string filePath = GameSaveHandler.GetFullPathFromName(logic.PlayerName);
+        string filePath = GameSaveHandler.GetFullPathFromName(playLogic.PlayerName);
         IGameSaveHandler saveHandler = new GameSaveHandler(filePath);
         saveHandler.Save();
     }
