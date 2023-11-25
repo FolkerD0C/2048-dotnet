@@ -21,6 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.AppUI", "Cons
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient.App", "ConsoleClient.App\ConsoleClient.App.csproj", "{CC18608A-A987-4F89-95C3-E8E9FED46999}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1305C664-D554-4DDA-9A73-44B9073E5A0E}"
+	ProjectSection(SolutionItems) = preProject
+		todos.md = todos.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
