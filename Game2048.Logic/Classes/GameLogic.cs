@@ -15,13 +15,14 @@ public class GameLogic : IGameLogic
     readonly IHighscoreHandler highscoreHandler;
     IPlayLogic playLogic;
 
+#pragma warning disable CS8618
     public GameLogic()
     {
         highscoreHandler = new HighScoreHandler();
         saveFileInfos = new Dictionary<string, string>();
         GameSaveHandler.CheckOrCreateSaveDirectory();
-        playLogic = new PlayLogic();
     }
+#pragma warning restore CS8618
 
     public void AddHighscore(string playerName, int score)
     {
