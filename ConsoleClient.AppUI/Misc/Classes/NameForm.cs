@@ -1,13 +1,16 @@
-﻿using ConsoleClient.Display;
+﻿using ConsoleClient.AppUI.Enums;
+using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleClient.AppUI.Misc;
 
 public class NameForm : INameForm
 {
+    const string BannedCharacters = "<>:\"/\\|?*";
     const string PromptLabel1 = "Please enter your name below,";
     const string PromptLabel2 = "you can submit with ENTER and cancel with ESCAPE";
     const int NameFormLength = 32;
@@ -32,6 +35,9 @@ public class NameForm : INameForm
 
     public int RowCount => displayRows.Count;
 
+    int formVerticalOffset;
+    int formHorizontalOffset;
+
     readonly char[] nameFormValue;
     readonly Func<NameFormInput> inputMethod;
 
@@ -50,14 +56,91 @@ public class NameForm : INameForm
 
     public NameFormResult PromptPlayerName(string name)
     {
+        var formResult = new NameFormResult()
+        {
+            ResultType = NameFormResultType.Unknown,
+            Name = name
+        };
+        int cursorPos = 0;
+
+        static int moveCursorLeft(int cp) => Math.Min(cp, 0);
+        static int moveCursorRight(int cp) => Math.Max(cp, NameFormLength - 1);
+
         DisplayManager.NewOverlay(this);
-        int middleRow = DisplayManager.Height / 2;
-        int formVerticalOFfset = middleRow + 1;
-        int formHorizontalOFfset = (DisplayManager.Width - NameFormLength) / 2;
-        throw new NotImplementedException();
+        PrintPromptLabel();
+        InitializeFormValue(name);
+        UpdateCursor(cursorPos);
+        DisplayManager.SetCursorVisibility(true);
+        bool inPrompt = true;
+        while (inPrompt)
+        {
+            var input = inputMethod();
+            switch (input.InputType)
+            {
+                case NameFormInputType.Character:
+                    {
+                        if (InsertAt(input.InputValue, cursorPos))
+                        {
+                            PrintFormValue(cursorPos);
+                            cursorPos = moveCursorRight(cursorPos);
+                            UpdateCursor(cursorPos);
+                        }
+                        break;
+                    }
+                case NameFormInputType.MoveLeft:
+                    {
+                        cursorPos = moveCursorLeft(cursorPos);
+                        UpdateCursor(cursorPos);
+                        break;
+                    }
+                case NameFormInputType.MoveRight:
+                    {
+                        cursorPos = moveCursorRight(cursorPos);
+                        UpdateCursor(cursorPos);
+                        break;
+                    }
+                case NameFormInputType.RemoveBefore:
+                    {
+                        if (cursorPos > 0 && RemoveAt(cursorPos - 1))
+                        {
+                            cursorPos = moveCursorLeft(cursorPos);
+                            PrintFormValue(cursorPos);
+                            UpdateCursor(cursorPos);
+                        }
+                        break;
+                    }
+                case NameFormInputType.RemoveAfter:
+                    {
+                        if (RemoveAt(cursorPos))
+                        {
+                            PrintFormValue(cursorPos);
+                            UpdateCursor(cursorPos);
+                        }
+                        break;
+                    }
+                case NameFormInputType.Return:
+                    {
+                        formResult.ResultType = NameFormResultType.Success;
+                        formResult.Name = new string(nameFormValue).Trim();
+                        inPrompt = false;
+                        break;
+                    }
+                case NameFormInputType.Cancel:
+                    {
+                        new ErrorMessageOverlay("You have cancelled the name form action...").PrintErrorMessage();
+                        formResult.ResultType = NameFormResultType.Cancelled;
+                        inPrompt = false;
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        DisplayManager.SetCursorVisibility(false);
+        return formResult;
     }
 
-    void PrintPromptLabel()
+    static void PrintPromptLabel()
     {
         int promptLabel1VerticalOffset = DisplayManager.Height / 2 - 2;
         int promptLabel2VerticalOffset = DisplayManager.Height / 2 - 1;
@@ -76,6 +159,74 @@ public class NameForm : INameForm
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
+    }
+
+    void InitializeFormValue(string name)
+    {
+        formVerticalOffset = DisplayManager.Height / 2 + 1;
+        formHorizontalOffset = (DisplayManager.Width - NameFormLength) / 2;
+        for (int i = 0; i < name.Length && i < NameFormLength;  i++)
+        {
+            nameFormValue[i] = name[i];
+        }
+        for (int i = name.Length; i < NameFormLength; i++)
+        {
+            nameFormValue[i] = ' ';
+        }
+        DisplayManager.PrintText(
+            new string(nameFormValue),
+            formVerticalOffset,
+            formHorizontalOffset,
+            FormForegroundColor,
+            FormBackgroundColor
+        );
+    }
+
+    void PrintFormValue(int from, int to = NameFormLength - 1)
+    {
+        DisplayManager.SetCursorVisibility(false);
+        string toPrint = string.Concat(nameFormValue.Take(to).Skip(from));
+        DisplayManager.PrintText(
+            toPrint,
+            formVerticalOffset,
+            formHorizontalOffset + from,
+            FormForegroundColor,
+            FormBackgroundColor
+        );
+    }
+
+    bool InsertAt(char value, int index)
+    {
+        if (nameFormValue[NameFormLength - 1] != ' ' && !BannedCharacters.Contains(value))
+        {
+            return false;
+        }
+        for (int i = NameFormLength - 1; i > index; i--)
+        {
+            nameFormValue[i] = nameFormValue[i - 1];
+        }
+        nameFormValue[index] = value;
+        return true;
+    }
+
+    bool RemoveAt(int index)
+    {
+        if (nameFormValue.All(c => c == ' '))
+        {
+            return false;
+        }
+        for (int i = NameFormLength - 2; i >= index; i--)
+        {
+            nameFormValue[i] = nameFormValue[i + 1];
+        }
+        nameFormValue[NameFormLength - 1] = ' ';
+        return true;
+    }
+
+    void UpdateCursor(int index)
+    {
+        DisplayManager.SetCursorPos(formHorizontalOffset + index, formVerticalOffset);
+        DisplayManager.SetCursorVisibility(true);
     }
 
     public bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition)
