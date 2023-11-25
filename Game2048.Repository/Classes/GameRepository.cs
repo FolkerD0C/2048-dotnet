@@ -39,7 +39,7 @@ public class GameRepository : IGameRepository
     int goal;
     public int Goal => goal;
 
-    LinkedList<IGameState> undoChain;
+    readonly LinkedList<IGameState> undoChain;
     public LinkedList<IGameState> UndoChain => undoChain;
 
     public IGameState CurrentGameState => undoChain.First();
@@ -185,8 +185,7 @@ public class GameRepository : IGameRepository
 
     void GetCurrentMaxNumber()
     {
-        int currentMaxNumber = (undoChain.First ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value
-            .Grid.Max(row => row.Max());
+        int currentMaxNumber = undoChain.First().Grid.Max(row => row.Max());
         if (currentMaxNumber > highestNumber)
         {
             highestNumber = currentMaxNumber;
