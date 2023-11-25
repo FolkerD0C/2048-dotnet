@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Game2048.Config;
@@ -6,7 +7,7 @@ internal static class GameConfiguration
 {
     internal static int MaxHighscoresListLength = 10;
 
-    internal static string? GameDataDirectory = null;
+    internal static string GameDataDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
     internal static IList<int> DefaultAcceptedSpawnables = new List<int>() { 2, 4 };
 

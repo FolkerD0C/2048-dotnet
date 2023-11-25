@@ -59,16 +59,16 @@ public class GameRepository : IGameRepository
         randomNumberGenerator = new Random();
         undoChain = new LinkedList<IGamePosition>();
         playerName = "";
-        acceptedSpawnables = ConfigManager.GetConfigItem("DefaultAcceptedSpawnables", new List<int>()) ?? throw new NullReferenceException("Default accepted spawnables config item can not be null.");
-        maxUndos = ConfigManager.GetConfigItem("DefaultMaxUndos", default(int));
+        acceptedSpawnables = ConfigManager.GetConfigItem<List<int>>("DefaultAcceptedSpawnables");
+        maxUndos = ConfigManager.GetConfigItem<int>("DefaultMaxUndos");
         moveResultErrorMessage = "";
         if (newGame)
         {
             // Setting default values.
-            remainingLives = ConfigManager.GetConfigItem("DefaultMaxLives", default(int));
-            gridWidth = ConfigManager.GetConfigItem("DefaultGridWidth", default(int));
-            gridHeight = ConfigManager.GetConfigItem("DefaultGridHeight", default(int));
-            goal = ConfigManager.GetConfigItem("DefaultGoal", default(int));
+            remainingLives = ConfigManager.GetConfigItem<int>("DefaultMaxLives");
+            gridWidth = ConfigManager.GetConfigItem<int>("DefaultGridWidth");
+            gridHeight = ConfigManager.GetConfigItem<int>("DefaultGridHeight");
+            goal = ConfigManager.GetConfigItem<int>("DefaultGoal");
 
             // Setting up undochain and starter GamePosition object
             undoChain.AddFirst(new GamePosition());

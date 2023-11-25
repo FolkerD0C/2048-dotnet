@@ -18,7 +18,7 @@ public class HighscoresRepository : IHighscoresRepository
 
     public void AddHighscore(IHighscore highscoreObject)
     {
-        if (highScores.Count >= ConfigManager.GetConfigItem("MaxHighscoresListLength", default(int)))
+        if (highScores.Count >= ConfigManager.GetConfigItem<int>("MaxHighscoresListLength"))
         {
             throw new ArgumentException("Highscore object can not be added because the list is full.");
         }
@@ -29,6 +29,6 @@ public class HighscoresRepository : IHighscoresRepository
     public void AddNewHighscore(IHighscore highscoreObject)
     {
         highScores.Add(highscoreObject);
-        highScores = highScores.OrderBy(item => item).Take(ConfigManager.GetConfigItem("MaxHighscoresListLength", default(int))).ToList();
+        highScores = highScores.OrderBy(item => item).Take(ConfigManager.GetConfigItem<int>("MaxHighscoresListLength")).ToList();
     }
 }

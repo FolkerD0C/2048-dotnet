@@ -36,21 +36,19 @@ public static class ConfigManager
     {
         var configItemInfo = GetConfigItem(configItemName);
         // https://stackoverflow.com/questions/2330026/is-it-possible-to-set-this-static-private-member-of-a-static-class-with-reflecti
-        configItemInfo?.SetValue(null, newValue);
+        configItemInfo.SetValue(null, newValue);
     }
 
-#pragma warning disable CS8600
-    public static T? GetConfigItem<T>(string configItemName, T configItemType)
+    public static T GetConfigItem<T>(string configItemName)
     {
         var configItemInfo = GetConfigItem(configItemName);
-        if (configItemInfo?.GetValue(null) is T configItemValue)
+        // https://stackoverflow.com/questions/2330026/is-it-possible-to-set-this-static-private-member-of-a-static-class-with-reflecti
+        if (configItemInfo.GetValue(null) is T configItemValue)
         {
-            // https://stackoverflow.com/questions/2330026/is-it-possible-to-set-this-static-private-member-of-a-static-class-with-reflecti
             return configItemValue;
         }
-        throw new Exception("Wrong type request");
+        throw new Exception("Wrong config item request");
     }
-#pragma warning restore CS8600
 
     public static void Load()
     {
@@ -107,7 +105,7 @@ public static class ConfigManager
         { }
         try
         {
-            GameConfiguration.GameDataDirectory = jsonRoot.GetProperty("gameDataDirectory").GetString();
+            GameConfiguration.GameDataDirectory = jsonRoot.GetProperty("gameDataDirectory").GetString() ?? AppDomain.CurrentDomain.BaseDirectory;
         }
         catch (KeyNotFoundException)
         { }

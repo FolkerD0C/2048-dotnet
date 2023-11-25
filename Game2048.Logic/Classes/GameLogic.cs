@@ -61,7 +61,7 @@ public class GameLogic : IGameLogic
 
     public IPlayLogic NewGame()
     {
-        PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem("DefaultGridHeight", default(int)), ConfigManager.GetConfigItem("DefaultGridWidth", default(int)));
+        PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem<int>("DefaultGridHeight"), ConfigManager.GetConfigItem<int>("DefaultGridWidth"));
         logic = new PlayLogic();
         return logic;
     }

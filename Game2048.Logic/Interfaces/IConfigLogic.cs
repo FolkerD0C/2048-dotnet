@@ -7,7 +7,7 @@ public interface IConfigLogic
 {
     void LoadConfig();
     void SaveConfig();
-    T? GetConfigValue<T>(string configItemName, T configItemType);
+    T GetConfigValue<T>(string configItemName);
     void SetConfigValue<T>(string configItemName, T newValue);
     IEnumerable<ConfigItem> GetConfigItems();
 }
