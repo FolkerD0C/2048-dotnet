@@ -92,7 +92,7 @@ internal static class PauseMenuProvider
         var exitGameSubMenu = ProvideExitGameSubMenu();
         exitGameSubMenu.AddNavigationBreaker(MenuItemResult.Yes);
         exitGameSubMenu.AddNavigationBreaker(MenuItemResult.No);
-        var menuDisplay = new MenuDisplay();
+        IMenuDisplay menuDisplay = new MenuDisplay();
         exitGameSubMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
         exitGameSubMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
         exitGameSubMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;

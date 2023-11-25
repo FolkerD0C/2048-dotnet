@@ -63,8 +63,8 @@ public class NameForm : INameForm
         };
         int cursorPos = 0;
 
-        static int moveCursorLeft(int cp) => Math.Min(cp, 0);
-        static int moveCursorRight(int cp) => Math.Max(cp, NameFormLength - 1);
+        static int moveCursorLeft(int cp) => Math.Max(cp - 1, 0);
+        static int moveCursorRight(int cp) => Math.Min(cp + 1, NameFormLength - 1);
 
         DisplayManager.NewOverlay(this);
         PrintPromptLabel();
@@ -183,10 +183,10 @@ public class NameForm : INameForm
         );
     }
 
-    void PrintFormValue(int from, int to = NameFormLength - 1)
+    void PrintFormValue(int from)
     {
         DisplayManager.SetCursorVisibility(false);
-        string toPrint = string.Concat(nameFormValue.Take(to).Skip(from));
+        string toPrint = string.Concat(nameFormValue.Skip(from));
         DisplayManager.PrintText(
             toPrint,
             formVerticalOffset,
@@ -198,7 +198,7 @@ public class NameForm : INameForm
 
     bool InsertAt(char value, int index)
     {
-        if (nameFormValue[NameFormLength - 1] != ' ' && !BannedCharacters.Contains(value))
+        if (nameFormValue[NameFormLength - 1] != ' ' || BannedCharacters.Contains(value))
         {
             return false;
         }
@@ -216,7 +216,7 @@ public class NameForm : INameForm
         {
             return false;
         }
-        for (int i = NameFormLength - 2; i >= index; i--)
+        for (int i = index; i < NameFormLength - 1; i++)
         {
             nameFormValue[i] = nameFormValue[i + 1];
         }

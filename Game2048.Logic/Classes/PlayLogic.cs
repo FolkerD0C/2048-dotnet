@@ -34,10 +34,11 @@ public class PlayLogic : IPlayLogic
         set
         {
             repository.PlayerName = value;
-            PlayerNameChanged?.Invoke(this, new PlayerNameChangedEventArgs(repository.PlayerName));
+            preinputEventQueue.Enqueue(new PlayerNameChangedEventArgs(repository.PlayerName), 0);
         }
     }
 
+    readonly PriorityQueue<EventArgs, int> preinputEventQueue;
     readonly PriorityQueue<EventArgs, int> eventQueue;
 
     public event EventHandler<PlayStartedEventArgs>? PlayStarted;
@@ -52,6 +53,7 @@ public class PlayLogic : IPlayLogic
     {
         this.repository = repository;
         repository.GameRepositoryEventHappened += GameRepositoryEventHappenedDispatcher;
+        preinputEventQueue = new PriorityQueue<EventArgs, int>();
         eventQueue = new PriorityQueue<EventArgs, int>();
     }
 
@@ -82,6 +84,18 @@ public class PlayLogic : IPlayLogic
     public void End()
     {
         PlayEnded?.Invoke(this, new EventArgs());
+    }
+
+    public void HandlePreinputEvents()
+    {
+        while (preinputEventQueue.Count > 0)
+        {
+            var eventArgs = preinputEventQueue.Dequeue();
+            if (eventArgs is PlayerNameChangedEventArgs playerNameChangedEventArgs)
+            {
+                PlayerNameChanged?.Invoke(this, playerNameChangedEventArgs);
+            }
+        }
     }
 
     public InputResult HandleInput(GameInput input)

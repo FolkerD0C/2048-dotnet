@@ -83,6 +83,8 @@ public class GameDisplay : IGameDisplay
 
     public int RowCount => displayRows.Count;
 
+    string playerName;
+
     public GameDisplay()
     {
         displayRows = new List<IDisplayRow>();
@@ -97,6 +99,7 @@ public class GameDisplay : IGameDisplay
             ));
         }
         tilePositions = new Coord[0, 0];
+        playerName = "";
     }
 
     public void Dispose()
@@ -286,6 +289,13 @@ public class GameDisplay : IGameDisplay
     void PrintPlayerName(string playerName)
     {
         DisplayManager.PrintText(
+            new string(' ', this.playerName.Length),
+            playerNameValueLabelPosition.Vertical,
+            playerNameValueLabelPosition.Horizontal,
+            DisplayManager.DefaultBackgroundColor,
+            DisplayManager.DefaultBackgroundColor
+        );
+        DisplayManager.PrintText(
             playerName,
             playerNameValueLabelPosition.Vertical,
             playerNameValueLabelPosition.Horizontal,
@@ -449,6 +459,7 @@ public class GameDisplay : IGameDisplay
         gridHeight = args.GridHeight;
         gridWidth = args.GridWidth;
         highestNumberWidth = $"{args.HighestNumber}".Length;
+        playerName = args.PlayerName;
 
         DisplayManager.NewOverlay(this);
 
@@ -485,6 +496,7 @@ public class GameDisplay : IGameDisplay
     public void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
     {
         PrintPlayerName(args.PlayerName);
+        playerName = args.PlayerName;
     }
 
     public void OnPlayEnded(object? sender, EventArgs args)

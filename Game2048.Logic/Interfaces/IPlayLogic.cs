@@ -15,6 +15,7 @@ public interface IPlayLogic
     string PlayerName { get; set; }
     void Start();
     void End();
+    void HandlePreinputEvents();
     InputResult HandleInput(GameInput input);
     event EventHandler<PlayStartedEventArgs>? PlayStarted;
     event EventHandler<MoveHappenedEventArgs>? MoveHappened;

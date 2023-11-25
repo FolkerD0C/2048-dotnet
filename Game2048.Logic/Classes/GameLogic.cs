@@ -73,6 +73,7 @@ public class GameLogic : IGameLogic
         logic.Start();
         while (inGame)
         {
+            logic.HandlePreinputEvents();
             var input = inputMethod();
             var inputResult = logic.HandleInput(input);
 

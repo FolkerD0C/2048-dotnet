@@ -32,6 +32,7 @@ internal static class PlayProvider
         playLogic.UndoHappened += gameDisplay.OnUndoHappened;
         playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
         playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
+        playLogic.PlayerNameChanged += gameDisplay.OnPlayerNameChanged;
         playLogic.PlayEnded += gameDisplay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
@@ -50,6 +51,7 @@ internal static class PlayProvider
         playLogic.UndoHappened += gameDisplay.OnUndoHappened;
         playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
         playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
+        playLogic.PlayerNameChanged += gameDisplay.OnPlayerNameChanged;
         playLogic.PlayEnded += gameDisplay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
@@ -97,7 +99,7 @@ internal static class PlayProvider
 
     static PauseResult Pause()
     {
-        return PauseMenuProvider.ProvidePauseMenuAction(ProvideSaveGameAction, ProvideChangePlayerNameAction);
+        return PauseMenuProvider.ProvidePauseMenuAction(ProvideChangePlayerNameAction, ProvideSaveGameAction);
     }
 
     internal static void ProvideChangePlayerNameAction()
@@ -106,19 +108,16 @@ internal static class PlayProvider
         {
             throw new NullReferenceException("Logic can not be null.");
         }
-        if (playLogic.PlayerName is null || playLogic.PlayerName == "")
+        var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(playLogic.PlayerName ?? "");
+        if (nameFormResult.ResultType == NameFormResultType.Cancelled)
         {
-            var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(playLogic.PlayerName ?? "");
-            if (nameFormResult.ResultType == NameFormResultType.Cancelled)
-            {
-                return;
-            }
-            if (nameFormResult.ResultType != NameFormResultType.Success)
-            {
-                throw new InvalidOperationException("Invalid return from name form.");
-            }
-            playLogic.PlayerName = nameFormResult.Name;
+            return;
         }
+        if (nameFormResult.ResultType != NameFormResultType.Success)
+        {
+            throw new InvalidOperationException("Invalid return from name form.");
+        }
+        playLogic.PlayerName = nameFormResult.Name;
     }
 
     static void ProvideSaveGameAction()
@@ -127,7 +126,10 @@ internal static class PlayProvider
         {
             throw new NullReferenceException("Logic can not be null.");
         }
-        ProvideChangePlayerNameAction();
+        if (playLogic.PlayerName is null || playLogic.PlayerName == "")
+        {
+            ProvideChangePlayerNameAction();
+        }
         AppEnvironment.GameLogic.SaveCurrentGame();
     }
 }
