@@ -11,5 +11,6 @@ public interface IGameDisplay : IOverLay
     void OnUndoHappened(object? sender, UndoHappenedEventArgs args);
     void OnErrorHappened(object? sender, ErrorHappenedEventArgs args);
     void MiscEventHappenedDispatcher(object? sender, MiscEventHappenedEventArgs args);
+    void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args);
     void OnPlayEnded(object? sender, EventArgs args);
 }

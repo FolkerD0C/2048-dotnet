@@ -25,6 +25,7 @@ public class GameDisplay : IGameDisplay
     const int GridVerticalOffset = 1;
     const int GridHorizontalOffset = 1;
     const int ScoreValueLabelWidth = 11;
+    const string PlayerNameKeyLabel = "Player: ";
     const string ScoreKeyLabel = "Current score: ";
     const string RemainingUndosKeyLabel = "Remaining undos: ";
     const string RemainingLivesKeyLabel = "Remaining lives: ";
@@ -63,6 +64,7 @@ public class GameDisplay : IGameDisplay
     int highestNumberWidth;
     int gridHeight;
     int gridWidth;
+    Coord playerNameValueLabelPosition;
     Coord scoreValueLabelPosition;
     Coord remainingUndosValueLabelPosition;
     Coord remainingLivesValueLabelPosition;
@@ -127,6 +129,24 @@ public class GameDisplay : IGameDisplay
                 DisplayManager.DefaultBackgroundColor
             );
         }
+
+        Coord playerNameKeyLabelPosition = new Coord()
+        {
+            Vertical = DisplayManager.Height - 10,
+            Horizontal = 1
+        };
+        DisplayManager.PrintText(
+            PlayerNameKeyLabel,
+            playerNameKeyLabelPosition.Vertical,
+            playerNameKeyLabelPosition.Horizontal,
+            DisplayManager.DefaultForegroundColor,
+            DisplayManager.DefaultBackgroundColor
+        );
+        playerNameValueLabelPosition = new Coord()
+        {
+            Vertical = playerNameKeyLabelPosition.Vertical,
+            Horizontal = playerNameKeyLabelPosition.Horizontal + PlayerNameKeyLabel.Length
+        };
 
         Coord scoreKeyLabelPosition = new Coord()
         {
@@ -263,6 +283,17 @@ public class GameDisplay : IGameDisplay
         );
     }
 
+    void PrintPlayerName(string playerName)
+    {
+        DisplayManager.PrintText(
+            playerName,
+            playerNameValueLabelPosition.Vertical,
+            playerNameValueLabelPosition.Horizontal,
+            defaultTileForeground,
+            defaultTileBackground
+        );
+    }
+
     void PrintScore(int score)
     {
         DisplayManager.PrintText(
@@ -298,7 +329,6 @@ public class GameDisplay : IGameDisplay
     #endregion
 
     #region EventHandling
-    // TODO add event and evenhandler for player name change and also print playername with InitializeInfos()
     public void MiscEventHappenedDispatcher(object? sender, MiscEventHappenedEventArgs args)
     {
         switch (args.Event)
@@ -432,6 +462,8 @@ public class GameDisplay : IGameDisplay
                 PrintTile(args.Position.Grid[i][j], tilePositions[i, j]);
             }
         }
+
+        PrintPlayerName(args.PlayerName);
         PrintScore(args.Position.Score);
         PrintRemainingUndos(args.RemainingUndos);
         PrintRemainingLives(args.RemainingLives);
@@ -448,6 +480,11 @@ public class GameDisplay : IGameDisplay
             }
         }
         PrintScore(args.Position.Score);
+    }
+
+    public void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
+    {
+        PrintPlayerName(args.PlayerName);
     }
 
     public void OnPlayEnded(object? sender, EventArgs args)

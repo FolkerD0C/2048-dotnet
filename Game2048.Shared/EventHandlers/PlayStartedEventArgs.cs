@@ -17,7 +17,9 @@ public class PlayStartedEventArgs : EventArgs
 
     public int GridWidth { get; }
 
-    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth)
+    public string PlayerName { get; }
+
+    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth, string playerName)
     {
         Position = position;
         RemainingUndos = remainingUndos;
@@ -25,5 +27,6 @@ public class PlayStartedEventArgs : EventArgs
         HighestNumber = highestNumber;
         GridHeight = gridHeight;
         GridWidth = gridWidth;
+        PlayerName = playerName;
     }
 }

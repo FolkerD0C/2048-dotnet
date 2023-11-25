@@ -28,7 +28,15 @@ public class PlayLogic : IPlayLogic
 
     public int PlayerScore => repository.GetScore();
 
-    public string PlayerName { get { return repository.PlayerName; } set { repository.PlayerName = value; } }
+    public string PlayerName
+    {
+        get { return repository.PlayerName; }
+        set
+        {
+            repository.PlayerName = value;
+            PlayerNameChanged?.Invoke(this, new PlayerNameChangedEventArgs(repository.PlayerName));
+        }
+    }
 
     readonly PriorityQueue<EventArgs, int> eventQueue;
 
@@ -37,6 +45,7 @@ public class PlayLogic : IPlayLogic
     public event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     public event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
+    public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
     public event EventHandler? PlayEnded;
 
     PlayLogic(IGameRepository repository)
@@ -66,7 +75,7 @@ public class PlayLogic : IPlayLogic
         }
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
             repository.UndoChain.First.Value, repository.RemainingUndos, repository.RemainingLives,
-            repository.HighestNumber, repository.GridHeight, repository.GridWidth
+            repository.HighestNumber, repository.GridHeight, repository.GridWidth, repository.PlayerName
         ));
     }
 

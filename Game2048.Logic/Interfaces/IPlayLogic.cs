@@ -21,5 +21,6 @@ public interface IPlayLogic
     event EventHandler<UndoHappenedEventArgs>? UndoHappened;
     event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
+    event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
     event EventHandler? PlayEnded;
 }
