@@ -46,6 +46,7 @@ internal static class PauseMenuProvider
             ProvideExitGameMenuItem(resultProvider)
         };
         IConsoleMenu pauseMenu = new ConsoleMenu(pauseMenuItems, InputProvider.ProvideMenuInput);
+        pauseMenu.AddNavigationBreaker(MenuItemResult.Yes);
         IMenuDisplay menuDisplay = new MenuDisplay();
         pauseMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
         pauseMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
@@ -60,6 +61,10 @@ internal static class PauseMenuProvider
         var endPlaySubMenu = ProvideEndPlaySubMenu();
         endPlaySubMenu.AddNavigationBreaker(MenuItemResult.Yes);
         endPlaySubMenu.AddNavigationBreaker(MenuItemResult.No);
+        var menuDisplay = new MenuDisplay();
+        endPlaySubMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
+        endPlaySubMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
+        endPlaySubMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
         endPlaySubMenu.MenuItemReturnedYes += (sender, args) =>
         {
             resultProvider.EndPlay();
@@ -87,6 +92,10 @@ internal static class PauseMenuProvider
         var exitGameSubMenu = ProvideExitGameSubMenu();
         exitGameSubMenu.AddNavigationBreaker(MenuItemResult.Yes);
         exitGameSubMenu.AddNavigationBreaker(MenuItemResult.No);
+        var menuDisplay = new MenuDisplay();
+        exitGameSubMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
+        exitGameSubMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
+        exitGameSubMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
         exitGameSubMenu.MenuItemReturnedYes += (sender, args) =>
         {
             resultProvider.ExitGame();
