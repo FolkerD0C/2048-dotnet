@@ -1,6 +1,10 @@
-﻿using ConsoleClient.Menu.Enums;
+﻿using ConsoleClient.AppUI.Enums;
+using ConsoleClient.AppUI.Misc;
+using ConsoleClient.Menu.Enums;
 using Game2048.Shared.Enums;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleClient.App.Resources;
 
@@ -77,5 +81,40 @@ internal static class InputProvider
             }
         }
         throw new InvalidOperationException("Invalid input.");
+    }
+
+    readonly static Dictionary<ConsoleKey, NameFormInputType> acceptedNameFormSpecialInputs = new ()
+    {
+        { ConsoleKey.LeftArrow, NameFormInputType.MoveLeft },
+        { ConsoleKey.RightArrow, NameFormInputType.MoveRight },
+        { ConsoleKey.Backspace, NameFormInputType.RemoveBefore },
+        { ConsoleKey.Delete, NameFormInputType.RemoveAfter },
+        { ConsoleKey.Enter, NameFormInputType.Return },
+        { ConsoleKey.Escape, NameFormInputType.Cancel }
+    };
+
+
+    internal static NameFormInput ProvideNameFormInput()
+    {
+        NameFormInput input = new NameFormInput()
+        {
+            InputType = NameFormInputType.Unknown,
+            InputValue = ' '
+        };
+        while (input.InputType == NameFormInputType.Unknown)
+        {
+            var keyInput = Console.ReadKey(true);
+            if (acceptedNameFormSpecialInputs.ContainsKey(keyInput.Key))
+            {
+                input.InputType = acceptedNameFormSpecialInputs[keyInput.Key];
+                continue;
+            }
+            if (!char.IsControl(keyInput.KeyChar))
+            {
+                input.InputType = NameFormInputType.Character;
+                input.InputValue = keyInput.KeyChar;
+            }
+        }
+        return input;
     }
 }
