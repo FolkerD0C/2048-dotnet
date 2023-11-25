@@ -5,7 +5,7 @@ namespace Game2048.Shared.EventHandlers;
 
 public class PlayStartedEventArgs : EventArgs
 {
-    public IGamePosition Position { get; }
+    public IGameState Position { get; }
 
     public int RemainingUndos { get; }
 
@@ -19,7 +19,7 @@ public class PlayStartedEventArgs : EventArgs
 
     public string PlayerName { get; }
 
-    public PlayStartedEventArgs(IGamePosition position, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth, string playerName)
+    public PlayStartedEventArgs(IGameState position, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth, string playerName)
     {
         Position = position;
         RemainingUndos = remainingUndos;

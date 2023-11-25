@@ -20,16 +20,16 @@ public class GameSaveHandler : FileHandler, IGameSaveHandler
     IGameRepository gameRepository;
     public IGameRepository GameRepository => gameRepository;
 
-    public string Convert(IGamePosition convertee)
+    public string Convert(IGameState convertee)
     {
         return convertee.Serialize();
     }
 
-    public IGamePosition Deconvert(string deconvertee)
+    public IGameState Deconvert(string deconvertee)
     {
-        IGamePosition gamePosition = new GamePosition();
-        gamePosition.Deserialize(deconvertee);
-        return gamePosition;
+        IGameState gameState = new GameState();
+        gameState.Deserialize(deconvertee);
+        return gameState;
     }
 
     public void Load()
@@ -49,7 +49,7 @@ public class GameSaveHandler : FileHandler, IGameSaveHandler
         {
             acceptedSpawnables.Add(accepted.GetInt32());
         }
-        IList<IGamePosition> undoChain = new List<IGamePosition>();
+        IList<IGameState> undoChain = new List<IGameState>();
         var chainEnumerable = jsonRoot.GetProperty("undoChain").EnumerateArray();
         foreach (var chainElement in chainEnumerable)
         {

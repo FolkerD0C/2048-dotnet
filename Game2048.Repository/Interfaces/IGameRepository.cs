@@ -17,11 +17,11 @@ public interface IGameRepository
     public string PlayerName { get; set; }
     public int Goal { get; }
     public IList<int>? AcceptedSpawnables { get; }
-    IGamePosition CurrentGameState { get; }
-    public LinkedList<IGamePosition> UndoChain { get; }
+    IGameState CurrentGameState { get; }
+    public LinkedList<IGameState> UndoChain { get; }
     public string MoveResultErrorMessage { get; }
     int GetScore();
     public MoveResult MoveGrid(MoveDirection input);
-    public IGamePosition? Undo();
+    public IGameState? Undo();
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 }

@@ -1,13 +1,14 @@
 using Game2048.Config;
 using Game2048.Shared.Enums;
+using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
-namespace Game2048.Shared.Models;
+namespace Game2048.Repository;
 
-public class GamePosition : IGamePosition
+public class GameState : IRepositoryState, IGameState
 {
     IList<IList<int>> grid;
     public IList<IList<int>> Grid { get => grid; protected set { grid = value; } }
@@ -21,7 +22,7 @@ public class GamePosition : IGamePosition
     /// </summary>
     public bool CanMove => CheckIfCanMove();
 
-    public GamePosition()
+    public GameState()
     {
         grid = new List<IList<int>>();
         for (int i = 0; i < PlayEnvironment.GridHeight; i++)
@@ -87,9 +88,9 @@ public class GamePosition : IGamePosition
         return false;
     }
 
-    public IGamePosition Copy()
+    public IRepositoryState Copy()
     {
-        var result = new GamePosition();
+        var result = new GameState();
         IList<IList<int>> resultGrid = new List<IList<int>>();
         for (int i = 0; i < grid.Count; i++)
         {
@@ -150,7 +151,7 @@ public class GamePosition : IGamePosition
 
     public override bool Equals(object? obj)
     {
-        if (obj is not null && obj is GamePosition other)
+        if (obj is not null && obj is GameState other)
         {
             for (int i = 0; i < grid.Count; i++)
             {

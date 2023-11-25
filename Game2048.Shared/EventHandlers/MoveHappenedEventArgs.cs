@@ -6,11 +6,11 @@ namespace Game2048.Shared.EventHandlers;
 
 public class MoveHappenedEventArgs : EventArgs
 {
-    public IGamePosition Position { get; }
+    public IGameState Position { get; }
 
     public MoveDirection Direction { get; }
 
-    public MoveHappenedEventArgs(IGamePosition position, MoveDirection direction)
+    public MoveHappenedEventArgs(IGameState position, MoveDirection direction)
     {
         Position = position;
         Direction = direction;

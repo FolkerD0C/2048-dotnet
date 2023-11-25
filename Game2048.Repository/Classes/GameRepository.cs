@@ -1,6 +1,7 @@
 using Game2048.Config;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
+using Game2048.Repository.Helpers;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
 using System;
@@ -38,10 +39,10 @@ public class GameRepository : IGameRepository
     int goal;
     public int Goal => goal;
 
-    LinkedList<IGamePosition> undoChain;
-    public LinkedList<IGamePosition> UndoChain => undoChain;
+    LinkedList<IGameState> undoChain;
+    public LinkedList<IGameState> UndoChain => undoChain;
 
-    public IGamePosition CurrentGameState => undoChain.First();
+    public IGameState CurrentGameState => undoChain.First();
 
     string moveResultErrorMessage;
     public string MoveResultErrorMessage => moveResultErrorMessage;
@@ -57,7 +58,7 @@ public class GameRepository : IGameRepository
     GameRepository(bool newGame)
     {
         randomNumberGenerator = new Random();
-        undoChain = new LinkedList<IGamePosition>();
+        undoChain = new LinkedList<IGameState>();
         playerName = "";
         acceptedSpawnables = ConfigManager.GetConfigItem<List<int>>("DefaultAcceptedSpawnables");
         maxUndos = ConfigManager.GetConfigItem<int>("DefaultMaxUndos");
@@ -70,15 +71,15 @@ public class GameRepository : IGameRepository
             gridHeight = ConfigManager.GetConfigItem<int>("DefaultGridHeight");
             goal = ConfigManager.GetConfigItem<int>("DefaultGoal");
 
-            // Setting up undochain and starter GamePosition object
-            undoChain.AddFirst(new GamePosition());
+            // Setting up undochain and starter GameState object
+            undoChain.AddFirst(new GameState());
             PlaceRandomNumber();
             PlaceRandomNumber();
             GetCurrentMaxNumber();
         }
     }
 
-    public static IGameRepository GetRepositoryFromSave(int remainingLives, int gridWidth, int gridHeight, string playerName, int goal, IList<int> acceptedSpawnables, IList<IGamePosition> undoChain)
+    public static IGameRepository GetRepositoryFromSave(int remainingLives, int gridWidth, int gridHeight, string playerName, int goal, IList<int> acceptedSpawnables, IList<IGameState> undoChain)
     {
         var resultRepository = new GameRepository(false)
         {
@@ -112,11 +113,11 @@ public class GameRepository : IGameRepository
             ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value;
 
         // Perform move on a copy
-        IGamePosition gamePositionCopy = firstPosition.Copy();
-        gamePositionCopy.Move(direction);
+        IRepositoryState gameStateCopy = firstPosition.AsRepositoryGameState().Copy();
+        gameStateCopy.Move(direction);
 
         // If move happened then add current position to the undochain
-        undoChain.AddFirst(gamePositionCopy);
+        undoChain.AddFirst(gameStateCopy.AsPublicGameState());
         if (undoChain.Count > maxUndos)
         {
             undoChain.RemoveLast();
@@ -130,7 +131,7 @@ public class GameRepository : IGameRepository
         // Perform after-move actions
         PlaceRandomNumber();
         GetCurrentMaxNumber();
-        if (!gamePositionCopy.CanMove)
+        if (!gameStateCopy.CanMove)
         {
             if (--remainingLives <= 0)
             {
@@ -147,7 +148,7 @@ public class GameRepository : IGameRepository
         return MoveResult.NoError;
     }
 
-    public IGamePosition? Undo()
+    public IGameState? Undo()
     {
         if (undoChain.Count > 1)
         {
@@ -167,14 +168,14 @@ public class GameRepository : IGameRepository
         {
             throw new NullReferenceException("Game repository can not have empty undo chain.");
         }
-        var emptyTiles = undoChain.First.Value.GetEmptyTiles();
+        var emptyTiles = undoChain.First().AsRepositoryGameState().GetEmptyTiles();
         if (emptyTiles.Count == 0)
         {
             return;
         }
         var targetTile = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
-        undoChain.First.Value
+        undoChain.First().AsRepositoryGameState()
             .PlaceTile(targetTile.Vertical, targetTile.Horizontal, tileValue);
     }
 
