@@ -1,7 +1,6 @@
 ﻿using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.AppUI.Play;
-using ConsoleClient.Menu;
 using Game2048.Logic;
 using Game2048.Shared.Enums;
 using System;
@@ -11,13 +10,7 @@ namespace ConsoleClient.App.Resources;
 
 internal static class PlayProvider
 {
-    static IConsoleMenu? mainMenu;
     static IPlayInstance? playLogic;
-
-    internal static void SetMainMenu(IConsoleMenu? consoleMenu)
-    {
-        mainMenu = consoleMenu;
-    }
 
     internal static void ProvideNewGame()
     {
@@ -65,7 +58,7 @@ internal static class PlayProvider
         }
         if (endedReason == PlayEndedReason.QuitGame)
         {
-            mainMenu?.EndNavigation();
+            AppEnvironment.MainMenu.EndNavigation();
             return;
         }
         if (endedReason == PlayEndedReason.ExitPlay)

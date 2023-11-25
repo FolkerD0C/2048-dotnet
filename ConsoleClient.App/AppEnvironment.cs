@@ -1,13 +1,11 @@
-﻿using Game2048.Logic;
+﻿using ConsoleClient.App.Resources;
+using ConsoleClient.Menu;
+using Game2048.Logic;
 
 namespace ConsoleClient.App;
 
 internal static class AppEnvironment
 {
-    internal static IGameLogic? GameLogic;
-
-    internal static void Initialize()
-    {
-        GameLogic = new GameLogic();
-    }
+    internal readonly static IGameLogic GameLogic = new GameLogic();
+    internal readonly static IConsoleMenu MainMenu = MainMenuProvider.ProvideMainMenu();
 }

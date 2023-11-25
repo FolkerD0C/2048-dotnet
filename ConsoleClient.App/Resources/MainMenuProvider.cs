@@ -2,6 +2,7 @@
 using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Display;
 using ConsoleClient.Menu;
+using ConsoleClient.Menu.Enums;
 using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ internal static class MainMenuProvider
 {
     static readonly string gameLogicIsNullErrorMessage = "Game logic can not be null";
 
-    internal static void ProvideMainMenuAction()
+    internal static IConsoleMenu ProvideMainMenu()
     {
         IList<IMenuItem> mainMenuItems = new List<IMenuItem>()
         {
@@ -21,15 +22,14 @@ internal static class MainMenuProvider
             ProvideHighscoresMenuItem(),
             ProvideGameDescriptionMenuItem(),
             ProvideGameHelpMenuItem(),
-            new MenuItem("Exit") // TODO prompt user about exiting (=> Are you sure ...? Y/N)
+            ProvideExitMenuItem()
         };
         IConsoleMenu mainMenu = new ConsoleMenu(mainMenuItems, InputProvider.ProvideMenuInput);
-        PlayProvider.SetMainMenu(mainMenu);
         IMenuDisplay menuDisplay = new MenuDisplay();
         mainMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
         mainMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
         mainMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
-        mainMenu.Navigate();
+        return mainMenu;
     }
 
     static IMenuItem ProvideNewGameMenuItem()
@@ -147,5 +147,36 @@ internal static class MainMenuProvider
         gameHelpMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
         gameHelpMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
         gameHelpMenu.Navigate();
+    }
+
+    static IMenuItem ProvideExitMenuItem()
+    {
+        string menuItemName = "Guit Game";
+        var exitGameSubMenu = ProvideExitGameSubMenu();
+        exitGameSubMenu.AddNavigationBreaker(MenuItemResult.Yes);
+        exitGameSubMenu.AddNavigationBreaker(MenuItemResult.No);
+        IMenuDisplay menuDisplay = new MenuDisplay();
+        exitGameSubMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
+        exitGameSubMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
+        exitGameSubMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
+        exitGameSubMenu.MenuItemReturnedYes += (sender, args) =>
+        {
+            AppEnvironment.MainMenu.EndNavigation();
+        };
+        return new MenuItem(menuItemName, new MenuActionRequestedArgs(exitGameSubMenu));
+    }
+
+    static IConsoleMenu ProvideExitGameSubMenu()
+    {
+        IList<IMenuItem> exitGameSubMenuItems = new List<IMenuItem>()
+        {
+            new MenuItem("Yes", MenuItemResult.Yes),
+            new MenuItem("No", MenuItemResult.No)
+        };
+        IList<string> displayText = new List<string>()
+        {
+            "Are you sure you want to exit?"
+        };
+        return new ConsoleMenu(exitGameSubMenuItems, InputProvider.ProvideMenuInput, displayText);
     }
 }

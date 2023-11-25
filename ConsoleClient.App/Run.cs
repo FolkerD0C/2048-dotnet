@@ -1,12 +1,9 @@
-﻿using ConsoleClient.App.Resources;
-
-namespace ConsoleClient.App;
+﻿namespace ConsoleClient.App;
 
 class Run
 {
     static void Main(string[] args)
     {
-        AppEnvironment.Initialize();
-        MainMenuProvider.ProvideMainMenuAction();
+        AppEnvironment.MainMenu.Navigate();
     }
 }
