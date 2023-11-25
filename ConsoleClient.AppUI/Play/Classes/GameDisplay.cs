@@ -1,3 +1,4 @@
+using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
@@ -345,7 +346,7 @@ public class GameDisplay : IGameDisplay
         {
             case MiscEvent.GoalReached:
                 {
-                    // TODO print congrats
+                    new MessageOverlay("Congratulations! You have won the game! You can play more or exit.", MessageType.Success);
                     break;
                 }
             case MiscEvent.MaxNumberChanged:
@@ -375,7 +376,7 @@ public class GameDisplay : IGameDisplay
 
     public void OnErrorHappened(object? sender, ErrorHappenedEventArgs args)
     {
-        new ErrorMessageOverlay(args.ErrorMessage).PrintErrorMessage();
+        new MessageOverlay(args.ErrorMessage, MessageType.Error).PrintMessage();
     }
 
     #region Handle move event

@@ -1,3 +1,4 @@
+using ConsoleClient.AppUI.Enums;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
@@ -6,10 +7,10 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Misc;
 
-public class ErrorMessageOverlay : IOverLay
+public class MessageOverlay : IOverLay
 {
-    const ConsoleColor defaultForegroundColor = ConsoleColor.White;
-    const ConsoleColor defaltBackgroundColor = ConsoleColor.Red;
+    readonly ConsoleColor messageForegroundColor;
+    readonly ConsoleColor messageBackgroundColor;
 
     public IDisplayRow this[int index]
     {
@@ -24,7 +25,7 @@ public class ErrorMessageOverlay : IOverLay
         set { displayRows[index] = value; }
     }
 
-    readonly IList<string> errorMessage;
+    readonly IList<string> messageRows;
     int verticalOffset;
     int horizontalOffset;
     int rowLength;
@@ -34,24 +35,41 @@ public class ErrorMessageOverlay : IOverLay
 
     public int RowCount => displayRows.Count;
 
-    public ErrorMessageOverlay(string error)
+    public MessageOverlay(string message, MessageType messageType)
     {
         displayRows = new List<IDisplayRow>();
-        errorMessage = SplitErrorMessage(error);
+        messageRows = SplitMessage(message);
+        switch (messageType)
+        {
+            case MessageType.Error:
+                {
+                    messageForegroundColor = ConsoleColor.White;
+                    messageBackgroundColor = ConsoleColor.Red;
+                    break;
+                }
+            case MessageType.Success:
+                {
+                    messageForegroundColor = ConsoleColor.DarkMagenta;
+                    messageBackgroundColor = ConsoleColor.Green;
+                    break;
+                }
+            default:
+                break;
+        }
     }
 
     // TODO Split on words
-    IList<string> SplitErrorMessage(string error)
+    IList<string> SplitMessage(string message)
     {
         rowLength = DisplayManager.Width / 2;
         horizontalOffset = (DisplayManager.Width - rowLength) / 2;
         IList<string> result = new List<string>();
-        while (error.Length >= rowLength)
+        while (message.Length >= rowLength)
         {
-            result.Add(error[..rowLength]);
-            error = error[rowLength..];
+            result.Add(message[..rowLength]);
+            message = message[rowLength..];
         }
-        result.Add(error);
+        result.Add(message);
         verticalOffset = (DisplayManager.Height - result.Count) / 2;
         return result;
     }
@@ -69,17 +87,17 @@ public class ErrorMessageOverlay : IOverLay
             && displayRows[relativeVerticalPosition][relativeHorizontalPosition].IsSet;
     }
 
-    public void PrintErrorMessage()
+    public void PrintMessage()
     {
         DisplayManager.NewOverlay(this);
-        for (int i = 0; i < errorMessage.Count; i++)
+        for (int i = 0; i < messageRows.Count; i++)
         {
             DisplayManager.PrintText(
-                errorMessage[i].PadRight(rowLength),
+                messageRows[i].PadRight(rowLength),
                 verticalOffset + i,
                 horizontalOffset,
-                defaultForegroundColor,
-                defaltBackgroundColor
+                messageForegroundColor,
+                messageBackgroundColor
             );
         }
         ProvideCorrectInput();
@@ -92,10 +110,10 @@ public class ErrorMessageOverlay : IOverLay
         {
             DisplayManager.PrintText(
                 "Press space to continue...",
-                verticalOffset + errorMessage.Count + 1,
+                verticalOffset + messageRows.Count + 1,
                 horizontalOffset,
-                defaultForegroundColor,
-                defaltBackgroundColor
+                messageForegroundColor,
+                messageBackgroundColor
             );
         }
         while (Console.ReadKey(true).Key != ConsoleKey.Spacebar);

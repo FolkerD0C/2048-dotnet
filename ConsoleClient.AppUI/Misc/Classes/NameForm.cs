@@ -127,7 +127,7 @@ public class NameForm : INameForm
                     }
                 case NameFormInputType.Cancel:
                     {
-                        new ErrorMessageOverlay("You have cancelled the name form action...").PrintErrorMessage();
+                        new MessageOverlay("You have cancelled the name form action...", MessageType.Error).PrintMessage();
                         formResult.ResultType = NameFormResultType.Cancelled;
                         inPrompt = false;
                         break;
