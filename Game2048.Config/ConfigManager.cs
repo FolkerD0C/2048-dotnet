@@ -9,25 +9,24 @@ namespace Game2048.Config;
 
 public static class ConfigManager
 {
-    public static IEnumerable<(string Name, object? Value, Type Type)> GetConfigItems()
+    public static IEnumerable<(string Name, object? Value)> GetConfigItems()
     {
-        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static) ?? throw new Exception("Config can not be null.");
+        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NullReferenceException("Config can not be null.");
         var result = new List<(string Name, object? Value, Type Type)>();
         return configItems.Select(configItemAsFieldInfo =>
         (
             configItemAsFieldInfo.Name,
-            configItemAsFieldInfo.GetValue(null),
-            configItemAsFieldInfo.FieldType
+            configItemAsFieldInfo.GetValue(null)
         ));
     }
 
     static FieldInfo GetConfigItem(string configItemName)
     {
-        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new Exception("Config can not be null.");
+        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new ArgumentException("Config can not be null.");
         var matchingConfigItems = configItems.Where(item => item.Name == configItemName);
         if (!matchingConfigItems.Any())
         {
-            throw new Exception($"Config item '{configItemName}' not found");
+            throw new ArgumentException($"Config item '{configItemName}' not found");
         }
         return matchingConfigItems.First();
     }
@@ -47,7 +46,7 @@ public static class ConfigManager
         {
             return configItemValue;
         }
-        throw new Exception("Wrong config item request");
+        throw new ArgumentException("Wrong config item type request");
     }
 
     public static void Load()
@@ -58,7 +57,7 @@ public static class ConfigManager
         try
         {
             IList<int> defaultAcceptedSpawnables = new List<int>();
-            var acceptedSpawnablesEnumerable = jsonRoot.GetProperty("defaultAcceptedSpawnables").EnumerateArray();
+            var acceptedSpawnablesEnumerable = jsonRoot.GetProperty("DefaultAcceptedSpawnables").EnumerateArray();
             foreach (var accepted in acceptedSpawnablesEnumerable)
             {
                 defaultAcceptedSpawnables.Add(accepted.GetInt32());
@@ -69,43 +68,43 @@ public static class ConfigManager
         { }
         try
         {
-            GameConfiguration.DefaultGoal = jsonRoot.GetProperty("defaultGoal").GetInt32();
+            GameConfiguration.DefaultGoal = jsonRoot.GetProperty("DefaultGoal").GetInt32();
         }
         catch (KeyNotFoundException)
         { }
         try
         {
-            GameConfiguration.MaxHighscoresListLength = jsonRoot.GetProperty("maxHighscoresListLength").GetInt32();
+            GameConfiguration.MaxHighscoresListLength = jsonRoot.GetProperty("MaxHighscoresListLength").GetInt32();
         }
         catch (KeyNotFoundException)
         { }
         try
         {
-            GameConfiguration.DefaultMaxLives = jsonRoot.GetProperty("defaultMaxLives").GetInt32();
+            GameConfiguration.DefaultMaxLives = jsonRoot.GetProperty("DefaultMaxLives").GetInt32();
         }
         catch (KeyNotFoundException)
         { }
         try
         {
-            GameConfiguration.DefaultMaxUndos = jsonRoot.GetProperty("defaultMaxUndos").GetInt32();
+            GameConfiguration.DefaultMaxUndos = jsonRoot.GetProperty("DefaultMaxUndos").GetInt32();
         }
         catch (KeyNotFoundException)
         { }
         try
         {
-            GameConfiguration.DefaultGridWidth = jsonRoot.GetProperty("defaultGridWidth").GetInt32();
+            GameConfiguration.DefaultGridWidth = jsonRoot.GetProperty("DefaultGridWidth").GetInt32();
         }
         catch (KeyNotFoundException)
         { }
         try
         {
-            GameConfiguration.DefaultGridHeight = jsonRoot.GetProperty("defaultGridHeight").GetInt32();
+            GameConfiguration.DefaultGridHeight = jsonRoot.GetProperty("DefaultGridHeight").GetInt32();
         }
         catch (KeyNotFoundException)
         { }
         try
         {
-            GameConfiguration.GameDataDirectory = jsonRoot.GetProperty("gameDataDirectory").GetString() ?? AppDomain.CurrentDomain.BaseDirectory;
+            GameConfiguration.GameDataDirectory = jsonRoot.GetProperty("GameDataDirectory").GetString() ?? AppDomain.CurrentDomain.BaseDirectory;
         }
         catch (KeyNotFoundException)
         { }
@@ -114,18 +113,16 @@ public static class ConfigManager
     public static void Save()
     {
         string jsonData = "{";
-        jsonData += "\"defaultAcceptedSpawnables\":[" + string.Join(",", GameConfiguration.DefaultAcceptedSpawnables) + "],";
-        jsonData += "\"defaultGoal\":" + GameConfiguration.DefaultGoal + ",";
-        jsonData += "\"maxHighscoresListLength\":" + GameConfiguration.MaxHighscoresListLength + ",";
-        jsonData += "\"defaultMaxLives\":" + GameConfiguration.DefaultMaxLives + ",";
-        jsonData += "\"defaultMaxUndos\":" + GameConfiguration.DefaultMaxUndos + ",";
-        jsonData += "\"defaultGridWidth\":" + GameConfiguration.DefaultGridWidth + ",";
-        jsonData += "\"defaultGridHeight\":" + GameConfiguration.DefaultGridHeight;
-        if (GameConfiguration.GameDataDirectory is not null)
-        {
-            jsonData += ",\"gameDataDirectory\":" + GameConfiguration.GameDataDirectory;
-        }
+        jsonData += "\"DefaultAcceptedSpawnables\":[" + string.Join(",", GameConfiguration.DefaultAcceptedSpawnables) + "],";
+        jsonData += "\"DefaultGoal\":" + GameConfiguration.DefaultGoal + ",";
+        jsonData += "\"MaxHighscoresListLength\":" + GameConfiguration.MaxHighscoresListLength + ",";
+        jsonData += "\"DefaultMaxLives\":" + GameConfiguration.DefaultMaxLives + ",";
+        jsonData += "\"DefaultMaxUndos\":" + GameConfiguration.DefaultMaxUndos + ",";
+        jsonData += "\"DefaultGridWidth\":" + GameConfiguration.DefaultGridWidth + ",";
+        jsonData += "\"DefaultGridHeight\":" + GameConfiguration.DefaultGridHeight + ",";
+        jsonData += "\"DefaultStarterTiles\":" + GameConfiguration.DefaultStarterTiles + ",";
+        jsonData += "\"GameDataDirectory\":\"" + GameConfiguration.GameDataDirectory + "\"";
         jsonData += "}";
-        File.WriteAllText(jsonData, GameData.ConfigFilePath);
+        File.WriteAllText(GameData.ConfigFilePath, jsonData);
     }
 }

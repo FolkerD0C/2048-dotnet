@@ -20,4 +20,6 @@ internal static class GameConfiguration
     internal static int DefaultGridWidth = 4;
 
     internal static int DefaultGridHeight = 4;
+
+    internal static int DefaultStarterTiles = 2;
 }
