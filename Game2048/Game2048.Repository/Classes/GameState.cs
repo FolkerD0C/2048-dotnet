@@ -337,10 +337,10 @@ public class GameState : IRepositoryState, IGameState
         for (int column = grid[0].Count - 1; column >= 0; column--)
         {
             //Setting first row to be the downmost index - 1
-            int firstRow = grid[0].Count - 2;
+            int firstRow = grid.Count - 2;
             //Setting last row to be the upmost index
             int lastRow = 0;
-            int downmostRow = grid[0].Count - 1;
+            int downmostRow = grid.Count - 1;
             // First we need to sweep all tiles down, to remove empty tiles
             for (int row = firstRow; row >= lastRow; row--)
             {
