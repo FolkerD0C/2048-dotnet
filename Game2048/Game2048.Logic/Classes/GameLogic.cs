@@ -111,6 +111,14 @@ public class GameLogic : IGameLogic
 
     public SaveResult SaveCurrentGame()
     {
+        if (playLogic.PlayerName is null || playLogic.PlayerName == "")
+        {
+            return new SaveResult()
+            {
+                ResultType = SaveResultType.Failure,
+                Message = "Player name can not be empty, aborting save..."
+            };
+        }
         string filePath = GameSaveHandler.GetFullPathFromName(playLogic.PlayerName);
         saveHandler.UpdateFilePath(filePath);
         return saveHandler.Save();
