@@ -21,7 +21,6 @@ internal static class MainMenuProvider
             ProvideLoadGameMenuItem(),
             ProvideHighscoresMenuItem(),
             ProvideGameDescriptionMenuItem(),
-            ProvideGameHelpMenuItem(),
             ProvideExitMenuItem()
         };
         IConsoleMenu mainMenu = new ConsoleMenu(mainMenuItems, InputProvider.ProvideMenuInput);
@@ -122,31 +121,6 @@ internal static class MainMenuProvider
         gameDescriptionMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
         gameDescriptionMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
         gameDescriptionMenu.Navigate();
-    }
-
-    static IMenuItem ProvideGameHelpMenuItem()
-    {
-        string menuItemName = "Game Help";
-        IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(ProvideGameHelpSubMenuAction);
-        IMenuItem gameHelpMenuItem = new MenuItem(menuItemName, menuActionRequestedArgs);
-        return gameHelpMenuItem;
-    }
-
-    static void ProvideGameHelpSubMenuAction()
-    {
-        if (AppEnvironment.GameLogic is null)
-        {
-            throw new NullReferenceException(gameLogicIsNullErrorMessage);
-        }
-        IMenuItem back = new MenuItem("Back");
-        string gameHelp = AppEnvironment.GameLogic.GetGameHelp();
-        IList<string> displayText = gameHelp.Slice((DisplayManager.Width * 2) / 3);
-        IConsoleMenu gameHelpMenu = new ConsoleMenu(new List<IMenuItem>() { back }, InputProvider.ProvideMenuInput, displayText);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        gameHelpMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        gameHelpMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        gameHelpMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
-        gameHelpMenu.Navigate();
     }
 
     static IMenuItem ProvideExitMenuItem()

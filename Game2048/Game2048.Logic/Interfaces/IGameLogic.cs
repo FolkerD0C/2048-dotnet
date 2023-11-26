@@ -15,5 +15,4 @@ public interface IGameLogic
     public IList<IHighscore> GetHighscores();
     public void AddHighscore(string playerName, int score);
     public string GetGameDescription();
-    public string GetGameHelp();
 }

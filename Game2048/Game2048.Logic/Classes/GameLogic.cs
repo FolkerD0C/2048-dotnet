@@ -37,11 +37,6 @@ public class GameLogic : IGameLogic
         return GameData.GameDescription;
     }
 
-    public string GetGameHelp()
-    {
-        return GameData.GameHelp;
-    }
-
     public IEnumerable<string> GetSavedGames()
     {
         var saveFiles = GameSaveHandler.GetSavedGames();
