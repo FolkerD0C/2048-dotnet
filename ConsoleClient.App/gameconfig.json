@@ -1,12 +1,13 @@
 {
-    "defaultAcceptedSpawnables": [
-        2,
-        4
-    ],
-    "defaultGoal": 2048,
-    "maxHighscoresListLength": 10,
-    "defaultMaxLives": 5,
-    "defaultMaxUndos": 6,
-    "defaultGridWidth": 4,
-    "defaultGridHeight": 4
+  "DefaultAcceptedSpawnables": [
+    2,
+    4
+  ],
+  "DefaultGoal": 2048,
+  "DefaultGridHeight": 4,
+  "DefaultGridWidth": 4,
+  "DefaultMaxLives": 5,
+  "DefaultMaxUndos": 6,
+  "DefaultStarterTiles": 2,
+  "MaxHighscoresListLength": 10
 }
