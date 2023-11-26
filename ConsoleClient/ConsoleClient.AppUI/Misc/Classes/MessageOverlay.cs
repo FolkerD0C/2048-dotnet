@@ -90,6 +90,19 @@ public class MessageOverlay : IOverLay
     public void PrintMessage()
     {
         DisplayManager.NewOverlay(this);
+
+        //Clear the area first
+        for (int i = 0; i < messageRows.Count + 4; i++)
+        {
+            DisplayManager.PrintText(
+                new string(' ', DisplayManager.Width),
+                verticalOffset - 1 + i,
+                0,
+                DisplayManager.DefaultBackgroundColor,
+                DisplayManager.DefaultBackgroundColor
+            );
+        }
+
         for (int i = 0; i < messageRows.Count; i++)
         {
             DisplayManager.PrintText(
@@ -106,12 +119,14 @@ public class MessageOverlay : IOverLay
 
     void ProvideCorrectInput()
     {
+        string continueMessage = "Press space to continue...";
+        int continueMessageHorizontalOffset = (DisplayManager.Width - continueMessage.Length) / 2;
         do
         {
             DisplayManager.PrintText(
-                "Press space to continue...",
+                continueMessage,
                 verticalOffset + messageRows.Count + 1,
-                horizontalOffset,
+                continueMessageHorizontalOffset,
                 messageForegroundColor,
                 messageBackgroundColor
             );

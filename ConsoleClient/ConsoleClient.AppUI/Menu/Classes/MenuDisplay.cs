@@ -6,13 +6,17 @@ using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace ConsoleClient.AppUI.Menu;
 
 public class MenuDisplay : IMenuDisplay
 {
-    static ConsoleColor selectedMenuItemForeground;
-    static ConsoleColor selectedMenuItemBackground;
+    const ConsoleColor SelectedMenuItemForeground = ConsoleColor.White;
+    const ConsoleColor SelectedMenuItemBackground = ConsoleColor.Red;
+    const char FrameDisplayValue = '#';
+    const ConsoleColor FrameDisplayForeground = ConsoleColor.DarkMagenta;
+    const ConsoleColor FrameDisplayBackground = ConsoleColor.Yellow;
 
     public IDisplayRow this[int index]
     {
@@ -42,8 +46,6 @@ public class MenuDisplay : IMenuDisplay
 
     public MenuDisplay()
     {
-        selectedMenuItemForeground = ConsoleColor.White;
-        selectedMenuItemBackground = ConsoleColor.Red;
         displayRows = new List<IDisplayRow>();
         menuItems = new List<IMenuItem>();
     }
@@ -63,6 +65,9 @@ public class MenuDisplay : IMenuDisplay
 
     public void OnMenuNavigationStarted(object? sender, MenuNavigationStartedEventArgs args)
     {
+        bool horizontalFramePrintable = false;
+        bool verticalFramePrintable = false;
+
         displayTextRowCount = args.DisplayText is not null ? args.DisplayText.Count : 0;
         if (displayTextRowCount >= DisplayManager.Height)
         {
@@ -71,6 +76,10 @@ public class MenuDisplay : IMenuDisplay
         menuItems = args.MenuItems;
 
         int fullLength = menuItems.Count + displayTextRowCount;
+        if (fullLength + 2 <= DisplayManager.Height)
+        {
+            horizontalFramePrintable = true;
+        }
         verticalOffset = fullLength >= DisplayManager.Height
             ? 0 : (DisplayManager.Height - fullLength) / 2;
 
@@ -83,10 +92,85 @@ public class MenuDisplay : IMenuDisplay
         {
             throw new InvalidOperationException("Display text can not be longer then the display.");
         }
+        if (longestRowLength + 2 <= DisplayManager.Width)
+        {
+            verticalFramePrintable = true;
+        }
         horizontalOffset = longestRowLength < DisplayManager.Width
             ? (DisplayManager.Width - longestRowLength) / 2 : 0;
 
         DisplayManager.NewOverlay(this);
+
+        if (horizontalFramePrintable)
+        {
+            DisplayManager.PrintText(
+                new string(FrameDisplayValue, longestRowLength),
+                verticalOffset - 1,
+                horizontalOffset,
+                FrameDisplayForeground,
+                FrameDisplayBackground
+            );
+            DisplayManager.PrintText(
+                new string(FrameDisplayValue, longestRowLength),
+                verticalOffset + fullLength,
+                horizontalOffset,
+                FrameDisplayForeground,
+                FrameDisplayBackground
+            );
+        }
+
+        if (verticalFramePrintable)
+        {
+            for (int i = 0; i < fullLength; i++)
+            {
+                DisplayManager.PrintText(
+                    "" + FrameDisplayValue,
+                    verticalOffset + i,
+                    horizontalOffset - 1,
+                    FrameDisplayForeground,
+                    FrameDisplayBackground
+                );
+                DisplayManager.PrintText(
+                    "" + FrameDisplayValue,
+                    verticalOffset + i,
+                    horizontalOffset + longestRowLength,
+                    FrameDisplayForeground,
+                    FrameDisplayBackground
+                );
+            }
+        }
+
+        if (horizontalFramePrintable && verticalFramePrintable)
+        {
+            DisplayManager.PrintText(
+                "" + FrameDisplayValue,
+                verticalOffset - 1,
+                horizontalOffset - 1,
+                FrameDisplayForeground,
+                FrameDisplayBackground
+            );
+            DisplayManager.PrintText(
+                "" + FrameDisplayValue,
+                verticalOffset - 1,
+                horizontalOffset + longestRowLength,
+                FrameDisplayForeground,
+                FrameDisplayBackground
+            );
+            DisplayManager.PrintText(
+                "" + FrameDisplayValue,
+                verticalOffset + fullLength,
+                horizontalOffset - 1,
+                FrameDisplayForeground,
+                FrameDisplayBackground
+            );
+            DisplayManager.PrintText(
+                "" + FrameDisplayValue,
+                verticalOffset + fullLength,
+                horizontalOffset  + longestRowLength,
+                FrameDisplayForeground,
+                FrameDisplayBackground
+            );
+        }
 
         for (int i = 0; i < displayTextRowCount; i++)
         {
@@ -108,8 +192,8 @@ public class MenuDisplay : IMenuDisplay
             ConsoleColor backgroundColor = DisplayManager.DefaultBackgroundColor;
             if (i == args.SelectedMenuItem)
             {
-                foregroundColor = selectedMenuItemForeground;
-                backgroundColor = selectedMenuItemBackground;
+                foregroundColor = SelectedMenuItemForeground;
+                backgroundColor = SelectedMenuItemBackground;
             }
             DisplayManager.PrintText(
                 menuItems[i].Name.PadRight(longestRowLength),
@@ -139,8 +223,8 @@ public class MenuDisplay : IMenuDisplay
             menuItems[args.NewItem].Name.PadRight(longestRowLength),
             verticalOffset + displayTextRowCount + args.NewItem,
             horizontalOffset,
-            selectedMenuItemForeground,
-            selectedMenuItemBackground
+            SelectedMenuItemForeground,
+            SelectedMenuItemBackground
         );
     }
 

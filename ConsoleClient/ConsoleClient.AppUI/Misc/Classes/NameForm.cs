@@ -127,6 +127,7 @@ public class NameForm : INameForm
                     }
                 case NameFormInputType.Cancel:
                     {
+                        DisplayManager.SetCursorVisibility(false);
                         new MessageOverlay("You have cancelled the name form action...", MessageType.Error).PrintMessage();
                         formResult.ResultType = NameFormResultType.Cancelled;
                         inPrompt = false;
@@ -145,18 +146,32 @@ public class NameForm : INameForm
     {
         int promptLabel1VerticalOffset = DisplayManager.Height / 2 - 2;
         int promptLabel2VerticalOffset = DisplayManager.Height / 2 - 1;
-        int promptLabelHorizontalOffset = (DisplayManager.Width - PromptLabel1.Length) / 2;
+        int promptLabel1HorizontalOffset = (DisplayManager.Width - PromptLabel1.Length) / 2;
+        int promptLabel2HorizontalOffset = (DisplayManager.Width - PromptLabel2.Length) / 2;
+
+        //Clear area first
+        for (int i = 0; i < 4; i++)
+        {
+            DisplayManager.PrintText(
+                new string(' ', DisplayManager.Width),
+                promptLabel1VerticalOffset - 1 + i,
+                0,
+                DisplayManager.DefaultBackgroundColor,
+                DisplayManager.DefaultBackgroundColor
+            );
+        }
+
         DisplayManager.PrintText(
             PromptLabel1,
             promptLabel1VerticalOffset,
-            promptLabelHorizontalOffset,
+            promptLabel1HorizontalOffset,
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
         DisplayManager.PrintText(
             PromptLabel2,
             promptLabel2VerticalOffset,
-            promptLabelHorizontalOffset,
+            promptLabel2HorizontalOffset,
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
@@ -174,6 +189,19 @@ public class NameForm : INameForm
         {
             nameFormValue[i] = ' ';
         }
+
+        //Clear the area first
+        for (int i = 0; i < 3; i++)
+        {
+            DisplayManager.PrintText(
+                new string(' ', DisplayManager.Width),
+                formVerticalOffset - 1 + i,
+                0,
+                DisplayManager.DefaultBackgroundColor,
+                DisplayManager.DefaultBackgroundColor
+            );
+        }
+
         DisplayManager.PrintText(
             new string(nameFormValue),
             formVerticalOffset,

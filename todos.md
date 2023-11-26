@@ -4,4 +4,3 @@
 * TODO add unit tests for all DLLs where needed in Game2048
 * TODO write class, interface and method documentation in Game2048 and ConsoleClient
 * TODO add a way to roll back multiple overlays without displaying them in ConsoleClient
-* TODO add a frame for menus in ConsoleClient
