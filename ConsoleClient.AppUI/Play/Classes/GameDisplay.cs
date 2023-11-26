@@ -346,7 +346,7 @@ public class GameDisplay : IGameDisplay
         {
             case MiscEvent.GoalReached:
                 {
-                    new MessageOverlay("Congratulations! You have won the game! You can play more or exit.", MessageType.Success);
+                    new MessageOverlay("Congratulations! You have won the game! You can play more or exit.", MessageType.Success).PrintMessage();
                     break;
                 }
             case MiscEvent.MaxNumberChanged:

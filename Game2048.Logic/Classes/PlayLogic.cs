@@ -189,6 +189,7 @@ public class PlayLogic : IPlayLogic
         if (!goalReached && repository.HighestNumber >= repository.Goal)
         {
             eventQueue.Enqueue(new MiscEventHappenedEventArgs(MiscEvent.GoalReached), 5);
+            goalReached = true;
         }
 
         // After all we need to handle the event queue
