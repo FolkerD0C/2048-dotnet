@@ -5,6 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<StartupObject>ConsoleClient.App.Run</StartupObject>
+	<AssemblyName>Game2048.ConsoleApp</AssemblyName>
+	<Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
