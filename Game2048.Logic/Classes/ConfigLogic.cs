@@ -1,5 +1,7 @@
 ﻿using Game2048.Config;
+using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,20 +9,45 @@ namespace Game2048.Logic;
 
 public class ConfigLogic : IConfigLogic
 {
-    public IEnumerable<ConfigItem> GetConfigItems()
+    public IEnumerable<ConfigItem<object>> GetConfigItems()
     {
         var items = ConfigManager.GetConfigItems();
-        return items.Select(item => new ConfigItem()
-        {
-            Name = item.Name,
-            Value = item.Value,
-            Type = item.Type
-        });
+        return items.Select
+        (item =>
+            item.Value is null ?
+                new ConfigItem<object>()
+                {
+                    Name = item.Name,
+                    Value = null,
+                    Status = ConfigItemStatus.NotFound
+                } :
+                new ConfigItem<object>()
+                {
+                    Name = item.Name,
+                    Value = item.Value,
+                    Status = ConfigItemStatus.Found
+                }
+        );
     }
 
-    public T GetConfigValue<T>(string configItemName)
+    public ConfigItem<T> GetConfigValue<T>(string configItemName)
     {
-        return ConfigManager.GetConfigItem<T>(configItemName);
+        T configItemValue = ConfigManager.GetConfigItem<T>(configItemName);
+        if (configItemValue is null)
+        {
+            return new ConfigItem<T>()
+            {
+                Name = configItemName,
+                Value = default,
+                Status = ConfigItemStatus.NotFound
+            };
+        }
+        return new ConfigItem<T>()
+        {
+            Name = configItemName,
+            Value = configItemValue,
+            Status = ConfigItemStatus.Found
+        };
     }
 
     public void LoadConfig()
@@ -33,8 +60,26 @@ public class ConfigLogic : IConfigLogic
         ConfigManager.Save();
     }
 
-    public void SetConfigValue<T>(string configItemName, T newValue)
+    public ConfigItem<T> SetConfigValue<T>(ConfigItem<T> configItem)
     {
-        ConfigManager.SetConfigItem(configItemName, newValue);
+        try
+        {
+            ConfigManager.SetConfigItem(configItem.Name ?? "", configItem.Value);
+        }
+        catch (ArgumentException)
+        {
+            return new ConfigItem<T>()
+            {
+                Name = configItem.Name,
+                Value = default,
+                Status = ConfigItemStatus.SettingFailed
+            };
+        }
+        return new ConfigItem<T>()
+        {
+            Name = configItem.Name,
+            Value = configItem.Value,
+            Status = ConfigItemStatus.SuccessfullySet
+        };
     }
 }
