@@ -59,7 +59,7 @@ internal static class MainMenuProvider
         foreach (string savedGameName in savedGameNames)
         {
             IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName);
-            loadGameMenuItems.Add(new MenuItem(savedGameName, menuActionRequestedArgs));
+            loadGameMenuItems.Add(new MenuItem(savedGameName, MenuItemResult.Back, menuActionRequestedArgs));
         }
         loadGameMenuItems.Add(new MenuItem("Back"));
         IConsoleMenu loadGameMenu = new ConsoleMenu(loadGameMenuItems, InputProvider.ProvideMenuInput);

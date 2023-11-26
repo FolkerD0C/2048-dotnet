@@ -45,6 +45,7 @@ public class GameLogic : IGameLogic
     public IEnumerable<string> GetSavedGames()
     {
         var saveFiles = GameSaveHandler.GetSavedGames();
+        saveFileInfos.Clear();
         foreach (var saveFile in saveFiles)
         {
             saveFileInfos.Add(saveFile.Name, saveFile.Fullpath);
