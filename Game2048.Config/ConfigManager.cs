@@ -121,7 +121,7 @@ public static class ConfigManager
         jsonData += "\"DefaultGridWidth\":" + GameConfiguration.DefaultGridWidth + ",";
         jsonData += "\"DefaultGridHeight\":" + GameConfiguration.DefaultGridHeight + ",";
         jsonData += "\"DefaultStarterTiles\":" + GameConfiguration.DefaultStarterTiles + ",";
-        jsonData += "\"GameDataDirectory\":\"" + GameConfiguration.GameDataDirectory + "\"";
+        jsonData += "\"GameDataDirectory\":\"" + GameConfiguration.GameDataDirectory.Replace(@"\", @"\\") + "\"";
         jsonData += "}";
         File.WriteAllText(GameData.ConfigFilePath, jsonData);
     }
