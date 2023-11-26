@@ -1,9 +1,13 @@
 ﻿using ConsoleClient.AppUI.Enums;
+using ConsoleClient.AppUI.Menu;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.AppUI.Play;
+using ConsoleClient.Menu;
+using ConsoleClient.Menu.Enums;
 using Game2048.Logic;
 using Game2048.Shared.Enums;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleClient.App.Resources;
@@ -123,6 +127,10 @@ internal static class PlayProvider
         {
             ProvideChangePlayerNameAction();
         }
+        if (AppEnvironment.GameLogic.GetSavedGames().Contains(playLogic.PlayerName) && !PromptPlayerOverwritingSave(playLogic.PlayerName ?? ""))
+        {
+            return;
+        }
         var saveResult = AppEnvironment.GameLogic.SaveCurrentGame();
         switch (saveResult.ResultType)
         {
@@ -139,5 +147,27 @@ internal static class PlayProvider
             default:
                 break;
         }
+    }
+
+    static bool PromptPlayerOverwritingSave(string saveGameName)
+    {
+        IList<IMenuItem> exitGameSubMenuItems = new List<IMenuItem>()
+        {
+            new MenuItem("Yes", MenuItemResult.Yes),
+            new MenuItem("No", MenuItemResult.No)
+        };
+        IList<string> displayText = new List<string>()
+        {
+            "The save file already exists for '" + saveGameName + "'.",
+            "Would you like to overwrite it?"
+        };
+        IConsoleMenu promptOverwriteMenu = new ConsoleMenu(exitGameSubMenuItems, InputProvider.ProvideMenuInput, displayText);
+        promptOverwriteMenu.AddNavigationBreaker(MenuItemResult.Yes);
+        promptOverwriteMenu.AddNavigationBreaker(MenuItemResult.No);
+        IMenuDisplay menuDisplay = new MenuDisplay();
+        promptOverwriteMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
+        promptOverwriteMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
+        promptOverwriteMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
+        return promptOverwriteMenu.Navigate() == MenuItemResult.Yes;
     }
 }
