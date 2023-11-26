@@ -70,8 +70,11 @@ public class GameRepository : IGameRepository
 
             // Setting up undochain and starter GameState object
             undoChain.AddFirst(new GameState());
-            PlaceRandomNumber();
-            PlaceRandomNumber();
+            int numbersToPlace = ConfigManager.GetConfigItem<int>("DefaultStarterTiles");
+            for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
+            {
+                PlaceRandomNumber();
+            }
             GetCurrentMaxNumber();
         }
     }
