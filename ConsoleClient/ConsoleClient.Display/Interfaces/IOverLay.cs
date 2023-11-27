@@ -10,4 +10,5 @@ public interface IOverLay : IDisposable
     int RowCount { get; }
     bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition);
     IDisplayRow this[int index] { get; set; }
+    void SetPreviousOverlaySuppression(bool previousOverlaySuppression);
 }

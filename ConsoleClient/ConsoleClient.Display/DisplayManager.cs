@@ -50,12 +50,21 @@ public static class DisplayManager
         CurrentOverlay = overlay;
     }
 
-    public static void RollBackOverLay()
+    public static void RollBackOverLay(bool suppressPrintingPrevious)
     {
-        var previous = OverlayStack.Pop();
-        previous.PrintAsPrevious();
-        CurrentOverlay.Dispose();
-        CurrentOverlay = previous;
+        if (suppressPrintingPrevious)
+        {
+            var overlayToDispose = OverlayStack.Pop();
+            CurrentOverlay.MergeWithPrevious(overlayToDispose);
+            overlayToDispose.Dispose();
+        }
+        else
+        {
+            var previous = OverlayStack.Pop();
+            previous.PrintAsPrevious();
+            CurrentOverlay.Dispose();
+            CurrentOverlay = previous;
+        }
     }
 
     public static void PrintText(string text, int relativeVerticalPosition, int relativeHorizontalPosition,
@@ -142,6 +151,24 @@ public static class DisplayManager
                 var firstDrawableOverlay = OverlayStack.FirstOrDefault(overlay => overlay.IsPositionSet(i, j));
                 var displayPositionToPrint = firstDrawableOverlay is not null ? firstDrawableOverlay[i][j] : defaultDisplayPosition;
                 PrintDisplayPosition(i, j, displayPositionToPrint);
+            }
+        }
+    }
+
+    static void MergeWithPrevious(this IOverLay currentOverlay, IOverLay otherOverlay)
+    {
+        for (int i = 0; i < currentOverlay.RowCount || i < otherOverlay.RowCount; i++)
+        {
+            if (!currentOverlay[i].IsSet && !otherOverlay[i].IsSet)
+            {
+                continue;
+            }
+            for (int j = 0; j < currentOverlay[i].ColumnCount || j < otherOverlay[i].ColumnCount; j++)
+            {
+                if (!currentOverlay[i][j].IsSet && otherOverlay[i][j].IsSet)
+                {
+                    currentOverlay[i][j] = otherOverlay[i][j];
+                }
             }
         }
     }

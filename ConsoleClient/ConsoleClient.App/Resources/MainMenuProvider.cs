@@ -13,7 +13,7 @@ internal static class MainMenuProvider
 {
     static readonly string gameLogicIsNullErrorMessage = "Game logic can not be null";
 
-    internal static IConsoleMenu ProvideMainMenu()
+    internal static void ProvideMainMenu()
     {
         IList<IMenuItem> mainMenuItems = new List<IMenuItem>()
         {
@@ -24,26 +24,26 @@ internal static class MainMenuProvider
             ProvideExitMenuItem()
         };
         IConsoleMenu mainMenu = new ConsoleMenu(mainMenuItems, InputProvider.ProvideMenuInput);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        mainMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        mainMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        mainMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
-        return mainMenu;
+        IMenuDisplay mainMenuOverlay = new MenuDisplay();
+        mainMenu.MenuNavigationStarted += mainMenuOverlay.OnMenuNavigationStarted;
+        mainMenu.MenuSelectionChanged += mainMenuOverlay.OnMenuSelectionChanged;
+        mainMenu.MenuNavigationEnded += mainMenuOverlay.OnMenuNavigationEnded;
+        mainMenuOverlay.SetPreviousOverlaySuppression(true);
+        AppEnvironment.CurrentMenus.Add("mainMenu", mainMenu);
+        AppEnvironment.CurrentOverlays.Add("mainMenuOverlay", mainMenuOverlay);
     }
 
     static IMenuItem ProvideNewGameMenuItem()
     {
         string menuItemName = "New Game";
-        IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(PlayProvider.ProvideNewGame);
-        IMenuItem newGameMenuItem = new MenuItem(menuItemName, menuActionRequestedArgs);
+        IMenuItem newGameMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(PlayProvider.ProvideNewGame));
         return newGameMenuItem;
     }
 
     static IMenuItem ProvideLoadGameMenuItem()
     {
         string menuItemName = "Load Game";
-        IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(ProvideLoadGameSubMenuAction);
-        IMenuItem loadGameMenuItem = new MenuItem(menuItemName, menuActionRequestedArgs);
+        IMenuItem loadGameMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(ProvideLoadGameSubMenuAction));
         return loadGameMenuItem;
     }
 
@@ -57,23 +57,31 @@ internal static class MainMenuProvider
         IList<IMenuItem> loadGameMenuItems = new List<IMenuItem>();
         foreach (string savedGameName in savedGameNames)
         {
-            IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName);
-            loadGameMenuItems.Add(new MenuItem(savedGameName, MenuItemResult.Back, menuActionRequestedArgs));
+            loadGameMenuItems.Add(new MenuItem(savedGameName, MenuItemResult.Back, new MenuActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName)));
         }
         loadGameMenuItems.Add(new MenuItem("Back"));
         IConsoleMenu loadGameMenu = new ConsoleMenu(loadGameMenuItems, InputProvider.ProvideMenuInput);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        loadGameMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        loadGameMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        loadGameMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
+        IMenuDisplay loadGameMenuOverlay = new MenuDisplay();
+        loadGameMenu.MenuNavigationStarted += loadGameMenuOverlay.OnMenuNavigationStarted;
+        loadGameMenu.MenuNavigationStarted += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Add("loadGameMenu", loadGameMenu);
+            AppEnvironment.CurrentOverlays.Add("loadGameMenuOverlay", loadGameMenuOverlay);
+        };
+        loadGameMenu.MenuSelectionChanged += loadGameMenuOverlay.OnMenuSelectionChanged;
+        loadGameMenu.MenuNavigationEnded += loadGameMenuOverlay.OnMenuNavigationEnded;
+        loadGameMenu.MenuNavigationEnded += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Remove("loadGameMenu");
+            AppEnvironment.CurrentOverlays.Remove("loadGameMenuOverlay");
+        };
         loadGameMenu.Navigate();
     }
 
     static IMenuItem ProvideHighscoresMenuItem()
     {
         string menuItemName = "Highscores";
-        IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(ProvideHighscoresSubMenuAction);
-        IMenuItem highscoresMenuItem = new MenuItem(menuItemName, menuActionRequestedArgs);
+        IMenuItem highscoresMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(ProvideHighscoresSubMenuAction));
         return highscoresMenuItem;
     }
 
@@ -91,18 +99,27 @@ internal static class MainMenuProvider
             displayText.Add(string.Format("<{0}>: [{1}]", highscore.PlayerName, highscore.PlayerScore));
         }
         IConsoleMenu highscoresMenu = new ConsoleMenu(new List<IMenuItem>() { back }, InputProvider.ProvideMenuInput, displayText);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        highscoresMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        highscoresMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        highscoresMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
+        IMenuDisplay highscoresMenuOverlay = new MenuDisplay();
+        highscoresMenu.MenuNavigationStarted += highscoresMenuOverlay.OnMenuNavigationStarted;
+        highscoresMenu.MenuNavigationStarted += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Add("highscoresMenu", highscoresMenu);
+            AppEnvironment.CurrentOverlays.Add("highscoresMenuOverlay", highscoresMenuOverlay);
+        };
+        highscoresMenu.MenuSelectionChanged += highscoresMenuOverlay.OnMenuSelectionChanged;
+        highscoresMenu.MenuNavigationEnded += highscoresMenuOverlay.OnMenuNavigationEnded;
+        highscoresMenu.MenuNavigationEnded += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Remove("highscoresMenu");
+            AppEnvironment.CurrentOverlays.Remove("highscoresMenuOverlay");
+        };
         highscoresMenu.Navigate();
     }
 
     static IMenuItem ProvideGameDescriptionMenuItem()
     {
         string menuItemName = "Game Description";
-        IMenuActionRequestedArgs menuActionRequestedArgs = new MenuActionRequestedArgs(ProvideGameDescriptionSubMenuAction);
-        IMenuItem gameDescriptionMenuItem = new MenuItem(menuItemName, menuActionRequestedArgs);
+        IMenuItem gameDescriptionMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(ProvideGameDescriptionSubMenuAction));
         return gameDescriptionMenuItem;
     }
 
@@ -116,28 +133,49 @@ internal static class MainMenuProvider
         string gameDescription = AppEnvironment.GameLogic.GetGameDescription();
         IList<string> displayText = gameDescription.Slice((DisplayManager.Width * 2) / 3);
         IConsoleMenu gameDescriptionMenu = new ConsoleMenu(new List<IMenuItem>() { back }, InputProvider.ProvideMenuInput, displayText);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        gameDescriptionMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        gameDescriptionMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        gameDescriptionMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
+        IMenuDisplay gameDescriptionMenuOverlay = new MenuDisplay();
+        gameDescriptionMenu.MenuNavigationStarted += gameDescriptionMenuOverlay.OnMenuNavigationStarted;
+        gameDescriptionMenu.MenuNavigationStarted += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Add("gameDescriptionMenu", gameDescriptionMenu);
+            AppEnvironment.CurrentOverlays.Add("gameDescriptionMenuOverlay", gameDescriptionMenuOverlay);
+        };
+        gameDescriptionMenu.MenuSelectionChanged += gameDescriptionMenuOverlay.OnMenuSelectionChanged;
+        gameDescriptionMenu.MenuNavigationEnded += gameDescriptionMenuOverlay.OnMenuNavigationEnded;
+        gameDescriptionMenu.MenuNavigationEnded += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Remove("gameDescriptionMenu");
+            AppEnvironment.CurrentOverlays.Remove("gameDescriptionMenuOverlay");
+        };
         gameDescriptionMenu.Navigate();
     }
 
     static IMenuItem ProvideExitMenuItem()
     {
         string menuItemName = "Guit Game";
-        var exitGameSubMenu = ProvideExitGameSubMenu();
-        exitGameSubMenu.AddNavigationBreaker(MenuItemResult.Yes);
-        exitGameSubMenu.AddNavigationBreaker(MenuItemResult.No);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        exitGameSubMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        exitGameSubMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        exitGameSubMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
-        exitGameSubMenu.MenuItemReturnedYes += (sender, args) =>
+        var exitGamePromptMenu = ProvideExitGameSubMenu();
+        exitGamePromptMenu.AddNavigationBreaker(MenuItemResult.Yes);
+        exitGamePromptMenu.AddNavigationBreaker(MenuItemResult.No);
+        IMenuDisplay exitGamePromptMenuOverlay = new MenuDisplay();
+        exitGamePromptMenu.MenuNavigationStarted += exitGamePromptMenuOverlay.OnMenuNavigationStarted;
+        exitGamePromptMenu.MenuNavigationStarted += (sender, args) =>
         {
-            AppEnvironment.MainMenu.EndNavigation();
+            AppEnvironment.CurrentMenus.Add("mainMenuExitPromptMenu", exitGamePromptMenu);
+            AppEnvironment.CurrentOverlays.Add("mainMenuExitPromptMenuOverlay", exitGamePromptMenuOverlay);
         };
-        return new MenuItem(menuItemName, new MenuActionRequestedArgs(exitGameSubMenu));
+        exitGamePromptMenu.MenuSelectionChanged += exitGamePromptMenuOverlay.OnMenuSelectionChanged;
+        exitGamePromptMenu.MenuNavigationEnded += exitGamePromptMenuOverlay.OnMenuNavigationEnded;
+        exitGamePromptMenu.MenuNavigationEnded += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Remove("mainMenuExitPromptMenu");
+            AppEnvironment.CurrentOverlays.Remove("mainMenuExitPromptMenuOverlay");
+        };
+        exitGamePromptMenu.MenuItemReturnedYes += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus["mainMenu"].EndNavigation();
+            AppEnvironment.CurrentOverlays["mainMenuExitPromptMenuOverlay"].SetPreviousOverlaySuppression(true);
+        };
+        return new MenuItem(menuItemName, new MenuActionRequestedArgs(exitGamePromptMenu));
     }
 
     static IConsoleMenu ProvideExitGameSubMenu()

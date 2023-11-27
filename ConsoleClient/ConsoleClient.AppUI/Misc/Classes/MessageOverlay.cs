@@ -35,6 +35,8 @@ public class MessageOverlay : IOverLay
 
     public int RowCount => displayRows.Count;
 
+    bool suppressPrintingPreviosOverlay;
+
     public MessageOverlay(string message, MessageType messageType)
     {
         displayRows = new List<IDisplayRow>();
@@ -56,6 +58,7 @@ public class MessageOverlay : IOverLay
             default:
                 break;
         }
+        suppressPrintingPreviosOverlay = false;
     }
 
     // TODO Split on words
@@ -114,7 +117,7 @@ public class MessageOverlay : IOverLay
             );
         }
         ProvideCorrectInput();
-        DisplayManager.RollBackOverLay();
+        DisplayManager.RollBackOverLay(suppressPrintingPreviosOverlay);
     }
 
     void ProvideCorrectInput()
@@ -132,5 +135,10 @@ public class MessageOverlay : IOverLay
             );
         }
         while (Console.ReadKey(true).Key != ConsoleKey.Spacebar);
+    }
+
+    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
+    {
+        suppressPrintingPreviosOverlay = previousOverlaySuppression;
     }
 }

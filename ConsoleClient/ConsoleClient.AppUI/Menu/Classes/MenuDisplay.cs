@@ -6,7 +6,6 @@ using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ConsoleClient.AppUI.Menu;
 
@@ -44,10 +43,13 @@ public class MenuDisplay : IMenuDisplay
     int verticalOffset;
     int horizontalOffset;
 
+    bool suppressPrintingPreviosOverlay;
+
     public MenuDisplay()
     {
         displayRows = new List<IDisplayRow>();
         menuItems = new List<IMenuItem>();
+        suppressPrintingPreviosOverlay = false;
     }
 
     public bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition)
@@ -166,7 +168,7 @@ public class MenuDisplay : IMenuDisplay
             DisplayManager.PrintText(
                 "" + FrameDisplayValue,
                 verticalOffset + fullLength,
-                horizontalOffset  + longestRowLength,
+                horizontalOffset + longestRowLength,
                 FrameDisplayForeground,
                 FrameDisplayBackground
             );
@@ -230,6 +232,11 @@ public class MenuDisplay : IMenuDisplay
 
     public void OnMenuNavigationEnded(object? sender, EventArgs args)
     {
-        DisplayManager.RollBackOverLay();
+        DisplayManager.RollBackOverLay(suppressPrintingPreviosOverlay);
+    }
+
+    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
+    {
+        suppressPrintingPreviosOverlay = previousOverlaySuppression;
     }
 }

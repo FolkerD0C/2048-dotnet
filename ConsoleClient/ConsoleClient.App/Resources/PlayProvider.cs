@@ -4,7 +4,6 @@ using ConsoleClient.AppUI.Misc;
 using ConsoleClient.AppUI.Play;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using Game2048.Logic;
 using Game2048.Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -14,25 +13,26 @@ namespace ConsoleClient.App.Resources;
 
 internal static class PlayProvider
 {
-    static IPlayInstance? playLogic;
-
     internal static void ProvideNewGame()
     {
         if (AppEnvironment.GameLogic is null)
         {
             throw new NullReferenceException("GameLogic is null");
         }
-        playLogic = AppEnvironment.GameLogic.NewGame();
-        IGameDisplay gameDisplay = new GameDisplay();
-        playLogic.PlayStarted += gameDisplay.OnPlayStarted;
-        playLogic.MoveHappened += gameDisplay.OnMoveHappened;
-        playLogic.UndoHappened += gameDisplay.OnUndoHappened;
-        playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
-        playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
-        playLogic.PlayerNameChanged += gameDisplay.OnPlayerNameChanged;
-        playLogic.PlayEnded += gameDisplay.OnPlayEnded;
+        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameLogic.NewGame();
+        IGameDisplay currentPlayInstanceOverlay = new GameDisplay();
+        AppEnvironment.CurrentOverlays.Add("currentPlayInstanceOverlay", currentPlayInstanceOverlay);
+        AppEnvironment.CurrentPlayInstance.PlayStarted += currentPlayInstanceOverlay.OnPlayStarted;
+        AppEnvironment.CurrentPlayInstance.MoveHappened += currentPlayInstanceOverlay.OnMoveHappened;
+        AppEnvironment.CurrentPlayInstance.UndoHappened += currentPlayInstanceOverlay.OnUndoHappened;
+        AppEnvironment.CurrentPlayInstance.ErrorHappened += currentPlayInstanceOverlay.OnErrorHappened;
+        AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
+        AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
+        AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
+        AppEnvironment.CurrentPlayInstance = null;
+        AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
     }
 
     internal static void ProvideLoadedGame(string saveGameName)
@@ -41,22 +41,26 @@ internal static class PlayProvider
         {
             throw new NullReferenceException("GameLogic is null");
         }
-        playLogic = AppEnvironment.GameLogic.LoadGame(saveGameName);
-        IGameDisplay gameDisplay = new GameDisplay();
-        playLogic.PlayStarted += gameDisplay.OnPlayStarted;
-        playLogic.MoveHappened += gameDisplay.OnMoveHappened;
-        playLogic.UndoHappened += gameDisplay.OnUndoHappened;
-        playLogic.ErrorHappened += gameDisplay.OnErrorHappened;
-        playLogic.MiscEventHappened += gameDisplay.MiscEventHappenedDispatcher;
-        playLogic.PlayerNameChanged += gameDisplay.OnPlayerNameChanged;
-        playLogic.PlayEnded += gameDisplay.OnPlayEnded;
+        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameLogic.LoadGame(saveGameName);
+        IGameDisplay currentPlayInstanceOverlay = new GameDisplay();
+        AppEnvironment.CurrentOverlays.Add("currentPlayInstanceOverlay", currentPlayInstanceOverlay);
+        currentPlayInstanceOverlay.SetPreviousOverlaySuppression(true);
+        AppEnvironment.CurrentPlayInstance.PlayStarted += currentPlayInstanceOverlay.OnPlayStarted;
+        AppEnvironment.CurrentPlayInstance.MoveHappened += currentPlayInstanceOverlay.OnMoveHappened;
+        AppEnvironment.CurrentPlayInstance.UndoHappened += currentPlayInstanceOverlay.OnUndoHappened;
+        AppEnvironment.CurrentPlayInstance.ErrorHappened += currentPlayInstanceOverlay.OnErrorHappened;
+        AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
+        AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
+        AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
+        AppEnvironment.CurrentPlayInstance = null;
+        AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
     }
 
     static void HandlePlayEnded(PlayEndedReason endedReason)
     {
-        if (AppEnvironment.GameLogic is null || playLogic is null)
+        if (AppEnvironment.GameLogic is null || AppEnvironment.CurrentPlayInstance is null)
         {
             throw new NullReferenceException("Logic can not be null.");
         }
@@ -71,17 +75,20 @@ internal static class PlayProvider
         }
         if (endedReason != PlayEndedReason.GameOver)
         {
-            throw new InvalidOperationException("Invalid return from playing new game.");
+            throw new InvalidOperationException("Invalid return from playing the game.");
         }
-        int lowestHighscore = AppEnvironment.GameLogic.GetHighscores().Select(hs => hs.PlayerScore).OrderBy(ps => ps).First();
-        if (lowestHighscore >= playLogic.PlayerScore)
+        int lowestHighscore = AppEnvironment.GameLogic.GetHighscores()
+            .Select(highscore => highscore.PlayerScore).OrderBy(playerscore => playerscore).First();
+        if (lowestHighscore >= AppEnvironment.CurrentPlayInstance.PlayerScore)
         {
             return;
         }
-        if (playLogic.PlayerName is null || playLogic.PlayerName == "")
+        var congratsMessage = new MessageOverlay("Congratulations! You set a new highscore.", MessageType.Success);
+        congratsMessage.PrintMessage();
+        if (AppEnvironment.CurrentPlayInstance.PlayerName is null || AppEnvironment.CurrentPlayInstance.PlayerName == "")
         {
-            var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(playLogic.PlayerName ?? "");
-            if (nameFormResult.ResultType == NameFormResultType.Cancelled)
+            var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(AppEnvironment.CurrentPlayInstance.PlayerName ?? "");
+            if (nameFormResult.ResultType == NameFormResultType.Cancelled || AppEnvironment.CurrentPlayInstance.PlayerName == "")
             {
                 return;
             }
@@ -89,9 +96,9 @@ internal static class PlayProvider
             {
                 throw new InvalidOperationException("Invalid return from name form.");
             }
-            playLogic.PlayerName = nameFormResult.Name;
+            AppEnvironment.CurrentPlayInstance.PlayerName = nameFormResult.Name;
         }
-        AppEnvironment.GameLogic.AddHighscore(playLogic.PlayerName, playLogic.PlayerScore);
+        AppEnvironment.GameLogic.AddHighscore(AppEnvironment.CurrentPlayInstance.PlayerName, AppEnvironment.CurrentPlayInstance.PlayerScore);
     }
 
     static PauseResult Pause()
@@ -101,11 +108,11 @@ internal static class PlayProvider
 
     internal static void ProvideChangePlayerNameAction()
     {
-        if (playLogic is null)
+        if (AppEnvironment.CurrentPlayInstance is null)
         {
             throw new NullReferenceException("Logic can not be null.");
         }
-        var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(playLogic.PlayerName ?? "");
+        var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(AppEnvironment.CurrentPlayInstance.PlayerName ?? "");
         if (nameFormResult.ResultType == NameFormResultType.Cancelled)
         {
             return;
@@ -114,20 +121,21 @@ internal static class PlayProvider
         {
             throw new InvalidOperationException("Invalid return from name form.");
         }
-        playLogic.PlayerName = nameFormResult.Name;
+        AppEnvironment.CurrentPlayInstance.PlayerName = nameFormResult.Name;
     }
 
     static void ProvideSaveGameAction()
     {
-        if (AppEnvironment.GameLogic is null || playLogic is null)
+        if (AppEnvironment.GameLogic is null || AppEnvironment.CurrentPlayInstance is null)
         {
             throw new NullReferenceException("Logic can not be null.");
         }
-        if (playLogic.PlayerName is null || playLogic.PlayerName == "")
+        if (AppEnvironment.CurrentPlayInstance.PlayerName is null || AppEnvironment.CurrentPlayInstance.PlayerName == "")
         {
             ProvideChangePlayerNameAction();
         }
-        if (AppEnvironment.GameLogic.GetSavedGames().Contains(playLogic.PlayerName) && !PromptPlayerOverwritingSave(playLogic.PlayerName ?? ""))
+        if (AppEnvironment.GameLogic.GetSavedGames().Contains(AppEnvironment.CurrentPlayInstance.PlayerName)
+            && !PromptPlayerOverwritingSave(AppEnvironment.CurrentPlayInstance.PlayerName ?? ""))
         {
             return;
         }
@@ -164,10 +172,20 @@ internal static class PlayProvider
         IConsoleMenu promptOverwriteMenu = new ConsoleMenu(exitGameSubMenuItems, InputProvider.ProvideMenuInput, displayText);
         promptOverwriteMenu.AddNavigationBreaker(MenuItemResult.Yes);
         promptOverwriteMenu.AddNavigationBreaker(MenuItemResult.No);
-        IMenuDisplay menuDisplay = new MenuDisplay();
-        promptOverwriteMenu.MenuNavigationStarted += menuDisplay.OnMenuNavigationStarted;
-        promptOverwriteMenu.MenuSelectionChanged += menuDisplay.OnMenuSelectionChanged;
-        promptOverwriteMenu.MenuNavigationEnded += menuDisplay.OnMenuNavigationEnded;
+        IMenuDisplay promptOverwriteMenuOverlay = new MenuDisplay();
+        promptOverwriteMenu.MenuNavigationStarted += promptOverwriteMenuOverlay.OnMenuNavigationStarted;
+        promptOverwriteMenu.MenuNavigationStarted += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Add("promptOverwriteMenu", promptOverwriteMenu);
+            AppEnvironment.CurrentOverlays.Add("promptOverwriteMenuOverlay", promptOverwriteMenuOverlay);
+        };
+        promptOverwriteMenu.MenuSelectionChanged += promptOverwriteMenuOverlay.OnMenuSelectionChanged;
+        promptOverwriteMenu.MenuNavigationEnded += promptOverwriteMenuOverlay.OnMenuNavigationEnded;
+        promptOverwriteMenu.MenuNavigationEnded += (sender, args) =>
+        {
+            AppEnvironment.CurrentMenus.Remove("promptOverwriteMenu");
+            AppEnvironment.CurrentOverlays.Remove("promptOverwriteMenuOverlay");
+        };
         return promptOverwriteMenu.Navigate() == MenuItemResult.Yes;
     }
 }

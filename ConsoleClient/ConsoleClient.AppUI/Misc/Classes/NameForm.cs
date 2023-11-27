@@ -41,11 +41,14 @@ public class NameForm : INameForm
     readonly char[] nameFormValue;
     readonly Func<NameFormInput> inputMethod;
 
+    bool suppressPrintingPreviosOverlay;
+
     public NameForm(Func<NameFormInput> inputMethod)
     {
         displayRows = new List<IDisplayRow>();
         nameFormValue = new char[NameFormLength];
         this.inputMethod = inputMethod;
+        suppressPrintingPreviosOverlay = false;
     }
 
     public void Dispose()
@@ -128,7 +131,9 @@ public class NameForm : INameForm
                 case NameFormInputType.Cancel:
                     {
                         DisplayManager.SetCursorVisibility(false);
-                        new MessageOverlay("You have cancelled the name form action...", MessageType.Error).PrintMessage();
+                        var errorMessageOverlay = new MessageOverlay("You have cancelled the name form action...", MessageType.Error);
+                        errorMessageOverlay.SetPreviousOverlaySuppression(true);
+                        errorMessageOverlay.PrintMessage();
                         formResult.ResultType = NameFormResultType.Cancelled;
                         inPrompt = false;
                         break;
@@ -138,7 +143,7 @@ public class NameForm : INameForm
             }
         }
         DisplayManager.SetCursorVisibility(false);
-        DisplayManager.RollBackOverLay();
+        DisplayManager.RollBackOverLay(suppressPrintingPreviosOverlay);
         return formResult;
     }
 
@@ -263,5 +268,10 @@ public class NameForm : INameForm
         return displayRows.Count > relativeVerticalPosition
             && displayRows[relativeVerticalPosition].ColumnCount > relativeHorizontalPosition
             && displayRows[relativeVerticalPosition][relativeHorizontalPosition].IsSet;
+    }
+
+    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
+    {
+        suppressPrintingPreviosOverlay = previousOverlaySuppression;
     }
 }

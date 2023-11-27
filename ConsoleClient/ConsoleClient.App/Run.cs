@@ -11,6 +11,7 @@ class Run
 {
     static void Main(string[] args)
     {
+        AppEnvironment.Initialize();
         AppEnvironment.ConfigLogic.LoadConfig();
         var optionsParser = Parser.Default.ParseArguments<ConfigOptions>(args);
         var setConfigResult = ConfigOptionParser.SetConfigOptions(optionsParser);

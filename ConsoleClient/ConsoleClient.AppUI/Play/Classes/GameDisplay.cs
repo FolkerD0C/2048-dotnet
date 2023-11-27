@@ -86,6 +86,8 @@ public class GameDisplay : IGameDisplay
 
     string playerName;
 
+    bool suppressPrintingPreviousOverlay;
+
     public GameDisplay()
     {
         displayRows = new List<IDisplayRow>();
@@ -101,6 +103,7 @@ public class GameDisplay : IGameDisplay
         }
         tilePositions = new Coord[0, 0];
         playerName = "";
+        suppressPrintingPreviousOverlay = false;
     }
 
     public void Dispose()
@@ -502,7 +505,12 @@ public class GameDisplay : IGameDisplay
 
     public void OnPlayEnded(object? sender, EventArgs args)
     {
-        DisplayManager.RollBackOverLay();
+        DisplayManager.RollBackOverLay(suppressPrintingPreviousOverlay);
+    }
+
+    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
+    {
+        suppressPrintingPreviousOverlay = previousOverlaySuppression;
     }
     #endregion
 }

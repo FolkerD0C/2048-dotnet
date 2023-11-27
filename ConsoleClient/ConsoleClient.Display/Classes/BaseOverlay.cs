@@ -23,7 +23,7 @@ internal class BaseOverlay : IOverLay
         displayRows = new List<IDisplayRow>();
         for (int i = 0; i < DisplayManager.Height; i++)
         {
-            displayRows.Add(new DisplayRow().PadRight(DisplayManager.Width, DisplayManager.DefaultForegroundColor, DisplayManager.DefaultBackgroundColor, DisplayManager.DefaultDisplayPositionValue));
+            displayRows.Add(new DisplayRow().PadRight(DisplayManager.Width, DisplayManager.DefaultForegroundColor, DisplayManager.DefaultBackgroundColor, DisplayManager.DefaultDisplayPositionValue, true));
         }
     }
 
@@ -35,6 +35,9 @@ internal class BaseOverlay : IOverLay
 
     public bool IsPositionSet(int relativeVerticalPosition, int relativeHorizontalPosition)
     {
-        return false;
+        return true;
     }
+
+    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
+    { }
 }
