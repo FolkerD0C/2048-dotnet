@@ -1,4 +1,4 @@
-﻿using ConsoleClient.App.Helpers;
+﻿using ConsoleClient.AppUI.Helpers;
 using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Display;
 using ConsoleClient.Menu;

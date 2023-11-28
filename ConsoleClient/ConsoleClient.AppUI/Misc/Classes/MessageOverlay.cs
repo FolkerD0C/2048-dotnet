@@ -1,4 +1,5 @@
 using ConsoleClient.AppUI.Enums;
+using ConsoleClient.AppUI.Helpers;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Shared.Models;
@@ -40,7 +41,7 @@ public class MessageOverlay : IOverLay
     public MessageOverlay(string message, MessageType messageType)
     {
         displayRows = new List<IDisplayRow>();
-        messageRows = SplitMessage(message);
+        messageRows = message.Slice(DisplayManager.Width / 2);
         switch (messageType)
         {
             case MessageType.Error:
@@ -61,22 +62,6 @@ public class MessageOverlay : IOverLay
         suppressPrintingPreviosOverlay = false;
     }
 
-    // TODO Split on words
-    IList<string> SplitMessage(string message)
-    {
-        rowLength = DisplayManager.Width / 2;
-        horizontalOffset = (DisplayManager.Width - rowLength) / 2;
-        IList<string> result = new List<string>();
-        while (message.Length >= rowLength)
-        {
-            result.Add(message[..rowLength]);
-            message = message[rowLength..];
-        }
-        result.Add(message);
-        verticalOffset = (DisplayManager.Height - result.Count) / 2;
-        return result;
-    }
-
     public void Dispose()
     {
         displayRows.Dispose();
@@ -92,6 +77,9 @@ public class MessageOverlay : IOverLay
 
     public void PrintMessage()
     {
+        rowLength = DisplayManager.Width / 2;
+        horizontalOffset = (DisplayManager.Width - rowLength) / 2;
+        verticalOffset = (DisplayManager.Height - messageRows.Count) / 2;
         DisplayManager.NewOverlay(this);
 
         //Clear the area first
