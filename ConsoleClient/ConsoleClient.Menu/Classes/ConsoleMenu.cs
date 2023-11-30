@@ -5,16 +5,29 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.Menu;
 
+/// <summary>
+/// A class that represents an interactive menu with <see cref="IMenuItem"/>s and optional display text.
+/// </summary>
 public class ConsoleMenu : IConsoleMenu
 {
+    /// <summary>
+    /// If true then the navigation is active.
+    /// </summary>
     bool inNavigation;
 
+    /// <summary>
+    /// The <see cref="IMenuItem"/>s that the <see cref="IConsoleMenu"/> contains.
+    /// </summary>
     readonly IList<IMenuItem> menuItems;
-    public IList<IMenuItem> MenuItems => menuItems;
 
+    /// <summary>
+    /// An optional <see cref="IList{string}"/> that stores text that should be displayed.
+    /// </summary>
     readonly IList<string>? displayText;
-    public IList<string>? DisplayText => displayText;
 
+    /// <summary>
+    /// An input function for the menu navigation.
+    /// </summary>
     readonly Func<MenuInput> inputFunction;
 
     public event EventHandler<MenuNavigationStartedEventArgs>? MenuNavigationStarted;
@@ -22,8 +35,17 @@ public class ConsoleMenu : IConsoleMenu
     public event EventHandler? MenuNavigationEnded;
     public event EventHandler? MenuItemReturnedYes;
 
+    /// <summary>
+    /// A list of navigation breaker results. If an <see cref="IMenuItem"/> returns a
+    /// <see cref="MenuItemResult"/> contained in that list, then the navigation ends.
+    /// </summary>
     readonly IList<MenuItemResult> navigationBreakers;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="ConsoleMenu"/> class.
+    /// </summary>
+    /// <param name="menuItems">The <see cref="IMenuItem"/>s that the <see cref="IConsoleMenu"/> contains.</param>
+    /// <param name="inputFunction">An input function for the menu navigation.</param>
     public ConsoleMenu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction)
     {
         this.menuItems = menuItems;
@@ -35,11 +57,20 @@ public class ConsoleMenu : IConsoleMenu
         };
     }
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="ConsoleMenu"/> class with display text.
+    /// </summary>
+    /// <param name="menuItems">The <see cref="IMenuItem"/>s that the <see cref="IConsoleMenu"/> contains.</param>
+    /// <param name="inputFunction">An input function for the menu navigation.</param>
+    /// <param name="displayText">A <see cref="IList{string}"/> that stores text that should be displayed.</param>
     public ConsoleMenu(IList<IMenuItem> menuItems, Func<MenuInput> inputFunction, IList<string> displayText) : this(menuItems, inputFunction)
     {
         this.displayText = displayText;
     }
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="ConsoleMenu"/> class with dummy parameters. Intended for internal use only.
+    /// </summary>
     internal ConsoleMenu() : this(new List<IMenuItem>(), () => MenuInput.Unknown)
     { }
 

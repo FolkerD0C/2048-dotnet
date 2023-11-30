@@ -7,10 +7,14 @@ using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 
 namespace Game2048.Repository;
 
+/// <summary>
+/// A class that represents a lower level manager for an active play.
+/// </summary>
 public class GameRepository : IGameRepository
 {
     int remainingLives;
@@ -52,25 +56,29 @@ public class GameRepository : IGameRepository
 
     readonly Random randomNumberGenerator;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="GameRepository"/> class.
+    /// </summary>
+    /// <param name="newGame">Tells the constructor that it is a new game or not.</param>
     public GameRepository(bool newGame)
     {
         randomNumberGenerator = new Random();
         undoChain = new LinkedList<IGameState>();
         playerName = "";
-        acceptedSpawnables = ConfigManager.GetConfigItem<List<int>>("DefaultAcceptedSpawnables");
-        maxUndos = ConfigManager.GetConfigItem<int>("DefaultMaxUndos");
+        acceptedSpawnables = ConfigManager.GetConfigItemValue<List<int>>("DefaultAcceptedSpawnables");
+        maxUndos = ConfigManager.GetConfigItemValue<int>("DefaultMaxUndos");
         moveResultErrorMessage = "";
         if (newGame)
         {
             // Setting default values.
-            remainingLives = ConfigManager.GetConfigItem<int>("DefaultMaxLives");
-            gridWidth = ConfigManager.GetConfigItem<int>("DefaultGridWidth");
-            gridHeight = ConfigManager.GetConfigItem<int>("DefaultGridHeight");
-            goal = ConfigManager.GetConfigItem<int>("DefaultGoal");
+            remainingLives = ConfigManager.GetConfigItemValue<int>("DefaultMaxLives");
+            gridWidth = ConfigManager.GetConfigItemValue<int>("DefaultGridWidth");
+            gridHeight = ConfigManager.GetConfigItemValue<int>("DefaultGridHeight");
+            goal = ConfigManager.GetConfigItemValue<int>("DefaultGoal");
 
             // Setting up undochain and starter GameState object
             undoChain.AddFirst(new GameState());
-            int numbersToPlace = ConfigManager.GetConfigItem<int>("DefaultStarterTiles");
+            int numbersToPlace = ConfigManager.GetConfigItemValue<int>("DefaultStarterTiles");
             for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
             {
                 PlaceRandomNumber();
@@ -148,6 +156,9 @@ public class GameRepository : IGameRepository
 
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 
+    /// <summary>
+    /// Places a random tile on an empty position of the first <see cref="IGameState"/> object in the <see cref="UndoChain"/>.
+    /// </summary>
     void PlaceRandomNumber()
     {
         var emptyTiles = undoChain.First().AsRepositoryGameState().GetEmptyTiles();
@@ -161,6 +172,9 @@ public class GameRepository : IGameRepository
             .PlaceTile(Vertical, Horizontal, tileValue);
     }
 
+    /// <summary>
+    /// Gets the current highest number.
+    /// </summary>
     void GetCurrentMaxNumber()
     {
         int currentMaxNumber = undoChain.First().Grid.Max(row => row.Max());
@@ -174,17 +188,33 @@ public class GameRepository : IGameRepository
 
     public string Serialize()
     {
-        var jsonRepository = "{";
-        jsonRepository += $"\"remainingLives\":{remainingLives},";
-        jsonRepository += $"\"gridWidth\":{gridWidth},";
-        jsonRepository += $"\"gridHeight\":{gridHeight},";
-        jsonRepository += $"\"goal\":{goal},";
-        jsonRepository += $"\"playerName\":\"{playerName}\",";
-        jsonRepository += "\"acceptedSpawnables\":[" + string.Join(",", acceptedSpawnables) + "],";
-        jsonRepository += $"\"maxUndos\": {maxUndos},";
-        jsonRepository += "\"undoChain\":[" + string.Join(",", undoChain.Select(state => state.Serialize())) + "]";
-        jsonRepository += "}";
-        return jsonRepository;
+        StringBuilder jsonBuilder = new();
+
+        jsonBuilder.Append('{');
+
+        jsonBuilder.Append($"\"remainingLives\":{remainingLives},");
+
+        jsonBuilder.Append($"\"gridWidth\":{gridWidth},");
+
+        jsonBuilder.Append($"\"gridHeight\":{gridHeight},");
+
+        jsonBuilder.Append($"\"goal\":{goal},");
+
+        jsonBuilder.Append($"\"playerName\":\"{playerName}\",");
+
+        jsonBuilder.Append("\"acceptedSpawnables\":[");
+        jsonBuilder.AppendJoin(",", acceptedSpawnables);
+        jsonBuilder.Append("],");
+
+        jsonBuilder.Append($"\"maxUndos\": {maxUndos},");
+
+        jsonBuilder.Append("\"undoChain\":[");
+        jsonBuilder.AppendJoin(",", undoChain.Select(state => state.Serialize()));
+        jsonBuilder.Append(']');
+
+        jsonBuilder.Append('}');
+
+        return jsonBuilder.ToString();
     }
 
     public void Deserialize(string deserializee)
@@ -195,7 +225,7 @@ public class GameRepository : IGameRepository
         gridWidth = jsonRoot.GetProperty("gridWidth").GetInt32();
         gridHeight = jsonRoot.GetProperty("gridHeight").GetInt32();
         playerName = jsonRoot.GetProperty("playerName").GetString()
-            ?? throw new ArgumentNullException("Player name can not be null");
+            ?? throw new InvalidOperationException("Player name can not be null");
         goal = jsonRoot.GetProperty("goal").GetInt32();
         acceptedSpawnables = new List<int>();
         var acceptedEnumerable = jsonRoot.GetProperty("acceptedSpawnables").EnumerateArray();

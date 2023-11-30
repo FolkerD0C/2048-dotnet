@@ -2,49 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ConsoleClient.Shared.Models;
+namespace ConsoleClient.Display.Models;
 
+/// <summary>
+/// A class that represents a row of display positions for the <see cref="IOverLay"/> interface.
+/// </summary>
 public class DisplayRow : IDisplayRow
 {
     readonly IList<DisplayPosition> displayPositions;
     public IList<DisplayPosition> DisplayPositions => displayPositions;
 
+    /// <summary>
+    /// Creates a new instance of the  <see cref="DisplayRow"/> class.
+    /// </summary>
     public DisplayRow()
     {
         displayPositions = new List<DisplayPosition>();
     }
 
-    public DisplayRow(string text, ConsoleColor foregroundColor, ConsoleColor backgroundColor, int HorizontalOffset, ConsoleColor defaultForegroundColor, ConsoleColor defaultBackgroundColor) : this()
-    {
-        for (int i = 0; i < HorizontalOffset; i++)
-        {
-            displayPositions.Add(new DisplayPosition()
-            {
-                BackgroundColor = defaultBackgroundColor,
-                ForegroundColor = defaultForegroundColor,
-                Value = ' ',
-                IsSet = false
-            });
-        }
-        foreach (char letter in text)
-        {
-            displayPositions.Add(new DisplayPosition()
-            {
-                BackgroundColor = backgroundColor,
-                ForegroundColor = foregroundColor,
-                Value = letter,
-                IsSet = true
-            });
-        }
-    }
-
-    public DisplayRow(string text, ConsoleColor foregroundColor, ConsoleColor backgroundColor) : this(text, foregroundColor, backgroundColor, 0, default, default)
-    { }
-
     public bool IsSet => AreAnySet();
 
     public int ColumnCount => displayPositions.Count;
 
+    /// <summary>
+    /// Returns true if any of the display positions are set.
+    /// </summary>
+    /// <returns>True if any of the display positions are set.</returns>
     bool AreAnySet()
     {
         return displayPositions.Any(dp => dp.IsSet);

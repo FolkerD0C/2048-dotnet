@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.App.Configuration;
 
+/// <summary>
+/// A class that holds information for the command line argument parser.
+/// </summary>
 internal class ConfigOptions
 {
     [Option('a', "accepted-spawnables", HelpText = "A comma separated list of integers that could spawn randomly while playing, after a valid move happens, all of them must be between 1 and 100000", MetaValue = "number,number,...", Separator = ',')]

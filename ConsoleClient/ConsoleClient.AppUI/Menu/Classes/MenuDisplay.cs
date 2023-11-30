@@ -1,20 +1,38 @@
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
+using ConsoleClient.Display.Models;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.EventHandlers;
-using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleClient.AppUI.Menu;
 
+/// <summary>
+/// A class used for displaying a menu and holds methods that can be subscribed to an <see cref="IConsoleMenu"/> object's events.
+/// </summary>
 public class MenuDisplay : IMenuDisplay
 {
+    /// <summary>
+    /// The foreground color of the selected <see cref="IMenuItem"/>.
+    /// </summary>
     const ConsoleColor SelectedMenuItemForeground = ConsoleColor.White;
+    /// <summary>
+    /// The background color of the selected <see cref="IMenuItem"/>.
+    /// </summary>
     const ConsoleColor SelectedMenuItemBackground = ConsoleColor.Red;
+    /// <summary>
+    /// The value that gets printed all over the frame of the menu.
+    /// </summary>
     const char FrameDisplayValue = '#';
+    /// <summary>
+    /// The foreground color of the frame.
+    /// </summary>
     const ConsoleColor FrameDisplayForeground = ConsoleColor.DarkMagenta;
+    /// <summary>
+    /// The background color of the frame.
+    /// </summary>
     const ConsoleColor FrameDisplayBackground = ConsoleColor.Yellow;
 
     public IDisplayRow this[int index]
@@ -35,16 +53,37 @@ public class MenuDisplay : IMenuDisplay
 
     public int RowCount => displayRows.Count;
 
+    /// <summary>
+    /// The <see cref="IMenuItem"/>s that the <see cref="IConsoleMenu"/> contains.
+    /// </summary>
     IList<IMenuItem> menuItems;
 
+    /// <summary>
+    /// The vertical length of the optional display text.
+    /// </summary>
     int displayTextRowCount;
+    /// <summary>
+    /// The length of the longest row to display.
+    /// </summary>
     int longestRowLength;
 
+    /// <summary>
+    /// The vertical offset of the menu display.
+    /// </summary>
     int verticalOffset;
+    /// <summary>
+    /// The horizontal offset of the menu display.
+    /// </summary>
     int horizontalOffset;
 
+    /// <summary>
+    /// If true then the printing of the overlay under this is suppressed.
+    /// </summary>
     bool suppressPrintingPreviosOverlay;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="MenuDisplay"/> class.
+    /// </summary>
     public MenuDisplay()
     {
         displayRows = new List<IDisplayRow>();

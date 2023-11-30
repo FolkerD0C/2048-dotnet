@@ -1,10 +1,12 @@
 using ConsoleClient.Display.Helpers;
-using ConsoleClient.Shared.Models;
 using System;
 using System.Collections.Generic;
 
-namespace ConsoleClient.Display;
+namespace ConsoleClient.Display.Models;
 
+/// <summary>
+/// A base overlay for the <see cref="DisplayManager"/>.
+/// </summary>
 internal class BaseOverlay : IOverLay
 {
     public IDisplayRow this[int index]
@@ -18,6 +20,9 @@ internal class BaseOverlay : IOverLay
 
     public int RowCount => displayRows.Count;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="BaseOverlay"/> class.
+    /// </summary>
     public BaseOverlay()
     {
         displayRows = new List<IDisplayRow>();

@@ -4,15 +4,29 @@ using System;
 
 namespace Game2048.Shared.EventHandlers;
 
+/// <summary>
+/// A class used for event handling that stores information about a movement that happened on the playing grid.
+/// </summary>
 public class MoveHappenedEventArgs : EventArgs
 {
-    public IGameState Position { get; }
+    /// <summary>
+    /// The new state of the playing grid.
+    /// </summary>
+    public IGameState State { get; }
 
+    /// <summary>
+    /// The direction the move happened.
+    /// </summary>
     public MoveDirection Direction { get; }
 
-    public MoveHappenedEventArgs(IGameState position, MoveDirection direction)
+    /// <summary>
+    /// Creates a new instance of the <see cref="MoveHappenedEventArgs"/> class.
+    /// </summary>
+    /// <param name="state">The new state of the playing grid.</param>
+    /// <param name="direction">The direction the move happened.</param>
+    public MoveHappenedEventArgs(IGameState state, MoveDirection direction)
     {
-        Position = position;
+        State = state;
         Direction = direction;
     }
 }

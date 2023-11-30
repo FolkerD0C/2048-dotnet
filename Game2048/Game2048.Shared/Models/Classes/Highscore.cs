@@ -3,6 +3,9 @@ using System.Text.Json;
 
 namespace Game2048.Shared.Models;
 
+/// <summary>
+/// A class that stores information about a high score.
+/// </summary>
 public class Highscore : IHighscore
 {
     string playerName;

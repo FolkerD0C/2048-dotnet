@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 
 namespace Game2048.Config;
 
+/// <summary>
+/// A static class that is used for getting and setting configuration values stored in <see cref="GameConfiguration"/>.
+/// </summary>
 public static class ConfigManager
 {
+    /// <summary>
+    /// Returns all configurable items.
+    /// </summary>
+    /// <returns>An <see cref="IEnumerable{(string, object?)}"/> that contains the name and value of all configurable items.</returns>
     public static IEnumerable<(string Name, object? Value)> GetConfigItems()
     {
-        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NullReferenceException("Config can not be null.");
-        var result = new List<(string Name, object? Value, Type Type)>();
+        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
         return configItems.Select(configItemAsFieldInfo =>
         (
             configItemAsFieldInfo.Name,
@@ -20,9 +27,15 @@ public static class ConfigManager
         ));
     }
 
-    static FieldInfo GetConfigItem(string configItemName)
+    /// <summary>
+    /// Gets the field from <see cref="GameConfiguration"/> that matches <paramref name="configItemName"/>.
+    /// </summary>
+    /// <param name="configItemName">The name of the desired configuration field.</param>
+    /// <returns>A <see cref="FieldInfo"/> object that contains the desired configuration field.</returns>
+    /// <exception cref="ArgumentException"></exception>
+    static FieldInfo GetConfigItemInfo(string configItemName)
     {
-        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic) ?? throw new ArgumentException("Config can not be null.");
+        var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
         var matchingConfigItems = configItems.Where(item => item.Name == configItemName);
         if (!matchingConfigItems.Any())
         {
@@ -31,16 +44,29 @@ public static class ConfigManager
         return matchingConfigItems.First();
     }
 
-    public static void SetConfigItem<T>(string configItemName, T newValue)
+    /// <summary>
+    /// Sets the value of the configuration item named <paramref name="configItemName"/> to <paramref name="newValue"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the configuration item that is set by <see cref="SetConfigItemValue{T}(string, T)"/>.</typeparam>
+    /// <param name="configItemName">The name of the configuration item that is set by <see cref="SetConfigItemValue{T}(string, T)"/>.</param>
+    /// <param name="newValue">The new value of the configuration item named <paramref name="configItemName"/>.</param>
+    public static void SetConfigItemValue<T>(string configItemName, T newValue)
     {
-        var configItemInfo = GetConfigItem(configItemName);
+        var configItemInfo = GetConfigItemInfo(configItemName);
         // https://stackoverflow.com/questions/2330026/is-it-possible-to-set-this-static-private-member-of-a-static-class-with-reflecti
         configItemInfo.SetValue(null, newValue);
     }
 
-    public static T GetConfigItem<T>(string configItemName)
+    /// <summary>
+    /// Gets the value of the configuration item named <paramref name="configItemName"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the desired configuration item.</typeparam>
+    /// <param name="configItemName">The name of the desired configuration item.</param>
+    /// <returns>The <typeparamref name="T"/> value of the configuration item named <paramref name="configItemName"/>.</returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static T GetConfigItemValue<T>(string configItemName)
     {
-        var configItemInfo = GetConfigItem(configItemName);
+        var configItemInfo = GetConfigItemInfo(configItemName);
         // https://stackoverflow.com/questions/2330026/is-it-possible-to-set-this-static-private-member-of-a-static-class-with-reflecti
         if (configItemInfo.GetValue(null) is T configItemValue)
         {
@@ -49,8 +75,15 @@ public static class ConfigManager
         throw new ArgumentException("Wrong config item type request");
     }
 
+    /// <summary>
+    /// Loads the configuration stored in the file at <see cref="GameData.ConfigFilePath"/>. Does nothing if the file is not found.
+    /// </summary>
     public static void Load()
     {
+        if (!File.Exists(GameData.ConfigFilePath))
+        {
+            return;
+        }
         string configData = File.ReadAllText(GameData.ConfigFilePath);
         using var jsonDoc = JsonDocument.Parse(configData);
         var jsonRoot = jsonDoc.RootElement;
@@ -110,19 +143,52 @@ public static class ConfigManager
         { }
     }
 
+    /// <summary>
+    /// Saves the configuration to <see cref="GameData.ConfigFilePath"/>.
+    /// </summary>
     public static void Save()
     {
-        string jsonData = "{";
-        jsonData += "\"DefaultAcceptedSpawnables\":[" + string.Join(",", GameConfiguration.DefaultAcceptedSpawnables) + "],";
-        jsonData += "\"DefaultGoal\":" + GameConfiguration.DefaultGoal + ",";
-        jsonData += "\"MaxHighscoresListLength\":" + GameConfiguration.MaxHighscoresListLength + ",";
-        jsonData += "\"DefaultMaxLives\":" + GameConfiguration.DefaultMaxLives + ",";
-        jsonData += "\"DefaultMaxUndos\":" + GameConfiguration.DefaultMaxUndos + ",";
-        jsonData += "\"DefaultGridWidth\":" + GameConfiguration.DefaultGridWidth + ",";
-        jsonData += "\"DefaultGridHeight\":" + GameConfiguration.DefaultGridHeight + ",";
-        jsonData += "\"DefaultStarterTiles\":" + GameConfiguration.DefaultStarterTiles + ",";
-        jsonData += "\"GameDataDirectory\":\"" + GameConfiguration.GameDataDirectory.Replace(@"\", @"\\") + "\"";
-        jsonData += "}";
-        File.WriteAllText(GameData.ConfigFilePath, jsonData);
+        StringBuilder jsonBuilder = new();
+        jsonBuilder.Append('{');
+
+        jsonBuilder.Append("\"DefaultAcceptedSpawnables\":[");
+        jsonBuilder.AppendJoin(",", GameConfiguration.DefaultAcceptedSpawnables);
+        jsonBuilder.Append("],");
+
+        jsonBuilder.Append("\"DefaultGoal\":");
+        jsonBuilder.Append(GameConfiguration.DefaultGoal);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"MaxHighscoresListLength\":");
+        jsonBuilder.Append(GameConfiguration.MaxHighscoresListLength);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"DefaultMaxLives\":");
+        jsonBuilder.Append(GameConfiguration.DefaultMaxLives);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"DefaultMaxUndos\":");
+        jsonBuilder.Append(GameConfiguration.DefaultMaxUndos);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"DefaultGridWidth\":");
+        jsonBuilder.Append(GameConfiguration.DefaultGridWidth);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"DefaultGridHeight\":");
+        jsonBuilder.Append(GameConfiguration.DefaultGridHeight);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"DefaultStarterTiles\":");
+        jsonBuilder.Append(GameConfiguration.DefaultStarterTiles);
+        jsonBuilder.Append(',');
+
+        jsonBuilder.Append("\"GameDataDirectory\":\"");
+        jsonBuilder.Append(GameConfiguration.GameDataDirectory.Replace(@"\", @"\\"));
+        jsonBuilder.Append('"');
+
+        jsonBuilder.Append('}');
+
+        File.WriteAllText(GameData.ConfigFilePath, jsonBuilder.ToString());
     }
 }

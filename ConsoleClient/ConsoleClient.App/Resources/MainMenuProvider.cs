@@ -4,15 +4,18 @@ using ConsoleClient.Display;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
 using Game2048.Shared.Models;
-using System;
 using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;
 
+/// <summary>
+/// A static class that provides a main menu for the game.
+/// </summary>
 internal static class MainMenuProvider
 {
-    static readonly string gameLogicIsNullErrorMessage = "Game logic can not be null";
-
+    /// <summary>
+    /// Provides a main menu for the game.
+    /// </summary>
     internal static void ProvideMainMenu()
     {
         IList<IMenuItem> mainMenuItems = new List<IMenuItem>()
@@ -33,31 +36,38 @@ internal static class MainMenuProvider
         AppEnvironment.CurrentOverlays.Add("mainMenuOverlay", mainMenuOverlay);
     }
 
+    /// <summary>
+    /// Provides a menu item for new games.
+    /// </summary>
+    /// <returns>A menu item that starts a new game if selected.</returns>
     static IMenuItem ProvideNewGameMenuItem()
     {
         string menuItemName = "New Game";
-        IMenuItem newGameMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(PlayProvider.ProvideNewGame));
+        IMenuItem newGameMenuItem = new MenuItem(menuItemName, new MenuItemActionRequestedArgs(PlayProvider.ProvideNewGame));
         return newGameMenuItem;
     }
 
+    /// <summary>
+    /// Provides a menu item for loaded games.
+    /// </summary>
+    /// <returns>A menu item that starts a submenu navigation for the load game menu if selected.</returns>
     static IMenuItem ProvideLoadGameMenuItem()
     {
         string menuItemName = "Load Game";
-        IMenuItem loadGameMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(ProvideLoadGameSubMenuAction));
+        IMenuItem loadGameMenuItem = new MenuItem(menuItemName, new MenuItemActionRequestedArgs(ProvideLoadGameSubMenuAction));
         return loadGameMenuItem;
     }
 
+    /// <summary>
+    /// Provides a submenu to load games.
+    /// </summary>
     static void ProvideLoadGameSubMenuAction()
     {
-        if (AppEnvironment.GameLogic is null)
-        {
-            throw new NullReferenceException(gameLogicIsNullErrorMessage);
-        }
         IEnumerable<string> savedGameNames = AppEnvironment.GameLogic.GetSavedGames();
         IList<IMenuItem> loadGameMenuItems = new List<IMenuItem>();
         foreach (string savedGameName in savedGameNames)
         {
-            loadGameMenuItems.Add(new MenuItem(savedGameName, MenuItemResult.Back, new MenuActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName)));
+            loadGameMenuItems.Add(new MenuItem(savedGameName, MenuItemResult.Back, new MenuItemActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName)));
         }
         loadGameMenuItems.Add(new MenuItem("Back"));
         IConsoleMenu loadGameMenu = new ConsoleMenu(loadGameMenuItems, InputProvider.ProvideMenuInput);
@@ -78,19 +88,22 @@ internal static class MainMenuProvider
         loadGameMenu.Navigate();
     }
 
+    /// <summary>
+    /// Provides a menu item for a high scores submenu.
+    /// </summary>
+    /// <returns>A menu item that starts a submenu navigation for the high scores menu if selected.</returns>
     static IMenuItem ProvideHighscoresMenuItem()
     {
         string menuItemName = "Highscores";
-        IMenuItem highscoresMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(ProvideHighscoresSubMenuAction));
+        IMenuItem highscoresMenuItem = new MenuItem(menuItemName, new MenuItemActionRequestedArgs(ProvideHighscoresSubMenuAction));
         return highscoresMenuItem;
     }
 
+    /// <summary>
+    /// Provides a submenu to view high scores.
+    /// </summary>
     static void ProvideHighscoresSubMenuAction()
     {
-        if (AppEnvironment.GameLogic is null)
-        {
-            throw new NullReferenceException(gameLogicIsNullErrorMessage);
-        }
         IMenuItem back = new MenuItem("Back");
         IList<IHighscore> highscores = AppEnvironment.GameLogic.GetHighscores();
         IList<string> displayText = new List<string>();
@@ -116,19 +129,22 @@ internal static class MainMenuProvider
         highscoresMenu.Navigate();
     }
 
+    /// <summary>
+    /// Provides a menu item for the game description submenu.
+    /// </summary>
+    /// <returns>A menu item that starts a submenu navigation for the game description submenu if selected.</returns>
     static IMenuItem ProvideGameDescriptionMenuItem()
     {
         string menuItemName = "Game Description";
-        IMenuItem gameDescriptionMenuItem = new MenuItem(menuItemName, new MenuActionRequestedArgs(ProvideGameDescriptionSubMenuAction));
+        IMenuItem gameDescriptionMenuItem = new MenuItem(menuItemName, new MenuItemActionRequestedArgs(ProvideGameDescriptionSubMenuAction));
         return gameDescriptionMenuItem;
     }
 
+    /// <summary>
+    /// Provides a submenu to view the game description.
+    /// </summary>
     static void ProvideGameDescriptionSubMenuAction()
     {
-        if (AppEnvironment.GameLogic is null)
-        {
-            throw new NullReferenceException(gameLogicIsNullErrorMessage);
-        }
         IMenuItem back = new MenuItem("Back");
         string gameDescription = AppEnvironment.GameLogic.GetGameDescription();
         IList<string> displayText = gameDescription.Slice((DisplayManager.Width * 2) / 3);
@@ -150,6 +166,10 @@ internal static class MainMenuProvider
         gameDescriptionMenu.Navigate();
     }
 
+    /// <summary>
+    /// Provides a menu item for the exit game prompt menu.
+    /// </summary>
+    /// <returns>A menu item that starts a menu navigation for the exit game prompt menu if selected.</returns>
     static IMenuItem ProvideExitMenuItem()
     {
         string menuItemName = "Guit Game";
@@ -175,9 +195,13 @@ internal static class MainMenuProvider
             AppEnvironment.CurrentMenus["mainMenu"].EndNavigation();
             AppEnvironment.CurrentOverlays["mainMenuExitPromptMenuOverlay"].SetPreviousOverlaySuppression(true);
         };
-        return new MenuItem(menuItemName, new MenuActionRequestedArgs(exitGamePromptMenu));
+        return new MenuItem(menuItemName, new MenuItemActionRequestedArgs(exitGamePromptMenu));
     }
 
+    /// <summary>
+    /// Provides a menu for the exit game prompt menu.
+    /// </summary>
+    /// <returns>A menu for the exit game prompt menu.</returns>
     static IConsoleMenu ProvideExitGameSubMenu()
     {
         IList<IMenuItem> exitGameSubMenuItems = new List<IMenuItem>()

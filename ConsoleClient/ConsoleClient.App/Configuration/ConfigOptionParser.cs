@@ -8,8 +8,16 @@ using System.Linq;
 
 namespace ConsoleClient.App.Configuration;
 
+/// <summary>
+/// A static class used for setting configuration values that come from outside the app as command line arguments.
+/// </summary>
 internal static class ConfigOptionParser
 {
+    /// <summary>
+    /// Sets the configuration values specified in <paramref name="parserResult"/>.
+    /// </summary>
+    /// <param name="parserResult">The result of the command line parser.</param>
+    /// <returns>The result of all the configuration value settings.</returns>
     internal static ConfigurationResult SetConfigOptions(ParserResult<ConfigOptions> parserResult)
     {
         var configResult = new ConfigurationResult()
@@ -26,7 +34,7 @@ internal static class ConfigOptionParser
         var options = parserResult.Value;
         foreach (var option in options.GetType().GetProperties())
         {
-            if (option.GetValue(options) is IEnumerable<int> intEnumerableValue && intEnumerableValue is not null && intEnumerableValue.Count() > 0)
+            if (option.GetValue(options) is IEnumerable<int> intEnumerableValue && intEnumerableValue is not null && intEnumerableValue.Any())
             {
                 foreach (var item in intEnumerableValue)
                 {

@@ -7,8 +7,16 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;
 
+/// <summary>
+/// A static class that has methods for parsing keyboard input into input enum values for different components.
+/// </summary>
 internal static class InputProvider
 {
+    /// <summary>
+    /// Provides input for the game.
+    /// </summary>
+    /// <returns>Input for the game.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     internal static GameInput ProvidePlayInput()
     {
         GameInput input = GameInput.Unknown;
@@ -53,6 +61,11 @@ internal static class InputProvider
         throw new InvalidOperationException("Invalid input.");
     }
 
+    /// <summary>
+    /// Provides input for a menu navigation.
+    /// </summary>
+    /// <returns>Input for a menu navigation.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     internal static MenuInput ProvideMenuInput()
     {
         MenuInput input = MenuInput.Unknown;
@@ -82,6 +95,9 @@ internal static class InputProvider
         throw new InvalidOperationException("Invalid input.");
     }
 
+    /// <summary>
+    /// Stores special input types for the name form.
+    /// </summary>
     readonly static Dictionary<ConsoleKey, NameFormInputType> acceptedNameFormSpecialInputs = new()
     {
         { ConsoleKey.LeftArrow, NameFormInputType.MoveLeft },
@@ -92,10 +108,13 @@ internal static class InputProvider
         { ConsoleKey.Escape, NameFormInputType.Cancel }
     };
 
-
+    /// <summary>
+    /// Provides input for a name form.
+    /// </summary>
+    /// <returns>Input for a name form.</returns>
     internal static NameFormInput ProvideNameFormInput()
     {
-        NameFormInput input = new NameFormInput()
+        NameFormInput input = new()
         {
             InputType = NameFormInputType.Unknown,
             InputValue = ' '

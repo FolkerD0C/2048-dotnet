@@ -7,8 +7,15 @@ using System;
 
 namespace ConsoleClient.App;
 
+/// <summary>
+/// The entry class of the app.
+/// </summary>
 class Run
 {
+    /// <summary>
+    /// The main entry point of the game.
+    /// </summary>
+    /// <param name="args">The command line arguments form outside of the application.</param>
     static void Main(string[] args)
     {
         AppEnvironment.Initialize();

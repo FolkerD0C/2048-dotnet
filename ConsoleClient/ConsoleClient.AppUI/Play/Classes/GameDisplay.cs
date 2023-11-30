@@ -2,7 +2,7 @@ using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
-using ConsoleClient.Shared.Models;
+using ConsoleClient.Display.Models;
 using Game2048.Shared.Enums;
 using Game2048.Shared.EventHandlers;
 using System;
@@ -10,11 +10,23 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Play;
 
+/// <summary>
+/// A class used for displaying a play and holds methods that can be subscribed to an <see cref="Game2048.Logic.IPlayInstance"/> object's events.
+/// </summary>
 public class GameDisplay : IGameDisplay
 {
+    /// <summary>
+    /// A struct for storing positional information.
+    /// </summary>
     private struct Coord
     {
+        /// <summary>
+        /// The vertical position.
+        /// </summary>
         internal int Vertical { get; set; }
+        /// <summary>
+        /// Tho horizontal position.
+        /// </summary>
         internal int Horizontal { get; set; }
     }
 
@@ -26,17 +38,20 @@ public class GameDisplay : IGameDisplay
     const int GridVerticalOffset = 1;
     const int GridHorizontalOffset = 1;
     const int ScoreValueLabelWidth = 11;
+
     const string PlayerNameKeyLabel = "Player: ";
     const string ScoreKeyLabel = "Current score: ";
     const string RemainingUndosKeyLabel = "Remaining undos: ";
     const string RemainingLivesKeyLabel = "Remaining lives: ";
     const string HighestNumberKeyLabel = "Highest number: ";
+
     const string HelpMove1Label = "Use the arrow keys";
     const string HelpMove2Label = "or 'WASD' to move";
     const string HelpUndoLabel = "Use BACKSPACE or 'U' to undo";
     const string HelpPauseLabel = "Use ESCAPE or 'P' to pause";
+
     static readonly Dictionary<int, (ConsoleColor foregroundColor, ConsoleColor backgroundColor)> tileColorMap =
-        new Dictionary<int, (ConsoleColor foregroundColor, ConsoleColor backgroundColor)>()
+        new()
     {
         { 0, (DisplayManager.DefaultBackgroundColor, DisplayManager.DefaultBackgroundColor) },
         { 2, (ConsoleColor.Green, ConsoleColor.Gray) },
@@ -61,7 +76,7 @@ public class GameDisplay : IGameDisplay
     static readonly ConsoleColor defaultTileBackground = DisplayManager.DefaultForegroundColor;
     #endregion
 
-    #region Size variying variables 
+    #region Size varying variables 
     int highestNumberWidth;
     int gridHeight;
     int gridWidth;
@@ -84,10 +99,19 @@ public class GameDisplay : IGameDisplay
 
     public int RowCount => displayRows.Count;
 
+    /// <summary>
+    /// The name of the player.
+    /// </summary>
     string playerName;
 
+    /// <summary>
+    /// If true then the printing of the overlay under this is suppressed.
+    /// </summary>
     bool suppressPrintingPreviousOverlay;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="GameDisplay"/> class.
+    /// </summary>
     public GameDisplay()
     {
         displayRows = new List<IDisplayRow>();
@@ -120,6 +144,9 @@ public class GameDisplay : IGameDisplay
     }
 
     #region Initializer/grid drawer
+    /// <summary>
+    /// Prints some helping info and labels and sets their positional value.
+    /// </summary>
     void InitializeInfos()
     {
         var helpInfos = new string[]
@@ -228,6 +255,9 @@ public class GameDisplay : IGameDisplay
         };
     }
 
+    /// <summary>
+    /// Constructs the grid on the display and sets the positional value of the tiles.
+    /// </summary>
     void ConstructGridFrame()
     {
         string rowfull = "";
@@ -272,6 +302,11 @@ public class GameDisplay : IGameDisplay
     #endregion
 
     #region Print individual values
+    /// <summary>
+    /// Prints a number tile on the display.
+    /// </summary>
+    /// <param name="tileValue">The value of the number tile.</param>
+    /// <param name="tilePosition">The position of the number tile.</param>
     void PrintTile(int tileValue, Coord tilePosition)
     {
         ConsoleColor foregroundColor = defaultTileForeground;
@@ -290,6 +325,10 @@ public class GameDisplay : IGameDisplay
         );
     }
 
+    /// <summary>
+    /// Prints the name of the player on the display.
+    /// </summary>
+    /// <param name="playerName">The name of the player.</param>
     void PrintPlayerName(string playerName)
     {
         DisplayManager.PrintText(
@@ -308,6 +347,10 @@ public class GameDisplay : IGameDisplay
         );
     }
 
+    /// <summary>
+    /// Prints the socre of the player on the display.
+    /// </summary>
+    /// <param name="score">The score of the player.</param>
     void PrintScore(int score)
     {
         DisplayManager.PrintText(
@@ -319,6 +362,10 @@ public class GameDisplay : IGameDisplay
         );
     }
 
+    /// <summary>
+    /// Prints the number of remaining undos of the player on the display.
+    /// </summary>
+    /// <param name="remainingUndos">The number of remaining undos of the player.</param>
     void PrintRemainingUndos(int remainingUndos)
     {
         DisplayManager.PrintText(
@@ -329,7 +376,10 @@ public class GameDisplay : IGameDisplay
             defaultTileBackground
         );
     }
-
+    /// <summary>
+    /// Prints the number of remaining lives of the player on the display.
+    /// </summary>
+    /// <param name="remainingLives">The number of remaining lives of the player.</param>
     void PrintRemainingLives(int remainingLives)
     {
         DisplayManager.PrintText(
@@ -389,30 +439,34 @@ public class GameDisplay : IGameDisplay
         {
             case MoveDirection.Up:
                 {
-                    MoveUp(args.Position.Grid);
+                    MoveUp(args.State.Grid);
                     break;
                 }
             case MoveDirection.Down:
                 {
-                    MoveDown(args.Position.Grid);
+                    MoveDown(args.State.Grid);
                     break;
                 }
             case MoveDirection.Left:
                 {
-                    MoveLeft(args.Position.Grid);
+                    MoveLeft(args.State.Grid);
                     break;
                 }
             case MoveDirection.Right:
                 {
-                    MoveRight(args.Position.Grid);
+                    MoveRight(args.State.Grid);
                     break;
                 }
             default:
                 break;
         }
-        PrintScore(args.Position.Score);
+        PrintScore(args.State.Score);
     }
 
+    /// <summary>
+    /// Handles and prints movement action upwards.
+    /// </summary>
+    /// <param name="actualGrid">The grid to print.</param>
     void MoveUp(IList<IList<int>> actualGrid)
     {
         for (int j = 0; j < gridWidth; j++)
@@ -424,6 +478,10 @@ public class GameDisplay : IGameDisplay
         }
     }
 
+    /// <summary>
+    /// Handles and prints movement action downwards.
+    /// </summary>
+    /// <param name="actualGrid">The grid to print.</param>
     void MoveDown(IList<IList<int>> actualGrid)
     {
         for (int j = gridWidth - 1; j >= 0; j--)
@@ -435,6 +493,10 @@ public class GameDisplay : IGameDisplay
         }
     }
 
+    /// <summary>
+    /// Handles and prints movement action left.
+    /// </summary>
+    /// <param name="actualGrid">The grid to print.</param>
     void MoveLeft(IList<IList<int>> actualGrid)
     {
         for (int i = gridHeight - 1; i >= 0; i--)
@@ -446,6 +508,10 @@ public class GameDisplay : IGameDisplay
         }
     }
 
+    /// <summary>
+    /// Handles and prints movement action right.
+    /// </summary>
+    /// <param name="actualGrid">The grid to print.</param>
     void MoveRight(IList<IList<int>> actualGrid)
     {
         for (int i = 0; i < gridHeight; i++)
@@ -470,16 +536,16 @@ public class GameDisplay : IGameDisplay
         InitializeInfos();
         ConstructGridFrame();
 
-        for (int i = 0; i < args.Position.Grid.Count; i++)
+        for (int i = 0; i < args.State.Grid.Count; i++)
         {
-            for (int j = 0; j < args.Position.Grid[i].Count; j++)
+            for (int j = 0; j < args.State.Grid[i].Count; j++)
             {
-                PrintTile(args.Position.Grid[i][j], tilePositions[i, j]);
+                PrintTile(args.State.Grid[i][j], tilePositions[i, j]);
             }
         }
 
         PrintPlayerName(args.PlayerName);
-        PrintScore(args.Position.Score);
+        PrintScore(args.State.Score);
         PrintRemainingUndos(args.RemainingUndos);
         PrintRemainingLives(args.RemainingLives);
         PrintTile(args.HighestNumber, highestNumberValueLabelPosition);

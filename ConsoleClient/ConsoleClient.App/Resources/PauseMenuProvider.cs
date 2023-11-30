@@ -7,48 +7,72 @@ using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;
 
+/// <summary>
+/// A static class that provides a pause menu for a play action.
+/// </summary>
 internal static class PauseMenuProvider
 {
+    /// <summary>
+    /// A class that can store  the result of a pause action.
+    /// </summary>
     class PauseMenuActionRequestedResultProvider
     {
+        /// <summary>
+        /// The result of the  pause action.
+        /// </summary>
         internal PauseResult Result { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="PauseMenuActionRequestedResultProvider"/> class.
+        /// </summary>
         public PauseMenuActionRequestedResultProvider()
         {
             Result = PauseResult.Unknown;
         }
 
+        /// <summary>
+        /// Sets the <see cref="Result"/> to <see cref="PauseResult.Continue"/>.
+        /// </summary>
         internal void Continue()
         {
             Result = PauseResult.Continue;
         }
 
+        /// <summary>
+        /// Sets the <see cref="Result"/> to <see cref="PauseResult.EndPlay"/>.
+        /// </summary>
         internal void EndPlay()
         {
             Result = PauseResult.EndPlay;
         }
 
+        /// <summary>
+        /// Sets the <see cref="Result"/> to <see cref="PauseResult.ExitGame"/>.
+        /// </summary>
         internal void ExitGame()
         {
             Result = PauseResult.ExitGame;
         }
     }
 
+    /// <summary>
+    /// Provides a pause menu action for a play action.
+    /// </summary>
+    /// <param name="changePlayerNameMethod">A method for changing a player's name.</param>
+    /// <param name="saveGameMethod">A method for saving the game.</param>
+    /// <returns></returns>
     internal static PauseResult ProvidePauseMenuAction(Action changePlayerNameMethod, Action saveGameMethod)
     {
         PauseMenuActionRequestedResultProvider resultProvider = new();
         IList<IMenuItem> pauseMenuItems = new List<IMenuItem>
         {
-            new MenuItem("Continue", MenuItemResult.Back, new MenuActionRequestedArgs (resultProvider.Continue)),
-            new MenuItem("Change player name", new MenuActionRequestedArgs (changePlayerNameMethod)),
-            new MenuItem("Save Game", new MenuActionRequestedArgs (saveGameMethod)),
+            new MenuItem("Continue", MenuItemResult.Back, new MenuItemActionRequestedArgs (resultProvider.Continue)),
+            new MenuItem("Change player name", new MenuItemActionRequestedArgs (changePlayerNameMethod)),
+            new MenuItem("Save Game", new MenuItemActionRequestedArgs (saveGameMethod)),
             ProvideEndPlayMenuItem(resultProvider),
             ProvideExitGameMenuItem(resultProvider)
         };
         IConsoleMenu pauseMenu = new ConsoleMenu(pauseMenuItems, InputProvider.ProvideMenuInput);
-        // !!!!########!!!!!!!!!!########### handle
-        pauseMenu.AddNavigationBreaker(MenuItemResult.Yes);
-        // !!!!########!!!!!!!!!!###########
         IMenuDisplay pauseMenuOverlay = new MenuDisplay();
         pauseMenu.MenuNavigationStarted += pauseMenuOverlay.OnMenuNavigationStarted;
         pauseMenu.MenuNavigationStarted += (sender, args) =>
@@ -67,6 +91,11 @@ internal static class PauseMenuProvider
         return resultProvider.Result;
     }
 
+    /// <summary>
+    /// Provides a menu item for exiting to the main menu.
+    /// </summary>
+    /// <param name="resultProvider">The result provider for the pause menu.</param>
+    /// <returns>A menu item that starts a menu navigation for the exit play prompt menu if selected.</returns>
     static IMenuItem ProvideEndPlayMenuItem(PauseMenuActionRequestedResultProvider resultProvider)
     {
         string menuItemName = "Exit to Main Menu";
@@ -94,9 +123,13 @@ internal static class PauseMenuProvider
             AppEnvironment.CurrentOverlays["pauseMenuOverlay"].SetPreviousOverlaySuppression(true);
             AppEnvironment.CurrentMenus["pauseMenu"].EndNavigation();
         };
-        return new MenuItem(menuItemName, new MenuActionRequestedArgs(pauseMenuEndPlayPromptMenu));
+        return new MenuItem(menuItemName, new MenuItemActionRequestedArgs(pauseMenuEndPlayPromptMenu));
     }
 
+    /// <summary>
+    /// Provides a menu for the exit play prompt menu.
+    /// </summary>
+    /// <returns>A menu for the exit play prompt menu.</returns>
     static IConsoleMenu ProvideEndPlaySubMenu()
     {
         IList<IMenuItem> endPlaySubMenuItems = new List<IMenuItem>()
@@ -111,6 +144,11 @@ internal static class PauseMenuProvider
         return new ConsoleMenu(endPlaySubMenuItems, InputProvider.ProvideMenuInput, displayText);
     }
 
+    /// <summary>
+    /// Provides a menu item for the exit game prompt menu.
+    /// </summary>
+    /// <param name="resultProvider">The result provider for the pause menu.</param>
+    /// <returns>A menu item that starts a menu navigation for the exit game prompt menu if selected.</returns>
     static IMenuItem ProvideExitGameMenuItem(PauseMenuActionRequestedResultProvider resultProvider)
     {
         string menuItemName = "Guit Game";
@@ -139,9 +177,13 @@ internal static class PauseMenuProvider
             AppEnvironment.CurrentOverlays["currentPlayInstanceOverlay"].SetPreviousOverlaySuppression(true);
             AppEnvironment.CurrentMenus["pauseMenu"].EndNavigation();
         };
-        return new MenuItem(menuItemName, new MenuActionRequestedArgs(pauseMenuExitGamePromptMenu));
+        return new MenuItem(menuItemName, new MenuItemActionRequestedArgs(pauseMenuExitGamePromptMenu));
     }
 
+    /// <summary>
+    /// Provides a menu for the exit game prompt menu.
+    /// </summary>
+    /// <returns>A menu for the exit game prompt menu.</returns>
     static IConsoleMenu ProvideExitGameSubMenu()
     {
         IList<IMenuItem> exitGameSubMenuItems = new List<IMenuItem>()

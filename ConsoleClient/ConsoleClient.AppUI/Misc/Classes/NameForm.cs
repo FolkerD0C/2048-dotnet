@@ -1,20 +1,41 @@
 ﻿using ConsoleClient.AppUI.Enums;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
-using ConsoleClient.Shared.Models;
+using ConsoleClient.Display.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleClient.AppUI.Misc;
 
+/// <summary>
+/// A class that defines and handles displaying a method for prompting the player for new a name.
+/// </summary>
 public class NameForm : INameForm
 {
+    /// <summary>
+    /// A list of characters which can not be stored in player names.
+    /// </summary>
     const string BannedCharacters = "<>:\"/\\|?*";
+    /// <summary>
+    /// The first row of the prompt label.
+    /// </summary>
     const string PromptLabel1 = "Please enter your name below,";
+    /// <summary>
+    /// The second row of the prompt label.
+    /// </summary>
     const string PromptLabel2 = "you can submit with ENTER and cancel with ESCAPE";
+    /// <summary>
+    /// The maximum length for a name form.
+    /// </summary>
     const int NameFormLength = 32;
+    /// <summary>
+    /// The foreground color of a name form.
+    /// </summary>
     readonly static ConsoleColor FormForegroundColor = ConsoleColor.Black;
+    /// <summary>
+    /// The background color of a name form.
+    /// </summary>
     readonly static ConsoleColor FormBackgroundColor = ConsoleColor.Cyan;
 
     public IDisplayRow this[int index]
@@ -35,14 +56,33 @@ public class NameForm : INameForm
 
     public int RowCount => displayRows.Count;
 
+    /// <summary>
+    /// The vertical offset of the frame.
+    /// </summary>
     int formVerticalOffset;
+    /// <summary>
+    /// The horizontal offset of the frame.
+    /// </summary>
     int formHorizontalOffset;
 
+    /// <summary>
+    /// Stores the current value of the player's name.
+    /// </summary>
     readonly char[] nameFormValue;
+    /// <summary>
+    /// The method that supplies the form action with an input.
+    /// </summary>
     readonly Func<NameFormInput> inputMethod;
 
+    /// <summary>
+    /// If true then the printing of the overlay under this is suppressed.
+    /// </summary>
     bool suppressPrintingPreviosOverlay;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="NameForm"/> class.
+    /// </summary>
+    /// <param name="inputMethod">The method that supplies the form action with an input.</param>
     public NameForm(Func<NameFormInput> inputMethod)
     {
         displayRows = new List<IDisplayRow>();
@@ -147,6 +187,9 @@ public class NameForm : INameForm
         return formResult;
     }
 
+    /// <summary>
+    /// Prints the prompt label above the name form.
+    /// </summary>
     static void PrintPromptLabel()
     {
         int promptLabel1VerticalOffset = DisplayManager.Height / 2 - 2;
@@ -182,6 +225,10 @@ public class NameForm : INameForm
         );
     }
 
+    /// <summary>
+    /// Initializes the name form under the prompt label.
+    /// </summary>
+    /// <param name="name">The previous name of the player.</param>
     void InitializeFormValue(string name)
     {
         formVerticalOffset = DisplayManager.Height / 2 + 1;
@@ -216,6 +263,10 @@ public class NameForm : INameForm
         );
     }
 
+    /// <summary>
+    /// Prints the name form from the specified position.
+    /// </summary>
+    /// <param name="from">The start index to print the name form from.</param>
     void PrintFormValue(int from)
     {
         DisplayManager.SetCursorVisibility(false);
@@ -229,6 +280,12 @@ public class NameForm : INameForm
         );
     }
 
+    /// <summary>
+    /// Inserts a value into <see cref="nameFormValue"/> at the specified index.
+    /// </summary>
+    /// <param name="value">The value to insert at <paramref name="index"/>.</param>
+    /// <param name="index">The index to insert <paramref name="value"/> to.</param>
+    /// <returns>True if the insertion was successful.</returns>
     bool InsertAt(char value, int index)
     {
         if (nameFormValue[NameFormLength - 1] != ' ' || BannedCharacters.Contains(value))
@@ -243,6 +300,11 @@ public class NameForm : INameForm
         return true;
     }
 
+    /// <summary>
+    /// Removes a value from <see cref="nameFormValue"/> at the specified index.
+    /// </summary>
+    /// <param name="index">The index for the value to remove.</param>
+    /// <returns>True if the removal was successful.</returns>
     bool RemoveAt(int index)
     {
         if (nameFormValue.All(c => c == ' '))
@@ -257,6 +319,10 @@ public class NameForm : INameForm
         return true;
     }
 
+    /// <summary>
+    /// Updates the cursor position on the display and makes it visible.
+    /// </summary>
+    /// <param name="index">The index in the name form.</param>
     void UpdateCursor(int index)
     {
         DisplayManager.SetCursorPos(formHorizontalOffset + index, formVerticalOffset);

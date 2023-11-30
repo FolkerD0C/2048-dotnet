@@ -8,6 +8,10 @@ using System.Text.Json;
 
 namespace Game2048.Repository;
 
+/// <summary>
+/// A class that implements a set of methods needed for the <see cref="GameRepository"/>
+/// to operate and has two properties that represent a playing grid state.
+/// </summary>
 public class GameState : IRepositoryState, IGameState
 {
     IList<IList<int>> grid;
@@ -17,11 +21,11 @@ public class GameState : IRepositoryState, IGameState
 
     public int Score { get => score; protected set { score = value; } }
 
-    /// <summary>
-    /// Returns true if movement is possible, else false.
-    /// </summary>
     public bool CanMove => CheckIfCanMove();
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="GameState"/> class.
+    /// </summary>
     public GameState()
     {
         grid = new List<IList<int>>();
@@ -56,6 +60,10 @@ public class GameState : IRepositoryState, IGameState
         return result;
     }
 
+    /// <summary>
+    /// Checks if a move can be performed on the playing grid.
+    /// </summary>
+    /// <returns>True if a movement can be performed on the playing grid.</returns>
     bool CheckIfCanMove()
     {
         // Check if there is any empty tile on the grid
@@ -88,6 +96,7 @@ public class GameState : IRepositoryState, IGameState
         return false;
     }
 
+    /// <inheritdoc/>
     public IRepositoryState Copy()
     {
         var result = new GameState();
@@ -381,13 +390,13 @@ public class GameState : IRepositoryState, IGameState
     }
 
     /// <summary>
-    /// Checks if the tile at the current position and the tile at the next position are the same and can be added
+    /// Checks if the tile at the current position and the tile at the next position are the same and can be added.
     /// </summary>
-    /// <param name="currentVerticalPosition"></param>
-    /// <param name="currentHorizontalPosition"></param>
-    /// <param name="nextVerticalPosition"></param>
-    /// <param name="nextHorizontalPosition"></param>
-    /// <returns>Returns true if the current and the next tile are the same and can be added, else false</returns>
+    /// <param name="currentVerticalPosition">The vertical position of the current tile.</param>
+    /// <param name="currentHorizontalPosition">The horizontal position of the current tile.</param>
+    /// <param name="nextVerticalPosition">The vertical position of the next tile.</param>
+    /// <param name="nextHorizontalPosition">The horizontal position of the next tile.</param>
+    /// <returns>True if the current and the next tile are the same and can be added.</returns>
     bool AdditionLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {
@@ -397,13 +406,13 @@ public class GameState : IRepositoryState, IGameState
     }
 
     /// <summary>
-    /// Checks if the tile at the next location is empty
+    /// Checks if the tile at the next location is empty.
     /// </summary>
-    /// <param name="currentVerticalPosition"></param>
-    /// <param name="currentHorizontalPosition"></param>
-    /// <param name="nextVerticalPosition"></param>
-    /// <param name="nextHorizontalPosition"></param>
-    /// <returns>Returns true if the next tile is empty, else false.</returns>
+    /// <param name="currentVerticalPosition">The vertical position of the current tile.</param>
+    /// <param name="currentHorizontalPosition">The horizontal position of the current tile.</param>
+    /// <param name="nextVerticalPosition">The vertical position of the next tile.</param>
+    /// <param name="nextHorizontalPosition">The horizontal position of the next tile.</param>
+    /// <returns>True if the next tile is empty.</returns>
     bool EmptyLogic(int currentVerticalPosition, int currentHorizontalPosition,
             int nextVerticalPosition, int nextHorizontalPosition)
     {

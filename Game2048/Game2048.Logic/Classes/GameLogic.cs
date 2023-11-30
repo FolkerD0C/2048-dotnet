@@ -10,21 +10,26 @@ using System.Linq;
 
 namespace Game2048.Logic;
 
+/// <summary>
+/// A class that represents a high level manager for the game.
+/// Handles playing, saving, loading, high scores and gets the game description.
+/// </summary>
 public class GameLogic : IGameLogic
 {
     readonly Dictionary<string, string> saveFileInfos;
     readonly IHighscoreHandler highscoreHandler;
-    IGameSaveHandler saveHandler;
-    IPlayLogic playLogic;
+    IGameSaveHandler? saveHandler;
+    IPlayLogic? playLogic;
 
-#pragma warning disable CS8618
+    /// <summary>
+    /// Creates a new instance of the <see cref="GameLogic"/> class.
+    /// </summary>
     public GameLogic()
     {
         highscoreHandler = new HighScoreHandler();
         saveFileInfos = new Dictionary<string, string>();
         GameSaveHandler.CheckOrCreateSaveDirectory();
     }
-#pragma warning restore CS8618
 
     public void AddHighscore(string playerName, int score)
     {
@@ -59,7 +64,7 @@ public class GameLogic : IGameLogic
 
     public IPlayInstance NewGame()
     {
-        PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItem<int>("DefaultGridHeight"), ConfigManager.GetConfigItem<int>("DefaultGridWidth"));
+        PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItemValue<int>("DefaultGridHeight"), ConfigManager.GetConfigItemValue<int>("DefaultGridWidth"));
         saveHandler = new GameSaveHandler("", new GameRepository(true));
         playLogic = new PlayLogic(saveHandler.GameRepository);
         return playLogic;
@@ -67,6 +72,10 @@ public class GameLogic : IGameLogic
 
     public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause)
     {
+        if (playLogic is null || saveHandler is null)
+        {
+            return PlayEndedReason.PlayNotInitialized;
+        }
         bool inGame = true;
         var endReason = PlayEndedReason.Unknown;
         playLogic.Start();
@@ -111,6 +120,14 @@ public class GameLogic : IGameLogic
 
     public SaveResult SaveCurrentGame()
     {
+        if (playLogic is null || saveHandler is null)
+        {
+            return new SaveResult()
+            {
+                ResultType = SaveResultType.Failure,
+                Message = "Play is not initialized"
+            };
+        }
         if (playLogic.PlayerName is null || playLogic.PlayerName == "")
         {
             return new SaveResult()

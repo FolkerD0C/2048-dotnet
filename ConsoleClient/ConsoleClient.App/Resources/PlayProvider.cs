@@ -11,8 +11,15 @@ using System.Linq;
 
 namespace ConsoleClient.App.Resources;
 
+/// <summary>
+/// A static class that provides play actions for the game.
+/// </summary>
 internal static class PlayProvider
 {
+    /// <summary>
+    /// Performs a new game action.
+    /// </summary>
+    /// <exception cref="NullReferenceException"></exception>
     internal static void ProvideNewGame()
     {
         if (AppEnvironment.GameLogic is null)
@@ -35,6 +42,11 @@ internal static class PlayProvider
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
     }
 
+    /// <summary>
+    /// Performs a loaded game action.
+    /// </summary>
+    /// <param name="saveGameName"></param>
+    /// <exception cref="NullReferenceException"></exception>
     internal static void ProvideLoadedGame(string saveGameName)
     {
         if (AppEnvironment.GameLogic is null)
@@ -58,6 +70,12 @@ internal static class PlayProvider
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
     }
 
+    /// <summary>
+    /// Handles the ending of a play action.
+    /// </summary>
+    /// <param name="endedReason">The reason the play has ended.</param>
+    /// <exception cref="NullReferenceException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     static void HandlePlayEnded(PlayEndedReason endedReason)
     {
         if (AppEnvironment.GameLogic is null || AppEnvironment.CurrentPlayInstance is null)
@@ -101,11 +119,19 @@ internal static class PlayProvider
         AppEnvironment.GameLogic.AddHighscore(AppEnvironment.CurrentPlayInstance.PlayerName, AppEnvironment.CurrentPlayInstance.PlayerScore);
     }
 
+    /// <summary>
+    /// Provides a pause function for the game.
+    /// </summary>
+    /// <returns>The result of the pause.</returns>
     static PauseResult Pause()
     {
         return PauseMenuProvider.ProvidePauseMenuAction(ProvideChangePlayerNameAction, ProvideSaveGameAction);
     }
-
+    /// <summary>
+    /// Provides a method to change the player's name.
+    /// </summary>
+    /// <exception cref="NullReferenceException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     internal static void ProvideChangePlayerNameAction()
     {
         if (AppEnvironment.CurrentPlayInstance is null)
@@ -124,6 +150,10 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.PlayerName = nameFormResult.Name;
     }
 
+    /// <summary>
+    /// Provides an action for saving the current game.
+    /// </summary>
+    /// <exception cref="NullReferenceException"></exception>
     static void ProvideSaveGameAction()
     {
         if (AppEnvironment.GameLogic is null || AppEnvironment.CurrentPlayInstance is null)
@@ -157,6 +187,11 @@ internal static class PlayProvider
         }
     }
 
+    /// <summary>
+    /// Prompts the player about overwriting an existing savefile.
+    /// </summary>
+    /// <param name="saveGameName">The name of the saved game.</param>
+    /// <returns>True if the application can overwrite the existing save file.</returns>
     static bool PromptPlayerOverwritingSave(string saveGameName)
     {
         IList<IMenuItem> exitGameSubMenuItems = new List<IMenuItem>()

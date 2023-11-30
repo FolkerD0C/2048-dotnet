@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace Game2048.Logic;
 
+/// <summary>
+/// A class that represents a high level manager for handling the game configuration.
+/// </summary>
 public class ConfigLogic : IConfigLogic
 {
     public IEnumerable<ConfigItem<object>> GetConfigItems()
@@ -32,7 +35,7 @@ public class ConfigLogic : IConfigLogic
 
     public ConfigItem<T> GetConfigValue<T>(string configItemName)
     {
-        T configItemValue = ConfigManager.GetConfigItem<T>(configItemName);
+        T configItemValue = ConfigManager.GetConfigItemValue<T>(configItemName);
         if (configItemValue is null)
         {
             return new ConfigItem<T>()
@@ -64,7 +67,7 @@ public class ConfigLogic : IConfigLogic
     {
         try
         {
-            ConfigManager.SetConfigItem(configItem.Name ?? "", configItem.Value);
+            ConfigManager.SetConfigItemValue(configItem.Name ?? "", configItem.Value);
         }
         catch (ArgumentException)
         {

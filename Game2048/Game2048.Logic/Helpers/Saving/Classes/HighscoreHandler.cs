@@ -5,12 +5,19 @@ using System.IO;
 
 namespace Game2048.Logic.Saving;
 
+/// <summary>
+/// A class that represents a manager for high score saving and loading.
+/// </summary>
 public class HighScoreHandler : FileHandler, IHighscoreHandler
 {
     IHighscoresRepository highscoresData;
 
     public IHighscoresRepository HighscoresData => highscoresData;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="HighScoreHandler"/> class.
+    /// </summary>
+    /// <param name="saveFilePath">The full path of the file that contains the high scores.</param>
     public HighScoreHandler(string saveFilePath) : base(saveFilePath)
     {
         highscoresData = new HighscoresRepository();
@@ -21,6 +28,9 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
         }
     }
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="HighScoreHandler"/> class.
+    /// </summary>
     public HighScoreHandler() : this(GameData.HighscoresFilePath)
     { }
 

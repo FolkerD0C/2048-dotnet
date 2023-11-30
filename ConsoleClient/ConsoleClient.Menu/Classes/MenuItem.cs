@@ -2,6 +2,10 @@ using ConsoleClient.Menu.Enums;
 
 namespace ConsoleClient.Menu;
 
+/// <summary>
+/// A class that represents a manager for the actions that can happen
+/// during a selection at the navigation of an <see cref="IConsoleMenu"/> object.
+/// </summary>
 public class MenuItem : IMenuItem
 {
     readonly string name;
@@ -10,56 +14,95 @@ public class MenuItem : IMenuItem
     readonly MenuItemType itemType;
     public MenuItemType ItemType => itemType;
 
-    MenuItemResult menuResult;
+    /// <summary>
+    /// The result of the selection.
+    /// </summary>
+    MenuItemResult menuItemResult;
 
-    readonly IMenuActionRequestedArgs actionRequestedArgs;
-    public IMenuActionRequestedArgs ActionRequestedArgs => actionRequestedArgs;
+    /// <summary>
+    /// An optional object that holds information about the action that can happen during the selection of this <see cref="MenuItem"/> object.
+    /// </summary>
+    readonly IMenuItemActionRequestedArgs? actionRequestedArgs;
 
-    MenuItem(string name, MenuItemType itemType, MenuItemResult menuResult, IMenuActionRequestedArgs actionRequestedArgs)
+    /// <summary>
+    /// Creates a nwe instance of the <see cref="MenuItem"/> class.
+    /// </summary>
+    /// <param name="name">The display name of the <see cref="IMenuItem"/> object.</param>
+    /// <param name="itemType">The type of the <see cref="IMenuItem"/> object.</param>
+    /// <param name="menuItemResult">The result of the selection.</param>
+    /// <param name="actionRequestedArgs">An optional object that holds information about the action that can happen during the selection of this <see cref="MenuItem"/> object.</param>
+    MenuItem(string name, MenuItemType itemType, MenuItemResult menuItemResult, IMenuItemActionRequestedArgs? actionRequestedArgs)
     {
         this.name = name;
         this.itemType = itemType;
-        this.menuResult = menuResult;
+        this.menuItemResult = menuItemResult;
         this.actionRequestedArgs = actionRequestedArgs;
     }
 
-    public MenuItem(string name) : this(name, MenuItemType.Back, MenuItemResult.Back, new MenuActionRequestedArgs(() => { }))
+    /// <summary>
+    /// Creates a nwe instance of the <see cref="MenuItem"/> class that will be a
+    /// <see cref="MenuItemType.Back"/> type and returns <see cref="MenuItemResult.Back"/> as a result upon selection.
+    /// </summary>
+    /// <param name="name">The display name of the <see cref="IMenuItem"/> object.</param>
+    public MenuItem(string name) : this(name, MenuItemType.Back, MenuItemResult.Back, default)
     { }
 
-    public MenuItem(string name, MenuItemResult menuResult) : this(name, MenuItemType.YesNo, menuResult, new MenuActionRequestedArgs(() => { }))
+    /// <summary>
+    /// Creates a nwe instance of the <see cref="MenuItem"/> class that will be a
+    /// <see cref="MenuItemType.YesNo"/> type.
+    /// </summary>
+    /// <param name="name">The display name of the <see cref="IMenuItem"/> object.</param>
+    /// <param name="menuItemResult">The result of the selection.
+    /// Should be <see cref="MenuItemResult.Yes"/> or <see cref="MenuItemResult.No"/>.</param>
+    public MenuItem(string name, MenuItemResult menuItemResult) : this(name, MenuItemType.YesNo, menuItemResult, default)
     { }
 
-    public MenuItem(string name, IMenuActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, MenuItemResult.Ok, actionRequestedArgs)
+    /// <summary>
+    /// Creates a nwe instance of the <see cref="MenuItem"/> class that will be a
+    /// <see cref="MenuItemType.Action"/> type.
+    /// </summary>
+    /// <param name="name">The display name of the <see cref="IMenuItem"/> object.</param>
+    /// <param name="actionRequestedArgs">Holds information about the action that can
+    /// happen during the selection of this <see cref="MenuItem"/> object.</param>
+    public MenuItem(string name, IMenuItemActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, MenuItemResult.Ok, actionRequestedArgs)
     { }
 
-    public MenuItem(string name, MenuItemResult menuResult, IMenuActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, menuResult, actionRequestedArgs)
+    /// <summary>
+    /// Creates a nwe instance of the <see cref="MenuItem"/> class that will be a
+    /// <see cref="MenuItemType.Action"/> type.
+    /// </summary>
+    /// <param name="name">The display name of the <see cref="IMenuItem"/> object.</param>
+    /// <param name="menuResult">The result of the selection.</param>
+    /// <param name="actionRequestedArgs">Holds information about the action that can
+    /// happen during the selection of this <see cref="MenuItem"/> object.</param>
+    public MenuItem(string name, MenuItemResult menuResult, IMenuItemActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, menuResult, actionRequestedArgs)
     { }
 
     public MenuItemResult Select()
     {
         if (itemType == MenuItemType.Action)
         {
-            switch (actionRequestedArgs.ActionType)
+            switch (actionRequestedArgs?.ActionType)
             {
-                case MenuActionType.SubMenu:
+                case MenuItemActionType.SubMenu:
                     {
-                        menuResult = actionRequestedArgs.SubMenu.Navigate();
+                        menuItemResult = actionRequestedArgs.SubMenu.Navigate();
                         break;
                     }
-                case MenuActionType.Action:
+                case MenuItemActionType.Action:
                     {
                         actionRequestedArgs.Action?.Invoke();
                         break;
                     }
-                case MenuActionType.ActionWithStringArg:
+                case MenuItemActionType.ActionWithStringParam:
                     {
-                        actionRequestedArgs.ActionWithStringArg?.Invoke(actionRequestedArgs.ActionStringArg);
+                        actionRequestedArgs.ActionWithStringParam?.Invoke(actionRequestedArgs.ActionStringParam);
                         break;
                     }
                 default:
                     break;
             }
         }
-        return menuResult;
+        return menuItemResult;
     }
 }

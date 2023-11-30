@@ -2,15 +2,24 @@ using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Helpers;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
-using ConsoleClient.Shared.Models;
+using ConsoleClient.Display.Models;
 using System;
 using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Misc;
 
+/// <summary>
+/// A class that can be used for displaying messages during the game.
+/// </summary>
 public class MessageOverlay : IOverLay
 {
+    /// <summary>
+    /// The foreground color of the displayed message.
+    /// </summary>
     readonly ConsoleColor messageForegroundColor;
+    /// <summary>
+    /// The background color of the displayed message.
+    /// </summary>
     readonly ConsoleColor messageBackgroundColor;
 
     public IDisplayRow this[int index]
@@ -26,18 +35,34 @@ public class MessageOverlay : IOverLay
         set { displayRows[index] = value; }
     }
 
+    /// <summary>
+    /// The rows of the message.
+    /// </summary>
     readonly IList<string> messageRows;
+    /// <summary>
+    /// The vertical offset of the displayed message.
+    /// </summary>
     int verticalOffset;
+    /// <summary>
+    /// The horizontal offset of the displayed message.
+    /// </summary>
     int horizontalOffset;
-    int rowLength;
 
     readonly IList<IDisplayRow> displayRows;
     public IList<IDisplayRow> DisplayRows => displayRows;
 
     public int RowCount => displayRows.Count;
 
+    /// <summary>
+    /// If true then the printing of the overlay under this is suppressed.
+    /// </summary>
     bool suppressPrintingPreviosOverlay;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="MessageOverlay"/> class.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    /// <param name="messageType">The type of the message to display.</param>
     public MessageOverlay(string message, MessageType messageType)
     {
         displayRows = new List<IDisplayRow>();
@@ -77,7 +102,7 @@ public class MessageOverlay : IOverLay
 
     public void PrintMessage()
     {
-        rowLength = DisplayManager.Width / 2;
+        int rowLength = DisplayManager.Width / 2;
         horizontalOffset = (DisplayManager.Width - rowLength) / 2;
         verticalOffset = (DisplayManager.Height - messageRows.Count) / 2;
         DisplayManager.NewOverlay(this);
@@ -108,6 +133,9 @@ public class MessageOverlay : IOverLay
         DisplayManager.RollBackOverLay(suppressPrintingPreviosOverlay);
     }
 
+    /// <summary>
+    /// Waits until the correct key is pressed
+    /// </summary>
     void ProvideCorrectInput()
     {
         string continueMessage = "Press space to continue...";

@@ -4,8 +4,17 @@ using System.Text.RegularExpressions;
 
 namespace ConsoleClient.AppUI.Helpers;
 
+/// <summary>
+/// A static class that contains extension methods.
+/// </summary>
 public static class Extensions
 {
+    /// <summary>
+    /// Returns the string in pieces sliced over words, if possible.
+    /// </summary>
+    /// <param name="input">The string to slice.</param>
+    /// <param name="length">The length of the pieces.</param>
+    /// <returns><paramref name="input"/> in <paramref name="length"/> lengthed pieces sliced over words, if possible.</returns>
     public static IList<string> Slice(this string input, int length)
     {
         var tokens = new Regex("\\s").Split(input) ?? new string[0];

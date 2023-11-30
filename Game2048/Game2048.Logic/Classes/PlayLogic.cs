@@ -11,13 +11,23 @@ using System.Linq;
 
 namespace Game2048.Logic;
 
+/// <summary>
+/// A class that represents a set of methods for handling an active play and
+/// a set of events and properties that contain information about an active play.
+/// </summary>
 public class PlayLogic : IPlayLogic
 {
+    /// <summary>
+    /// Contains all <see cref="GameInput"/>s that are <see cref="MoveDirection"/>s.
+    /// </summary>
     static readonly GameInput[] movementInputs = new GameInput[]
     {
         GameInput.Up, GameInput.Down, GameInput.Left, GameInput.Right
     };
 
+    /// <summary>
+    /// Must be true if the goal has been reached.
+    /// </summary>
     bool goalReached;
     readonly IGameRepository repository;
 
@@ -33,7 +43,13 @@ public class PlayLogic : IPlayLogic
         }
     }
 
+    /// <summary>
+    /// An event queue that should be emptied and triggered before an input.
+    /// </summary>
     readonly PriorityQueue<EventArgs, int> preinputEventQueue;
+    /// <summary>
+    /// An event queue that should be emptied and triggered after an input.
+    /// </summary>
     readonly PriorityQueue<EventArgs, int> eventQueue;
 
     public event EventHandler<PlayStartedEventArgs>? PlayStarted;
@@ -44,6 +60,10 @@ public class PlayLogic : IPlayLogic
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
     public event EventHandler? PlayEnded;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="PlayLogic"/> class.
+    /// </summary>
+    /// <param name="repository">The lower level manager of the play.</param>
     public PlayLogic(IGameRepository repository)
     {
         this.repository = repository;
@@ -55,12 +75,8 @@ public class PlayLogic : IPlayLogic
 
     public void Start()
     {
-        if (repository.UndoChain.First is null)
-        {
-            throw new InvalidOperationException("First game position can not be null.");
-        }
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
-            repository.UndoChain.First.Value, repository.RemainingUndos, repository.RemainingLives,
+            repository.UndoChain.First(), repository.RemainingUndos, repository.RemainingLives,
             repository.HighestNumber, repository.GridHeight, repository.GridWidth, repository.PlayerName
         ));
     }
@@ -197,6 +213,10 @@ public class PlayLogic : IPlayLogic
         return inputResult;
     }
 
+    /// <summary>
+    /// Triggers all events in the <see cref="eventQueue"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
     void HandleEventQueue()
     {
         while (eventQueue.Count > 0)
@@ -248,6 +268,11 @@ public class PlayLogic : IPlayLogic
         }
     }
 
+    /// <summary>
+    /// Handles repository events.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">Additional information about the event.</param>
     internal void GameRepositoryEventHappenedDispatcher(object? sender, GameRepositoryEventHappenedEventArgs args)
     {
         if (args.RepositoryEvent == GameRepositoryEvent.MaxNumberChanged)
