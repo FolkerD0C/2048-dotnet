@@ -15,5 +15,5 @@ public interface ISerializable
     /// Deserializes an object that implements the <see cref="ISerializable"/> interface.
     /// </summary>
     /// <param name="deserializee">The string representation of a serialized object.</param>
-    void Deserialize(string deserializee); // TODO make it return 'T'
+    void Deserialize(string deserializee);
 }

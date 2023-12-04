@@ -73,7 +73,7 @@ public class GameSaveHandler : FileHandler, IGameSaveHandler
     /// </summary>
     /// <returns>An <see cref="IEnumerable{ISaveMetaData}"/> that contains all saved
     /// games contained in <see cref="GameData.SaveGameDirectoryPath"/>.</returns>
-    internal static IEnumerable<ISaveMetaData> GetSavedGames()
+    internal static IEnumerable<ISaveMetaData> GetSavedGames() // TODO create a new static class that does this and the 2 others below
     {
         var saveFiles = new DirectoryInfo(GameData.SaveGameDirectoryPath).GetFiles("*.save.json");
         return saveFiles.Select(info => new SaveMetaData(info));

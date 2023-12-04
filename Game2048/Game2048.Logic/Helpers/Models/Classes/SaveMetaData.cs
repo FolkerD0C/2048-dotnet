@@ -5,7 +5,7 @@ namespace Game2048.Logic.Models;
 /// <summary>
 /// A class that is used for saving and loading a game.
 /// </summary>
-internal class SaveMetaData : ISaveMetaData
+internal class SaveMetaData : ISaveMetaData // TODO make it a record and remove interface
 {
     readonly string name;
     public string Name => name;
