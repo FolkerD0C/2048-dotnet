@@ -12,7 +12,7 @@ public class MoveHappenedEventArgs : EventArgs
     /// <summary>
     /// The new state of the playing grid.
     /// </summary>
-    public IGameState State { get; }
+    public GameState State { get; }
 
     /// <summary>
     /// The direction the move happened.
@@ -24,7 +24,7 @@ public class MoveHappenedEventArgs : EventArgs
     /// </summary>
     /// <param name="state">The new state of the playing grid.</param>
     /// <param name="direction">The direction the move happened.</param>
-    public MoveHappenedEventArgs(IGameState state, MoveDirection direction)
+    public MoveHappenedEventArgs(GameState state, MoveDirection direction)
     {
         State = state;
         Direction = direction;

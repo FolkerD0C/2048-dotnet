@@ -2,6 +2,8 @@ using System;
 
 namespace Game2048.Shared.Models;
 
+// TODO Remove this
+
 /// <summary>
 /// Defines two properties for tracking high scores in the game.
 /// </summary>

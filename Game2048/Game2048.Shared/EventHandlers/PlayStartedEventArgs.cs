@@ -11,7 +11,7 @@ public class PlayStartedEventArgs : EventArgs
     /// <summary>
     /// The starting state of the playing grid.
     /// </summary>
-    public IGameState State { get; }
+    public GameState State { get; }
 
     /// <summary>
     /// The number of remaining undos.
@@ -53,7 +53,7 @@ public class PlayStartedEventArgs : EventArgs
     /// <param name="gridHeight">The height of the playing grid.</param>
     /// <param name="gridWidth">The width of the playing grid.</param>
     /// <param name="playerName">The name of the player.</param>
-    public PlayStartedEventArgs(IGameState state, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth, string playerName)
+    public PlayStartedEventArgs(GameState state, int remainingUndos, int remainingLives, int highestNumber, int gridHeight, int gridWidth, string playerName)
     {
         State = state;
         RemainingUndos = remainingUndos;

@@ -1,5 +1,7 @@
 namespace Game2048.Shared.Models;
 
+// TODO Remove this
+
 /// <summary>
 /// Defines a serializable object, used for saving and loading.
 /// </summary>

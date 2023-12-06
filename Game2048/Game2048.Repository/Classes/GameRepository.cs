@@ -44,10 +44,10 @@ public class GameRepository : IGameRepository
     int goal;
     public int Goal => goal;
 
-    LinkedList<IGameState> undoChain;
-    public LinkedList<IGameState> UndoChain => undoChain;
+    LinkedList<GameState> undoChain;
+    public LinkedList<GameState> UndoChain => undoChain;
 
-    public IGameState CurrentGameState => undoChain.First();
+    public GameState CurrentGameState => undoChain.First();
 
     string moveResultErrorMessage;
     public string MoveResultErrorMessage => moveResultErrorMessage;
@@ -63,7 +63,7 @@ public class GameRepository : IGameRepository
     public GameRepository(bool newGame)
     {
         randomNumberGenerator = new Random();
-        undoChain = new LinkedList<IGameState>();
+        undoChain = new LinkedList<GameState>();
         playerName = "";
         acceptedSpawnables = ConfigManager.GetConfigItemValue<List<int>>("DefaultAcceptedSpawnables");
         maxUndos = ConfigManager.GetConfigItemValue<int>("DefaultMaxUndos");
@@ -91,27 +91,27 @@ public class GameRepository : IGameRepository
     {
         if (undoChain.First is not null)
         {
-            return undoChain.First.Value.Score;
+            return undoChain.First().Score;
         }
         throw new InvalidOperationException("There are no game state object left in the undo chain.");
     }
 
     public MoveResult MoveGrid(MoveDirection direction)
     {
-        var firstPosition = (undoChain.First
+        var currentGameState = (undoChain.First
             ?? throw new NullReferenceException("Game repository can not have empty undo chain.")).Value;
 
         // Perform move on a copy
-        IRepositoryState gameStateCopy = firstPosition.AsRepositoryGameState().Copy();
+        GameState gameStateCopy = currentGameState.Copy();
         gameStateCopy.Move(direction);
 
-        if (firstPosition.Equals(gameStateCopy))
+        if (currentGameState.StateEquals(gameStateCopy))
         {
             return MoveResult.CannotMoveInthatDirection;
         }
 
         // If move happened then add current position to the undochain
-        undoChain.AddFirst(gameStateCopy.AsPublicGameState());
+        undoChain.AddFirst(gameStateCopy);
         if (undoChain.Count > maxUndos)
         {
             undoChain.RemoveLast();
@@ -125,7 +125,7 @@ public class GameRepository : IGameRepository
         // Perform after-move actions
         PlaceRandomNumber();
         GetCurrentMaxNumber();
-        if (!gameStateCopy.CanMove)
+        if (!CheckIfGridCanMove(gameStateCopy))
         {
             if (--remainingLives <= 0)
             {
@@ -142,7 +142,7 @@ public class GameRepository : IGameRepository
         return MoveResult.NoError;
     }
 
-    public IGameState? Undo()
+    public GameState? Undo()
     {
         if (undoChain.Count > 1)
         {
@@ -161,15 +161,14 @@ public class GameRepository : IGameRepository
     /// </summary>
     void PlaceRandomNumber()
     {
-        var emptyTiles = undoChain.First().AsRepositoryGameState().GetEmptyTiles();
+        var emptyTiles = undoChain.First().GetEmptyTiles();
         if (emptyTiles.Count == 0)
         {
             return;
         }
         var (Vertical, Horizontal) = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
-        undoChain.First().AsRepositoryGameState()
-            .PlaceTile(Vertical, Horizontal, tileValue);
+        undoChain.First().PlaceTile(Vertical, Horizontal, tileValue);
     }
 
     /// <summary>
@@ -186,8 +185,46 @@ public class GameRepository : IGameRepository
         }
     }
 
+    /// <summary>
+    /// Checks if a move can be performed on the playing grid.
+    /// </summary>
+    /// <returns>True if a movement can be performed on the playing grid.</returns>
+    bool CheckIfGridCanMove(GameState state)
+    {
+        // Check if there is any empty tile on the grid
+        if (state.Grid.Any(row => row.Contains(0)))
+        {
+            return true;
+        }
+        // Check if there are similar tiles horizontally
+        for (int i = 0; i < gridHeight; i++)
+        {
+            for (int j = 0; j < gridWidth - 1; j++)
+            {
+                if (state.Grid[i][j] == state.Grid[i][j + 1])
+                {
+                    return true;
+                }
+            }
+        }
+        // Check if there are similar tiles vertically
+        for (int i = 0; i < gridWidth; i++)
+        {
+            for (int j = 0; j < gridHeight - 1; j++)
+            {
+                if (state.Grid[j][i] == state.Grid[j + 1][i])
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public string Serialize()
     {
+        return "";
+        /*
         StringBuilder jsonBuilder = new();
 
         jsonBuilder.Append('{');
@@ -215,11 +252,12 @@ public class GameRepository : IGameRepository
         jsonBuilder.Append('}');
 
         return jsonBuilder.ToString();
+        */
     }
 
     public void Deserialize(string deserializee)
     {
-        using var jsonDoc = JsonDocument.Parse(deserializee);
+        /*using var jsonDoc = JsonDocument.Parse(deserializee);
         var jsonRoot = jsonDoc.RootElement;
         remainingLives = jsonRoot.GetProperty("remainingLives").GetInt32();
         gridWidth = jsonRoot.GetProperty("gridWidth").GetInt32();
@@ -234,7 +272,7 @@ public class GameRepository : IGameRepository
             acceptedSpawnables.Add(accepted.GetInt32());
         }
         maxUndos = jsonRoot.GetProperty("maxUndos").GetInt32();
-        undoChain = new LinkedList<IGameState>();
+        undoChain = new LinkedList<GameState>();
         var chainEnumerable = jsonRoot.GetProperty("undoChain").EnumerateArray();
         foreach (var chainElement in chainEnumerable)
         {
@@ -242,6 +280,6 @@ public class GameRepository : IGameRepository
             gameState.Deserialize(chainElement.GetRawText());
             undoChain.AddLast(gameState);
         }
-        GetCurrentMaxNumber();
+        GetCurrentMaxNumber();*/
     }
 }

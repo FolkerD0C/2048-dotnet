@@ -170,7 +170,7 @@ public class PlayLogic : IPlayLogic
                 {
                     case GameInput.Undo:
                         {
-                            IGameState? undoResult = repository.Undo();
+                            GameState? undoResult = repository.Undo();
                             if (undoResult is not null)
                             {
                                 eventQueue.Enqueue(new UndoHappenedEventArgs(undoResult), 2);

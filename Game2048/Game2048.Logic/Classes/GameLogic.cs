@@ -57,14 +57,14 @@ public class GameLogic : IGameLogic
     {
         saveHandler = new GameSaveHandler(saveFileInfos[saveGameName], new GameRepository(false));
         saveHandler.Load();
-        PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
+        //PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
         playLogic = new PlayLogic(saveHandler.GameRepository);
         return playLogic;
     }
 
     public IPlayInstance NewGame()
     {
-        PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItemValue<int>("DefaultGridHeight"), ConfigManager.GetConfigItemValue<int>("DefaultGridWidth"));
+        //PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItemValue<int>("DefaultGridHeight"), ConfigManager.GetConfigItemValue<int>("DefaultGridWidth"));
         saveHandler = new GameSaveHandler("", new GameRepository(true));
         playLogic = new PlayLogic(saveHandler.GameRepository);
         return playLogic;

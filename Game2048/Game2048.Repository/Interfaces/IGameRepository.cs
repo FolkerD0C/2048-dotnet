@@ -55,12 +55,12 @@ public interface IGameRepository : ISerializable
     /// <summary>
     /// The current state of the playing grid.
     /// </summary>
-    IGameState CurrentGameState { get; }
+    GameState CurrentGameState { get; }
 
     /// <summary>
-    /// A <see cref="LinkedList{IGameState}"/> that is used for undoing.
+    /// A <see cref="LinkedList{GameState}"/> that is used for undoing.
     /// </summary>
-    public LinkedList<IGameState> UndoChain { get; }
+    public LinkedList<GameState> UndoChain { get; }
 
     /// <summary>
     /// If an error happens during a <see cref="MoveGrid(MoveDirection)"/> call, then this property stores the message for that error.
@@ -68,25 +68,25 @@ public interface IGameRepository : ISerializable
     public string MoveResultErrorMessage { get; }
 
     /// <summary>
-    /// Gets the score of the first <see cref="IGameState"/> object in the <see cref="UndoChain"/>.
+    /// Gets the score of the first <see cref="GameState"/> object in the <see cref="UndoChain"/>.
     /// </summary>
     /// <returns></returns>
     int GetScore();
 
     /// <summary>
-    /// Performs a move ont the first <see cref="IGameState"/> object in the <see cref="UndoChain"/>.
+    /// Performs a move ont the first <see cref="GameState"/> object in the <see cref="UndoChain"/>.
     /// </summary>
     /// <param name="input">The direction to move towards.</param>
     /// <returns>A <see cref="MoveResult"/> that represents if the move was successful.</returns>
     public MoveResult MoveGrid(MoveDirection input);
 
     /// <summary>
-    /// Performs an undo. Removes the first <see cref="IGameState"/> object from the <see cref="UndoChain"/> and returns the next.
-    /// Does nothing if the <see cref="LinkedList{IGameState}.Count"/> of the <see cref="UndoChain"/> is 1.
+    /// Performs an undo. Removes the first <see cref="GameState"/> object from the <see cref="UndoChain"/> and returns the next.
+    /// Does nothing if the <see cref="LinkedList{GameState}.Count"/> of the <see cref="UndoChain"/> is 1.
     /// </summary>
-    /// <returns>The new first <see cref="IGameState"/> object of the <see cref="UndoChain"/>
-    /// or null if the <see cref="LinkedList{IGameState}.Count"/> of the <see cref="UndoChain"/> is 1.</returns>
-    public IGameState? Undo();
+    /// <returns>The new first <see cref="GameState"/> object of the <see cref="UndoChain"/>
+    /// or null if the <see cref="LinkedList{GameState}.Count"/> of the <see cref="UndoChain"/> is 1.</returns>
+    public GameState? Undo();
 
     /// <summary>
     /// An event that is triggered when a repository event has happened. For repository event types, see <see cref="GameRepositoryEvent"/>.
