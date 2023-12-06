@@ -6,14 +6,18 @@ namespace Game2048.Shared.Models;
 /// <summary>
 /// A class that stores information about a high score.
 /// </summary>
-public class Highscore : IHighscore
+public record Highscore
 {
-    string playerName;
-    public string PlayerName { get => playerName; }
+    /// <summary>
+    /// The name of the player who achieved the high score.
+    /// </summary>
+    public string? PlayerName { get; set; }
 
-    int playerScore;
-    public int PlayerScore { get => playerScore; }
-
+    /// <summary>
+    /// The score of the player who achieved the high score.
+    /// </summary>
+    public int PlayerScore { get; set; }
+    /*
     public Highscore() : this("", -1)
     { }
 
@@ -58,5 +62,5 @@ public class Highscore : IHighscore
             return 0;
         }
         throw new InvalidOperationException("The object '" + (obj is not null ? obj?.ToString() : "") + "' is not comparable with " + this.ToString());
-    }
+    }*/
 }

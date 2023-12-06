@@ -50,13 +50,14 @@ public class HighscoresRepository : IHighscoresRepository
 
     public void Deserialize(string deserializee)
     {
-        using var jsonDoc = JsonDocument.Parse(deserializee);
+        return;
+        /*using var jsonDoc = JsonDocument.Parse(deserializee);
         var jsonArray = jsonDoc.RootElement.EnumerateArray();
         foreach (var item in jsonArray)
         {
             IHighscore highscore = new Highscore();
             highscore.Deserialize(item.GetRawText());
             AddHighscore(highscore);
-        }
+        }*/
     }
 }

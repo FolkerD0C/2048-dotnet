@@ -59,6 +59,6 @@ public class HighScoreHandler : FileHandler, IHighscoreHandler
 
     public void AddNewHighscore(string playerName, int score)
     {
-        highscoresData.AddNewHighscore(new Highscore(playerName, score));
+        //highscoresData.AddNewHighscore(new Highscore(playerName, score));
     }
 }
