@@ -141,7 +141,7 @@ public class GameLogic : IGameLogic
         return saveHandler.Save();
     }
 
-    public IList<IHighscore> GetHighscores()
+    public IList<Highscore> GetHighscores()
     {
         highscoreHandler.Load();
         return highscoreHandler.HighscoresData.HighScores;

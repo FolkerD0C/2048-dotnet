@@ -47,7 +47,7 @@ public interface IGameLogic
     /// Gets all high scores.
     /// </summary>
     /// <returns>An <see cref="IList{IHighscore}"/> that contains all high scores.</returns>
-    public IList<IHighscore> GetHighscores();
+    public IList<Highscore> GetHighscores();
 
     /// <summary>
     /// Adds a new high scores to the existing ones. Migth delete another if there are too many.

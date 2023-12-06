@@ -105,7 +105,7 @@ internal static class MainMenuProvider
     static void ProvideHighscoresSubMenuAction()
     {
         IMenuItem back = new MenuItem("Back");
-        IList<IHighscore> highscores = AppEnvironment.GameLogic.GetHighscores();
+        IList<Highscore> highscores = AppEnvironment.GameLogic.GetHighscores();
         IList<string> displayText = new List<string>();
         foreach (var highscore in highscores)
         {

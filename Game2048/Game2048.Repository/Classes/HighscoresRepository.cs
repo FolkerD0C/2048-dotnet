@@ -12,40 +12,44 @@ namespace Game2048.Repository;
 /// </summary>
 public class HighscoresRepository : IHighscoresRepository
 {
-    IList<IHighscore> highScores;
-    public IList<IHighscore> HighScores => highScores;
+    IList<Highscore> highScores;
+    public IList<Highscore> HighScores => highScores;
 
     /// <summary>
     /// Creates a new instance for the <see cref="HighscoresRepository"/> class.
     /// </summary>
     public HighscoresRepository()
     {
-        highScores = new List<IHighscore>();
+        highScores = new List<Highscore>();
     }
 
     /// <summary>
     /// Adds a new high score to the <see cref="HighScores"/> list. While <see cref="AddNewHighscore(IHighscore)"/> limits the <see cref="HighScores"/> list to <see cref="GameConfiguration.MaxHighscoresListLength"/> this method can add a highscore beyond that limit.
     /// </summary>
     /// <param name="highscoreObject">The high score object that needs to be added to <see cref="HighScores"/>.</param>
-    void AddHighscore(IHighscore highscoreObject)
+    void AddHighscore(Highscore highscoreObject)
     {
         highScores.Add(highscoreObject);
         highScores = highScores.OrderBy(item => item).ToList();
     }
 
-    public void AddNewHighscore(IHighscore highscoreObject)
+    public void AddNewHighscore(Highscore highscoreObject)
     {
         highScores.Add(highscoreObject);
-        highScores = highScores.OrderBy(item => item).Take(ConfigManager.GetConfigItemValue<int>("MaxHighscoresListLength")).ToList();
+        highScores = highScores.OrderByDescending(item => item.PlayerScore).ThenBy(item => item.PlayerName)
+            .Take(ConfigManager.GetConfigItemValue<int>("MaxHighscoresListLength")).ToList();
     }
 
     public string Serialize()
     {
+        return "";
+        /*
         StringBuilder jsonBuilder = new();
         jsonBuilder.Append('[');
         jsonBuilder.AppendJoin(",", highScores.Select(hsdo => hsdo.Serialize()));
         jsonBuilder.Append(']');
         return jsonBuilder.ToString();
+        */
     }
 
     public void Deserialize(string deserializee)

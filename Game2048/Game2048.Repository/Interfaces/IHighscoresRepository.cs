@@ -11,11 +11,11 @@ public interface IHighscoresRepository : ISerializable
     /// <summary>
     /// A list that contains all the high scores.
     /// </summary>
-    IList<IHighscore> HighScores { get; }
+    IList<Highscore> HighScores { get; }
 
     /// <summary>
     /// Adds a new high score to the <see cref="HighScores"/> list.
     /// </summary>
     /// <param name="highscoreObject">The high score object that needs to be added to <see cref="HighScores"/>.</param>
-    void AddNewHighscore(IHighscore highscoreObject);
+    void AddNewHighscore(Highscore highscoreObject);
 }
