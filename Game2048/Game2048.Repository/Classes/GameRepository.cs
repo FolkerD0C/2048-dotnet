@@ -2,6 +2,7 @@ using Game2048.Config;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
 using Game2048.Repository.Helpers;
+using Game2048.Repository.SaveDataObjects;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
 using System;
@@ -20,15 +21,15 @@ public class GameRepository : IGameRepository
     int remainingLives;
     public int RemainingLives => remainingLives;
 
-    public int RemainingUndos => UndoChain.Count - 1;
+    public int RemainingUndos => undoChain.Count - 1;
 
     int highestNumber;
     public int HighestNumber => highestNumber;
 
-    int gridWidth;
+    readonly int gridWidth;
     public int GridWidth => gridWidth;
 
-    int gridHeight;
+    readonly int gridHeight;
     public int GridHeight => gridHeight;
 
     string playerName;
@@ -38,25 +39,24 @@ public class GameRepository : IGameRepository
         set { playerName = value; }
     }
 
-    IList<int> acceptedSpawnables;
-    public IList<int>? AcceptedSpawnables => acceptedSpawnables;
+    readonly List<int> acceptedSpawnables;
+    public List<int>? AcceptedSpawnables => acceptedSpawnables;
 
-    int goal;
+    readonly int goal;
     public int Goal => goal;
 
-    LinkedList<GameState> undoChain;
-    public LinkedList<GameState> UndoChain => undoChain;
+    readonly LinkedList<GameState> undoChain;
 
     public GameState CurrentGameState => undoChain.First();
 
     string moveResultErrorMessage;
     public string MoveResultErrorMessage => moveResultErrorMessage;
 
-    int maxUndos;
+    readonly int maxUndos;
 
     readonly Random randomNumberGenerator;
 
-    /// <summary>
+    /*// <summary>
     /// Creates a new instance of the <see cref="GameRepository"/> class.
     /// </summary>
     /// <param name="newGame">Tells the constructor that it is a new game or not.</param>
@@ -85,6 +85,66 @@ public class GameRepository : IGameRepository
             }
             GetCurrentMaxNumber();
         }
+    }*/
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="GameRepository"/> class that can be used for a new game.
+    /// </summary>
+    public GameRepository()
+    {
+        randomNumberGenerator = new Random();
+        moveResultErrorMessage = string.Empty;
+
+        goal = ConfigManager.GetConfigItemValue<int>("DefaultGoal");
+        acceptedSpawnables = ConfigManager.GetConfigItemValue<List<int>>("DefaultAcceptedSpawnables");
+        gridHeight = ConfigManager.GetConfigItemValue<int>("DefaultGridHeight");
+        gridWidth = ConfigManager.GetConfigItemValue<int>("DefaultGridWidth");
+        maxUndos = ConfigManager.GetConfigItemValue<int>("DefaultMaxUndos");
+        playerName = string.Empty;
+        remainingLives = ConfigManager.GetConfigItemValue<int>("DefaultMaxLives");
+        
+        // Initializing grid
+        undoChain = new LinkedList<GameState>();
+        GameState firstState = new();
+        for (int i = 0; i < gridHeight; i++)
+        {
+            firstState.Grid.Add(new List<int>());
+            for (int j = 0; j < gridWidth; j++)
+            {
+                firstState.Grid[i].Add(0);
+            }
+        }
+        undoChain.AddFirst(firstState);
+        int numbersToPlace = ConfigManager.GetConfigItemValue<int>("DefaultStarterTiles");
+        for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
+        {
+            PlaceRandomNumber();
+        }
+        GetCurrentMaxNumber();
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="GameRepository"/> class that can be used for a loaded game.
+    /// </summary>
+    /// <param name="saveData">The saved data of a game that is about to be loaded.</param>
+    public GameRepository(GameSaveData saveData)
+    {
+        randomNumberGenerator = new Random();
+        moveResultErrorMessage = string.Empty;
+
+        goal = saveData.Goal;
+        acceptedSpawnables = saveData.AcceptedSpawnables;
+        gridHeight = saveData.GridHeight;
+        gridWidth = saveData.GridWidth;
+        maxUndos = saveData.MaxUndos;
+        playerName = saveData.PlayerName;
+        remainingLives = saveData.RemainingLives;
+        undoChain = new LinkedList<GameState>();
+        for (int i = 0; i < saveData.UndoChain.Count; i++)
+        {
+            undoChain.AddLast(saveData.UndoChain[i]);
+        }
+        GetCurrentMaxNumber();
     }
 
     public int GetScore()
@@ -157,7 +217,7 @@ public class GameRepository : IGameRepository
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
 
     /// <summary>
-    /// Places a random tile on an empty position of the first <see cref="IGameState"/> object in the <see cref="UndoChain"/>.
+    /// Places a random tile on an empty position of the first <see cref="GameState"/> object in the <see cref="undoChain"/>.
     /// </summary>
     void PlaceRandomNumber()
     {
@@ -166,9 +226,9 @@ public class GameRepository : IGameRepository
         {
             return;
         }
-        var (Vertical, Horizontal) = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
+        GameStateExtensions.GridPosition position = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
-        undoChain.First().PlaceTile(Vertical, Horizontal, tileValue);
+        undoChain.First().PlaceTile(position.Vertical, position.Horizontal, tileValue);
     }
 
     /// <summary>
@@ -221,10 +281,9 @@ public class GameRepository : IGameRepository
         return false;
     }
 
-    public string Serialize()
+    /*public string Serialize()
     {
         return "";
-        /*
         StringBuilder jsonBuilder = new();
 
         jsonBuilder.Append('{');
@@ -252,12 +311,11 @@ public class GameRepository : IGameRepository
         jsonBuilder.Append('}');
 
         return jsonBuilder.ToString();
-        */
     }
 
     public void Deserialize(string deserializee)
     {
-        /*using var jsonDoc = JsonDocument.Parse(deserializee);
+        using var jsonDoc = JsonDocument.Parse(deserializee);
         var jsonRoot = jsonDoc.RootElement;
         remainingLives = jsonRoot.GetProperty("remainingLives").GetInt32();
         gridWidth = jsonRoot.GetProperty("gridWidth").GetInt32();
@@ -280,6 +338,13 @@ public class GameRepository : IGameRepository
             gameState.Deserialize(chainElement.GetRawText());
             undoChain.AddLast(gameState);
         }
-        GetCurrentMaxNumber();*/
+        GetCurrentMaxNumber();
+    }*/
+
+    public GameSaveData GetSaveDataObject()
+    {
+        GameSaveData result = new();
+        result.Populate(goal, acceptedSpawnables, gridHeight, gridWidth, maxUndos, playerName, remainingLives, undoChain.ToList());
+        return result;
     }
 }

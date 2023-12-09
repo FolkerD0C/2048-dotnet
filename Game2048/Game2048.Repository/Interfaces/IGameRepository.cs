@@ -1,5 +1,6 @@
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
+using Game2048.Repository.SaveDataObjects;
 using Game2048.Shared.Enums;
 using Game2048.Shared.Models;
 using System;
@@ -10,7 +11,7 @@ namespace Game2048.Repository;
 /// <summary>
 /// Represents a lower level manager for an active play.
 /// </summary>
-public interface IGameRepository : ISerializable
+public interface IGameRepository
 {
     /// <summary>
     /// The number of remaining lives.
@@ -48,19 +49,9 @@ public interface IGameRepository : ISerializable
     public int Goal { get; }
 
     /// <summary>
-    /// The list that contains the accepted spawnable tiles/numbers.
-    /// </summary>
-    public IList<int>? AcceptedSpawnables { get; }
-
-    /// <summary>
     /// The current state of the playing grid.
     /// </summary>
     GameState CurrentGameState { get; }
-
-    /// <summary>
-    /// A <see cref="LinkedList{GameState}"/> that is used for undoing.
-    /// </summary>
-    public LinkedList<GameState> UndoChain { get; }
 
     /// <summary>
     /// If an error happens during a <see cref="MoveGrid(MoveDirection)"/> call, then this property stores the message for that error.
@@ -68,28 +59,26 @@ public interface IGameRepository : ISerializable
     public string MoveResultErrorMessage { get; }
 
     /// <summary>
-    /// Gets the score of the first <see cref="GameState"/> object in the <see cref="UndoChain"/>.
-    /// </summary>
-    /// <returns></returns>
-    int GetScore();
-
-    /// <summary>
-    /// Performs a move ont the first <see cref="GameState"/> object in the <see cref="UndoChain"/>.
+    /// Performs a move ont the current <see cref="GameState"/> object.
     /// </summary>
     /// <param name="input">The direction to move towards.</param>
     /// <returns>A <see cref="MoveResult"/> that represents if the move was successful.</returns>
     public MoveResult MoveGrid(MoveDirection input);
 
     /// <summary>
-    /// Performs an undo. Removes the first <see cref="GameState"/> object from the <see cref="UndoChain"/> and returns the next.
-    /// Does nothing if the <see cref="LinkedList{GameState}.Count"/> of the <see cref="UndoChain"/> is 1.
+    /// Performs an undo.
     /// </summary>
-    /// <returns>The new first <see cref="GameState"/> object of the <see cref="UndoChain"/>
-    /// or null if the <see cref="LinkedList{GameState}.Count"/> of the <see cref="UndoChain"/> is 1.</returns>
+    /// <returns>The new current <see cref="GameState"/> object or null if the undo could not be performed.</returns>
     public GameState? Undo();
 
     /// <summary>
     /// An event that is triggered when a repository event has happened. For repository event types, see <see cref="GameRepositoryEvent"/>.
     /// </summary>
     public event EventHandler<GameRepositoryEventHappenedEventArgs>? GameRepositoryEventHappened;
+
+    /// <summary>
+    /// Gets a serializable representation of an <see cref="IGameRepository"/>.
+    /// </summary>
+    /// <returns>A serializable representation of an <see cref="IGameRepository"/>.</returns>
+    public GameSaveData GetSaveDataObject();
 }

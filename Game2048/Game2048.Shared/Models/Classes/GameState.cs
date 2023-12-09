@@ -14,7 +14,7 @@ public record GameState
     /// <summary>
     /// The actual playing grid.
     /// </summary>
-    public IList<IList<int>> Grid { get; set; } = new List<IList<int>>();
+    public List<List<int>> Grid { get; set; } = new List<List<int>>();
 
     /// <summary>
     /// The score for the current state.

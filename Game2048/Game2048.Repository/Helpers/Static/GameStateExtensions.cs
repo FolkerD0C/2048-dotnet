@@ -13,6 +13,21 @@ namespace Game2048.Repository.Helpers;
 internal static class GameStateExtensions
 {
     /// <summary>
+    /// A struct that is used for specifying a position on the playing grid.
+    /// </summary>
+    internal struct GridPosition
+    {
+        /// <summary>
+        /// The vertical position on the playing grid.
+        /// </summary>
+        internal int Vertical;
+        /// <summary>
+        /// The horizontal position on the playing grid.
+        /// </summary>
+        internal int Horizontal;
+    }
+
+    /// <summary>
     /// Sets the tile on the playing grid specified by <paramref name="vertical"/> and <paramref name="horizontal"/> to <paramref name="tileValue"/>.
     /// </summary>
     /// <param name="vertical">The row number on the playing grid to place a new tile to.</param>
@@ -26,17 +41,21 @@ internal static class GameStateExtensions
     /// <summary>
     /// Gets the empty tiles of a playing grid.
     /// </summary>
-    /// <returns></returns>
-    internal static IList<(int Vertical, int Horizontal)> GetEmptyTiles(this GameState state)
+    /// <returns>The empty positions of the playing grid.</returns>
+    internal static List<GridPosition> GetEmptyTiles(this GameState state)
     {
-        var result = new List<(int Vertical, int Horizontal)>();
+        List<GridPosition> result = new();
         for (int i = 0; i < state.Grid.Count; i++)
         {
             for (int j = 0; j < state.Grid[i].Count; j++)
             {
                 if (state.Grid[i][j] == 0)
                 {
-                    result.Add((i, j));
+                    result.Add(new GridPosition()
+                    {
+                        Vertical = i,
+                        Horizontal = j
+                    });
                 }
             }
         }
@@ -49,7 +68,7 @@ internal static class GameStateExtensions
     /// <returns>A new <see cref="GameState"/> object.</returns>
     internal static GameState Copy(this GameState state)
     {
-        IList<IList<int>> resultGrid = new List<IList<int>>();
+        List<List<int>> resultGrid = new();
         for (int i = 0; i < state.Grid.Count; i++)
         {
             resultGrid.Add(new List<int>());

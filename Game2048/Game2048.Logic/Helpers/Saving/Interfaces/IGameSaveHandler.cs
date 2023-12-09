@@ -6,12 +6,12 @@ namespace Game2048.Logic.Saving;
 /// <summary>
 /// Represents a manager for game saving and loading.
 /// </summary>
-public interface IGameSaveHandler
+internal interface IGameSaveHandler
 {
     /// <summary>
     /// The repository to serialize or desiarilize.
     /// </summary>
-    IGameRepository GameRepository { get; }
+    IGameRepository? GameRepository { get; }
 
     /// <summary>
     /// Sets the file path to save to.

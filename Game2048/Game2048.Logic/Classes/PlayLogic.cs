@@ -26,12 +26,14 @@ public class PlayLogic : IPlayLogic
     };
 
     /// <summary>
-    /// Must be true if the goal has been reached.
+    /// True if the goal has been reached.
     /// </summary>
     bool goalReached;
+
+
     readonly IGameRepository repository;
 
-    public int PlayerScore => repository.GetScore();
+    public int PlayerScore => repository.CurrentGameState.Score;
 
     public string PlayerName
     {
@@ -76,7 +78,7 @@ public class PlayLogic : IPlayLogic
     public void Start()
     {
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
-            repository.UndoChain.First(), repository.RemainingUndos, repository.RemainingLives,
+            repository.CurrentGameState, repository.RemainingUndos, repository.RemainingLives,
             repository.HighestNumber, repository.GridHeight, repository.GridWidth, repository.PlayerName
         ));
     }

@@ -5,12 +5,12 @@ namespace Game2048.Logic.Saving;
 /// <summary>
 /// Represents a manager for high score saving and loading.
 /// </summary>
-public interface IHighscoreHandler
+internal interface IHighscoreSaveHandler
 {
     /// <summary>
     /// The repository to serialize or desiarilize.
     /// </summary>
-    IHighscoresRepository HighscoresData { get; }
+    IHighscoreRepository HighscoresData { get; }
 
     /// <summary>
     /// Performs a save action.

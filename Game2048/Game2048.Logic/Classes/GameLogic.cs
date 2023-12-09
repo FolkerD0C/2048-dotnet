@@ -17,7 +17,7 @@ namespace Game2048.Logic;
 public class GameLogic : IGameLogic
 {
     readonly Dictionary<string, string> saveFileInfos;
-    readonly IHighscoreHandler highscoreHandler;
+    readonly IHighscoreSaveHandler highscoreHandler;
     IGameSaveHandler? saveHandler;
     IPlayLogic? playLogic;
 
@@ -26,7 +26,7 @@ public class GameLogic : IGameLogic
     /// </summary>
     public GameLogic()
     {
-        highscoreHandler = new HighScoreHandler();
+        highscoreHandler = new HighScoreSaveHandler();
         saveFileInfos = new Dictionary<string, string>();
         GameSaveHandler.CheckOrCreateSaveDirectory();
     }
@@ -55,7 +55,7 @@ public class GameLogic : IGameLogic
 
     public IPlayInstance LoadGame(string saveGameName)
     {
-        saveHandler = new GameSaveHandler(saveFileInfos[saveGameName], new GameRepository(false));
+        saveHandler = new GameSaveHandler(saveFileInfos[saveGameName], default);
         saveHandler.Load();
         //PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
         playLogic = new PlayLogic(saveHandler.GameRepository);
@@ -65,7 +65,7 @@ public class GameLogic : IGameLogic
     public IPlayInstance NewGame()
     {
         //PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItemValue<int>("DefaultGridHeight"), ConfigManager.GetConfigItemValue<int>("DefaultGridWidth"));
-        saveHandler = new GameSaveHandler("", new GameRepository(true));
+        saveHandler = new GameSaveHandler("", new GameRepository());
         playLogic = new PlayLogic(saveHandler.GameRepository);
         return playLogic;
     }

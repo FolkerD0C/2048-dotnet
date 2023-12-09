@@ -1,4 +1,5 @@
 using Game2048.Config;
+using Game2048.Repository.SaveDataObjects;
 using Game2048.Shared.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +11,22 @@ namespace Game2048.Repository;
 /// <summary>
 /// A class that represents a manager for the high scores.
 /// </summary>
-public class HighscoresRepository : IHighscoresRepository
+public class HighscoreRepository : IHighscoreRepository
 {
-    IList<Highscore> highScores;
-    public IList<Highscore> HighScores => highScores;
+    List<Highscore> highScores;
+    public List<Highscore> HighScores => highScores;
 
     /// <summary>
-    /// Creates a new instance for the <see cref="HighscoresRepository"/> class.
+    /// Creates a new instance for the <see cref="HighscoreRepository"/> class.
     /// </summary>
-    public HighscoresRepository()
+    public HighscoreRepository()
     {
         highScores = new List<Highscore>();
+    }
+
+    public HighscoreRepository(HighscoreSaveData saveData)
+    {
+        highScores = saveData.Highscores;
     }
 
     /// <summary>
@@ -40,28 +46,34 @@ public class HighscoresRepository : IHighscoresRepository
             .Take(ConfigManager.GetConfigItemValue<int>("MaxHighscoresListLength")).ToList();
     }
 
-    public string Serialize()
+    /*public string Serialize()
     {
         return "";
-        /*
         StringBuilder jsonBuilder = new();
         jsonBuilder.Append('[');
         jsonBuilder.AppendJoin(",", highScores.Select(hsdo => hsdo.Serialize()));
         jsonBuilder.Append(']');
         return jsonBuilder.ToString();
-        */
+        
     }
 
     public void Deserialize(string deserializee)
     {
         return;
-        /*using var jsonDoc = JsonDocument.Parse(deserializee);
+        using var jsonDoc = JsonDocument.Parse(deserializee);
         var jsonArray = jsonDoc.RootElement.EnumerateArray();
         foreach (var item in jsonArray)
         {
             IHighscore highscore = new Highscore();
             highscore.Deserialize(item.GetRawText());
             AddHighscore(highscore);
-        }*/
+        }
+    }*/
+
+    public HighscoreSaveData GetSaveDataObject()
+    {
+        HighscoreSaveData result = new();
+        result.Populate(highScores);
+        return result;
     }
 }

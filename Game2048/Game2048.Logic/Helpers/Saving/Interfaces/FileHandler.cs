@@ -1,9 +1,11 @@
+using System.IO;
+
 namespace Game2048.Logic.Saving;
 
 /// <summary>
 /// An abstract class that is used for reading and writing files.
 /// </summary>
-public abstract class FileHandler
+internal class FileHandler
 {
     /// <summary>
     /// The full path of the file to read and write.
@@ -11,9 +13,9 @@ public abstract class FileHandler
     protected string saveFilePath;
 
     /// <summary>
-    /// Abstract constructor that creates a new object derived from the <see cref="FileHandler"/> class.
+    /// Creates a new instance of the <see cref="FileHandler"/> class.
     /// </summary>
-    /// <param name="saveFilePath"></param>
+    /// <param name="saveFilePath">The full path of the file to read and write.</param>
     public FileHandler(string saveFilePath)
     {
         this.saveFilePath = saveFilePath;
@@ -23,11 +25,18 @@ public abstract class FileHandler
     /// Reads the file specified in <see cref="saveFilePath"/>.
     /// </summary>
     /// <returns>The content of <see cref="saveFilePath"/>.</returns>
-    protected abstract string Read();
+    protected string Read()
+    {
+        var readData = File.ReadAllText(saveFilePath);
+        return readData;
+    }
 
     /// <summary>
     /// Writes the file specified in <see cref="saveFilePath"/>.
     /// </summary>
     /// <param name="fileContent">The new content of <see cref="saveFilePath"/>.</param>
-    protected abstract void Write(string fileContent);
+    protected void Write(string fileContent)
+    {
+        File.WriteAllText(saveFilePath, fileContent);
+    }
 }

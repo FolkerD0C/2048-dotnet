@@ -467,7 +467,7 @@ public class GameDisplay : IGameDisplay
     /// Handles and prints movement action upwards.
     /// </summary>
     /// <param name="actualGrid">The grid to print.</param>
-    void MoveUp(IList<IList<int>> actualGrid)
+    void MoveUp(List<List<int>> actualGrid)
     {
         for (int j = 0; j < gridWidth; j++)
         {
@@ -482,7 +482,7 @@ public class GameDisplay : IGameDisplay
     /// Handles and prints movement action downwards.
     /// </summary>
     /// <param name="actualGrid">The grid to print.</param>
-    void MoveDown(IList<IList<int>> actualGrid)
+    void MoveDown(List<List<int>> actualGrid)
     {
         for (int j = gridWidth - 1; j >= 0; j--)
         {
@@ -497,7 +497,7 @@ public class GameDisplay : IGameDisplay
     /// Handles and prints movement action left.
     /// </summary>
     /// <param name="actualGrid">The grid to print.</param>
-    void MoveLeft(IList<IList<int>> actualGrid)
+    void MoveLeft(List<List<int>> actualGrid)
     {
         for (int i = gridHeight - 1; i >= 0; i--)
         {
@@ -512,7 +512,7 @@ public class GameDisplay : IGameDisplay
     /// Handles and prints movement action right.
     /// </summary>
     /// <param name="actualGrid">The grid to print.</param>
-    void MoveRight(IList<IList<int>> actualGrid)
+    void MoveRight(List<List<int>> actualGrid)
     {
         for (int i = 0; i < gridHeight; i++)
         {
