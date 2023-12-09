@@ -19,7 +19,7 @@ class Run
     static void Main(string[] args)
     {
         AppEnvironment.Initialize();
-        AppEnvironment.ConfigLogic.LoadConfig();
+        AppEnvironment.Configuration.LoadConfig();
         var optionsParser = Parser.Default.ParseArguments<ConfigOptions>(args);
         var setConfigResult = ConfigOptionParser.SetConfigOptions(optionsParser);
         switch (setConfigResult.Result)
@@ -36,7 +36,7 @@ class Run
                         AppEnvironment.MainMenu.Navigate();
                         if (optionsParser.Value.SaveConfig)
                         {
-                            AppEnvironment.ConfigLogic.SaveConfig();
+                            AppEnvironment.Configuration.SaveConfig();
                         }
                     }
                     catch (Exception exc)

@@ -1,8 +1,8 @@
 ﻿using CommandLine;
 using ConsoleClient.App.Configuration.Enums;
 using ConsoleClient.App.Configuration.Models;
-using Game2048.Shared.Enums;
-using Game2048.Shared.Models;
+using Game2048.Base.Enums;
+using Game2048.Base.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -54,7 +54,7 @@ internal static class ConfigOptionParser
                     Value = intEnumerableValue.ToList(),
                     Status = ConfigItemStatus.Unknown
                 };
-                newListValue = AppEnvironment.ConfigLogic.SetConfigValue(newListValue);
+                newListValue = AppEnvironment.Configuration.SetConfigValue(newListValue);
                 if (newListValue.Status == ConfigItemStatus.SettingFailed)
                 {
                     configResult.Result = ConfigurationResultType.Failure;
@@ -79,7 +79,7 @@ internal static class ConfigOptionParser
                     Value = intValue,
                     Status = ConfigItemStatus.Unknown
                 };
-                newIntValue = AppEnvironment.ConfigLogic.SetConfigValue(newIntValue);
+                newIntValue = AppEnvironment.Configuration.SetConfigValue(newIntValue);
                 if (newIntValue.Status == ConfigItemStatus.SettingFailed)
                 {
                     configResult.Result = ConfigurationResultType.Failure;

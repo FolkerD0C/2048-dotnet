@@ -1,7 +1,7 @@
 ﻿using ConsoleClient.App.Resources;
 using ConsoleClient.Display.Models;
 using ConsoleClient.Menu;
-using Game2048.Logic;
+using Game2048.Managers;
 using System.Collections.Generic;
 
 namespace ConsoleClient.App;
@@ -14,11 +14,11 @@ internal static class AppEnvironment
     /// <summary>
     /// The high level manager for the config.
     /// </summary>
-    internal readonly static IConfigLogic ConfigLogic = new ConfigLogic();
+    internal readonly static IConfigManager Configuration = new ConfigManager();
     /// <summary>
     /// The high level manager of the backend.
     /// </summary>
-    internal readonly static IGameLogic GameLogic = new GameLogic();
+    internal readonly static IGameManager GameManager = new GameManager();
     /// <summary>
     /// The currently active overlays.
     /// </summary>

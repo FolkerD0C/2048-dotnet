@@ -3,7 +3,7 @@ using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Display;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using Game2048.Shared.Models;
+using Game2048.Base.Models;
 using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;
@@ -63,7 +63,7 @@ internal static class MainMenuProvider
     /// </summary>
     static void ProvideLoadGameSubMenuAction()
     {
-        IEnumerable<string> savedGameNames = AppEnvironment.GameLogic.GetSavedGames();
+        IEnumerable<string> savedGameNames = AppEnvironment.GameManager.GetSavedGames();
         IList<IMenuItem> loadGameMenuItems = new List<IMenuItem>();
         foreach (string savedGameName in savedGameNames)
         {
@@ -105,7 +105,7 @@ internal static class MainMenuProvider
     static void ProvideHighscoresSubMenuAction()
     {
         IMenuItem back = new MenuItem("Back");
-        IList<Highscore> highscores = AppEnvironment.GameLogic.GetHighscores();
+        IList<Highscore> highscores = AppEnvironment.GameManager.GetHighscores();
         IList<string> displayText = new List<string>();
         foreach (var highscore in highscores)
         {
@@ -146,7 +146,7 @@ internal static class MainMenuProvider
     static void ProvideGameDescriptionSubMenuAction()
     {
         IMenuItem back = new MenuItem("Back");
-        string gameDescription = AppEnvironment.GameLogic.GetGameDescription();
+        string gameDescription = AppEnvironment.GameManager.GetGameDescription();
         IList<string> displayText = gameDescription.Slice((DisplayManager.Width * 2) / 3);
         IConsoleMenu gameDescriptionMenu = new ConsoleMenu(new List<IMenuItem>() { back }, InputProvider.ProvideMenuInput, displayText);
         IMenuDisplay gameDescriptionMenuOverlay = new MenuDisplay();

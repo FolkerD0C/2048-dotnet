@@ -4,7 +4,7 @@ using ConsoleClient.AppUI.Misc;
 using ConsoleClient.AppUI.Play;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using Game2048.Logic.Enums;
+using Game2048.Managers.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +22,11 @@ internal static class PlayProvider
     /// <exception cref="NullReferenceException"></exception>
     internal static void ProvideNewGame()
     {
-        if (AppEnvironment.GameLogic is null)
+        if (AppEnvironment.GameManager is null)
         {
-            throw new NullReferenceException("GameLogic is null");
+            throw new NullReferenceException("GameManager is null");
         }
-        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameLogic.NewGame();
+        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameManager.NewGame();
         IGameDisplay currentPlayInstanceOverlay = new GameDisplay();
         AppEnvironment.CurrentOverlays.Add("currentPlayInstanceOverlay", currentPlayInstanceOverlay);
         AppEnvironment.CurrentPlayInstance.PlayStarted += currentPlayInstanceOverlay.OnPlayStarted;
@@ -36,7 +36,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
-        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
         AppEnvironment.CurrentPlayInstance = null;
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
@@ -49,11 +49,11 @@ internal static class PlayProvider
     /// <exception cref="NullReferenceException"></exception>
     internal static void ProvideLoadedGame(string saveGameName)
     {
-        if (AppEnvironment.GameLogic is null)
+        if (AppEnvironment.GameManager is null)
         {
-            throw new NullReferenceException("GameLogic is null");
+            throw new NullReferenceException("GameManager is null");
         }
-        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameLogic.LoadGame(saveGameName);
+        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameManager.LoadGame(saveGameName);
         IGameDisplay currentPlayInstanceOverlay = new GameDisplay();
         AppEnvironment.CurrentOverlays.Add("currentPlayInstanceOverlay", currentPlayInstanceOverlay);
         currentPlayInstanceOverlay.SetPreviousOverlaySuppression(true);
@@ -64,7 +64,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
-        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
         AppEnvironment.CurrentPlayInstance = null;
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
@@ -78,9 +78,9 @@ internal static class PlayProvider
     /// <exception cref="InvalidOperationException"></exception>
     static void HandlePlayEnded(PlayEndedReason endedReason)
     {
-        if (AppEnvironment.GameLogic is null || AppEnvironment.CurrentPlayInstance is null)
+        if (AppEnvironment.GameManager is null || AppEnvironment.CurrentPlayInstance is null)
         {
-            throw new NullReferenceException("Logic can not be null.");
+            throw new NullReferenceException("Managers can not be null.");
         }
         if (endedReason == PlayEndedReason.QuitGame)
         {
@@ -95,7 +95,7 @@ internal static class PlayProvider
         {
             throw new InvalidOperationException("Invalid return from playing the game.");
         }
-        int lowestHighscore = AppEnvironment.GameLogic.GetHighscores()
+        int lowestHighscore = AppEnvironment.GameManager.GetHighscores()
             .Select(highscore => highscore.PlayerScore).OrderBy(playerscore => playerscore).First();
         if (lowestHighscore >= AppEnvironment.CurrentPlayInstance.PlayerScore)
         {
@@ -116,7 +116,7 @@ internal static class PlayProvider
             }
             AppEnvironment.CurrentPlayInstance.PlayerName = nameFormResult.Name;
         }
-        AppEnvironment.GameLogic.AddHighscore(AppEnvironment.CurrentPlayInstance.PlayerName, AppEnvironment.CurrentPlayInstance.PlayerScore);
+        AppEnvironment.GameManager.AddHighscore(AppEnvironment.CurrentPlayInstance.PlayerName, AppEnvironment.CurrentPlayInstance.PlayerScore);
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ internal static class PlayProvider
     {
         if (AppEnvironment.CurrentPlayInstance is null)
         {
-            throw new NullReferenceException("Logic can not be null.");
+            throw new NullReferenceException("Play instance can not be null.");
         }
         var nameFormResult = new NameForm(InputProvider.ProvideNameFormInput).PromptPlayerName(AppEnvironment.CurrentPlayInstance.PlayerName ?? "");
         if (nameFormResult.ResultType == NameFormResultType.Cancelled)
@@ -156,20 +156,20 @@ internal static class PlayProvider
     /// <exception cref="NullReferenceException"></exception>
     static void ProvideSaveGameAction()
     {
-        if (AppEnvironment.GameLogic is null || AppEnvironment.CurrentPlayInstance is null)
+        if (AppEnvironment.GameManager is null || AppEnvironment.CurrentPlayInstance is null)
         {
-            throw new NullReferenceException("Logic can not be null.");
+            throw new NullReferenceException("Managers can not be null.");
         }
         if (AppEnvironment.CurrentPlayInstance.PlayerName is null || AppEnvironment.CurrentPlayInstance.PlayerName == "")
         {
             ProvideChangePlayerNameAction();
         }
-        if (AppEnvironment.GameLogic.GetSavedGames().Contains(AppEnvironment.CurrentPlayInstance.PlayerName)
+        if (AppEnvironment.GameManager.GetSavedGames().Contains(AppEnvironment.CurrentPlayInstance.PlayerName)
             && !PromptPlayerOverwritingSave(AppEnvironment.CurrentPlayInstance.PlayerName ?? ""))
         {
             return;
         }
-        var saveResult = AppEnvironment.GameLogic.SaveGame(AppEnvironment.CurrentPlayInstance.Id);
+        var saveResult = AppEnvironment.GameManager.SaveGame(AppEnvironment.CurrentPlayInstance.Id);
         switch (saveResult.ResultType)
         {
             case SaveResultType.Success:

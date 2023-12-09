@@ -3,16 +3,16 @@ using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Display.Models;
-using Game2048.Logic.Enums;
-using Game2048.Logic.EventHandlers;
-using Game2048.Shared.Enums;
+using Game2048.Base.Enums;
+using Game2048.Managers.Enums;
+using Game2048.Managers.EventHandlers;
 using System;
 using System.Collections.Generic;
 
 namespace ConsoleClient.AppUI.Play;
 
 /// <summary>
-/// A class used for displaying a play and holds methods that can be subscribed to an <see cref="Game2048.Logic.IPlayInstance"/> object's events.
+/// A class used for displaying a play and holds methods that can be subscribed to an <see cref="Game2048.Managers.IPlayInstance"/> object's events.
 /// </summary>
 public class GameDisplay : IGameDisplay
 {

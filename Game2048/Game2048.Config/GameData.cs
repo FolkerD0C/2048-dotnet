@@ -4,7 +4,7 @@ using System.IO;
 namespace Game2048.Config;
 
 /// <summary>
-/// A static class that contains data mostly for the logic layer.
+/// A static class that contains data mostly for the manager layer.
 /// </summary>
 public static class GameData
 {
