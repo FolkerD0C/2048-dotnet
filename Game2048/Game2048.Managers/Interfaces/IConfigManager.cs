@@ -9,12 +9,12 @@ namespace Game2048.Managers;
 public interface IConfigManager
 {
     /// <summary>
-    /// Loads the game configuration.
+    /// Loads the game configuration stored in the file at <see cref="Config.GameData.ConfigFilePath"/>. Does nothing if the file is not found.
     /// </summary>
     void LoadConfig();
 
     /// <summary>
-    /// Saves the game configuration.
+    /// Saves the game configuration to <see cref="GameData.ConfigFilePath"/>.
     /// </summary>
     void SaveConfig();
 

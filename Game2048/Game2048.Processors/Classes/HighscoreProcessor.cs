@@ -31,7 +31,7 @@ public class HighscoreProcessor : IHighscoreProcessor
     {
         highScores.Add(highscoreObject);
         highScores = highScores.OrderByDescending(item => item.PlayerScore).ThenBy(item => item.PlayerName)
-            .Take(ConfigRepository.GetConfigItemValue<int>("MaxHighscoresListLength")).ToList();
+            .Take(GameConfiguration.MaxHighscoresListLength).ToList();
     }
 
     public HighscoreSaveData GetSaveDataObject()

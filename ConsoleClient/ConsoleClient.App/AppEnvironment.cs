@@ -44,6 +44,7 @@ internal static class AppEnvironment
     {
         DisplayManager.Initialize(40, 100);
         MainMenuProvider.ProvideMainMenu();
+        Configuration.LoadConfig();
     }
 
     /// <summary>

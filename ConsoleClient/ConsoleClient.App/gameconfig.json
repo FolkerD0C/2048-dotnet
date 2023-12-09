@@ -1,13 +1,14 @@
 {
+  "MaxHighscoresListLength": 10,
+  "GameDataDirectory": null,
   "DefaultAcceptedSpawnables": [
     2,
     4
   ],
   "DefaultGoal": 2048,
-  "DefaultGridHeight": 4,
-  "DefaultGridWidth": 4,
   "DefaultMaxLives": 5,
   "DefaultMaxUndos": 6,
-  "DefaultStarterTiles": 2,
-  "MaxHighscoresListLength": 10
+  "DefaultGridHeight": 4,
+  "DefaultGridWidth": 4,
+  "DefaultStarterTiles": 2
 }

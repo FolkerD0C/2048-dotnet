@@ -66,13 +66,13 @@ public class PlayProcessor : IPlayProcessor
         randomNumberGenerator = new Random();
         moveResultErrorMessage = string.Empty;
 
-        goal = ConfigRepository.GetConfigItemValue<int>("DefaultGoal");
-        acceptedSpawnables = ConfigRepository.GetConfigItemValue<List<int>>("DefaultAcceptedSpawnables");
-        gridHeight = ConfigRepository.GetConfigItemValue<int>("DefaultGridHeight");
-        gridWidth = ConfigRepository.GetConfigItemValue<int>("DefaultGridWidth");
-        maxUndos = ConfigRepository.GetConfigItemValue<int>("DefaultMaxUndos");
+        goal = GameConfiguration.DefaultGoal;
+        acceptedSpawnables = GameConfiguration.DefaultAcceptedSpawnables;
+        gridHeight = GameConfiguration.DefaultGridHeight;
+        gridWidth = GameConfiguration.DefaultGridWidth;
+        maxUndos = GameConfiguration.DefaultMaxUndos;
         playerName = string.Empty;
-        remainingLives = ConfigRepository.GetConfigItemValue<int>("DefaultMaxLives");
+        remainingLives = GameConfiguration.DefaultMaxLives;
 
         // Initializing grid
         undoChain = new LinkedList<GameState>();
@@ -86,7 +86,7 @@ public class PlayProcessor : IPlayProcessor
             }
         }
         undoChain.AddFirst(firstState);
-        int numbersToPlace = ConfigRepository.GetConfigItemValue<int>("DefaultStarterTiles");
+        int numbersToPlace = GameConfiguration.DefaultStarterTiles;
         for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
         {
             PlaceRandomNumber();
