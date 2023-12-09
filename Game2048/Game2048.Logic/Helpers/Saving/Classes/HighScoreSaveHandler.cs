@@ -39,14 +39,22 @@ internal class HighScoreSaveHandler : FileHandler, IHighscoreSaveHandler
 
     public void Load()
     {
+        var serializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true
+        };
         string jsonData = Read();
-        var deserializedData = JsonSerializer.Deserialize<HighscoreSaveData>(jsonData) ?? throw new NullReferenceException("Failed to load highscores.");
+        var deserializedData = JsonSerializer.Deserialize<HighscoreSaveData>(jsonData, serializerOptions) ?? throw new NullReferenceException("Failed to load highscores.");
         highscoresData = new HighscoreRepository(deserializedData);
     }
 
     public void Save()
     {
-        Write(JsonSerializer.Serialize(highscoresData.GetSaveDataObject()));
+        var serializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true
+        };
+        Write(JsonSerializer.Serialize(highscoresData.GetSaveDataObject(), serializerOptions));
     }
 
     public void AddNewHighscore(string playerName, int score)

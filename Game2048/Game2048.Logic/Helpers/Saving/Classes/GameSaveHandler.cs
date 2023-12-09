@@ -32,8 +32,12 @@ internal class GameSaveHandler : FileHandler, IGameSaveHandler
 
     public void Load()
     {
+        var serializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true
+        };
         string jsonRepository = Read();
-        var deserializedData = JsonSerializer.Deserialize<GameSaveData>(jsonRepository) ?? throw new NullReferenceException("Failed to load game.");
+        var deserializedData = JsonSerializer.Deserialize<GameSaveData>(jsonRepository, serializerOptions) ?? throw new NullReferenceException("Failed to load game.");
         gameRepository = new GameRepository(deserializedData);
     }
 
@@ -46,7 +50,11 @@ internal class GameSaveHandler : FileHandler, IGameSaveHandler
         };
         try
         {
-            var jsonRepository = JsonSerializer.Serialize(gameRepository?.GetSaveDataObject());
+            var serializerOptions = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+            var jsonRepository = JsonSerializer.Serialize(gameRepository?.GetSaveDataObject(), serializerOptions);
             Write(jsonRepository);
             result.ResultType = SaveResultType.Success;
             result.Message = "Game successfully saved.";
