@@ -25,19 +25,19 @@ public static class DisplayManager
     /// <summary>
     /// The horizontal offset of the display from the left edge of the terminal window.
     /// </summary>
-    static readonly int offsetHorizontal;
+    static int offsetHorizontal;
     /// <summary>
     /// The vertical offset of the display from the upper edge of the terminal window.
     /// </summary>
-    static readonly int offsetVertical;
+    static int offsetVertical;
 
-    static readonly int height;
+    static int height;
     /// <summary>
     /// The height of the display.
     /// </summary>
     public static int Height => height;
 
-    static readonly int width;
+    static int width;
     /// <summary>
     /// The width of the display.
     /// </summary>
@@ -46,37 +46,41 @@ public static class DisplayManager
     /// <summary>
     /// A default value for display positions.
     /// </summary>
-    static DisplayPosition defaultDisplayPosition;
+    static DisplayPosition defaultDisplayPosition = new DisplayPosition()
+    {
+        BackgroundColor = DefaultBackgroundColor,
+        ForegroundColor = DefaultForegroundColor,
+        Value = DefaultDisplayPositionValue,
+        IsSet = true
+    };
+
     /// <summary>
     /// The current overlay printed on the display.
     /// </summary>
-    static IOverLay CurrentOverlay;
+    static IOverLay CurrentOverlay = new NullOverlay();
 
     /// <summary>
     /// A stack of overlays printed on top of each other.
     /// </summary>
-    static readonly Stack<IOverLay> OverlayStack;
+    static readonly Stack<IOverLay> OverlayStack = new();
 
     /// <summary>
     /// Initializes some default values.
     /// </summary>
-    static DisplayManager()
+    public static void Initialize(int terminalHeight, int terminalWidth)
     {
         Console.CursorVisible = false;
-        width = Console.WindowWidth < 70 ? Console.WindowWidth : 70;
-        height = Console.WindowHeight < 40 ? Console.WindowHeight : 40;
+        height = Console.WindowHeight < terminalHeight ? Console.WindowHeight : terminalHeight;
+        width = Console.WindowWidth < terminalWidth ? Console.WindowWidth : terminalWidth;
         offsetHorizontal = (Console.WindowWidth - width) / 2;
         offsetVertical = (Console.WindowHeight - height) / 2;
-        OverlayStack = new Stack<IOverLay>();
         CurrentOverlay = new BaseOverlay();
+    }
 
-        defaultDisplayPosition = new DisplayPosition()
-        {
-            BackgroundColor = DefaultBackgroundColor,
-            ForegroundColor = DefaultForegroundColor,
-            Value = DefaultDisplayPositionValue,
-            IsSet = true
-        };
+    public static void EndDsiplay()
+    {
+        Console.Clear();
+        Console.CursorVisible = true;
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using ConsoleClient.App.Resources;
+using ConsoleClient.Display;
 using ConsoleClient.Display.Models;
 using ConsoleClient.Menu;
 using Game2048.Managers;
@@ -41,6 +42,15 @@ internal static class AppEnvironment
     /// </summary>
     internal static void Initialize()
     {
+        DisplayManager.Initialize(40, 100);
         MainMenuProvider.ProvideMainMenu();
+    }
+
+    /// <summary>
+    /// Exits the game.
+    /// </summary>
+    internal static void Shutdown()
+    {
+        DisplayManager.EndDsiplay();
     }
 }

@@ -43,6 +43,10 @@ class Run
                     {
                         new MessageOverlay(exc.Message, MessageType.Error).PrintMessage();
                     }
+                    finally
+                    {
+                        AppEnvironment.Shutdown();
+                    }
                     break;
                 }
             default:
