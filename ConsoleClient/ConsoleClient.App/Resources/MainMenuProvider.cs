@@ -3,7 +3,7 @@ using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Display;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using 2048ish.Base.Models;
+using _2048ish.Base.Models;
 using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;

@@ -1,4 +1,4 @@
-namespace 2048ish.Base.Enums;
+namespace _2048ish.Base.Enums;
 
 /// <summary>
 /// An enum that is used for performing moves on a playing grid.

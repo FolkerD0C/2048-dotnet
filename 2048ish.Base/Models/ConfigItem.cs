@@ -1,6 +1,6 @@
-﻿using 2048ish.Base.Enums;
+﻿using _2048ish.Base.Enums;
 
-namespace 2048ish.Base.Models;
+namespace _2048ish.Base.Models;
 
 /// <summary>
 /// A dataclass that stores information about a configuration item.

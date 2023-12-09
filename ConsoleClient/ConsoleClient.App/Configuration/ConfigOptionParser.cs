@@ -1,8 +1,8 @@
 ﻿using CommandLine;
 using ConsoleClient.App.Configuration.Enums;
 using ConsoleClient.App.Configuration.Models;
-using 2048ish.Base.Enums;
-using 2048ish.Base.Models;
+using _2048ish.Base.Enums;
+using _2048ish.Base.Models;
 using System.Collections.Generic;
 using System.Linq;
 

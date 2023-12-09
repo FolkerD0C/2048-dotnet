@@ -1,4 +1,4 @@
-using 2048ish.Base.Models;
+using _2048ish.Base.Models;
 using System;
 
 namespace Game2048.Managers.EventHandlers;

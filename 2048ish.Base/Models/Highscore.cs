@@ -1,4 +1,4 @@
-namespace 2048ish.Base.Models;
+namespace _2048ish.Base.Models;
 
 /// <summary>
 /// A class that stores information about a high score.

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+	<RootNamespace>_2048ish.Base</RootNamespace>
 	<OutputType>Library</OutputType>
     <TargetFramework>net6.0</TargetFramework>
 	<ImplicitUsings>disable</ImplicitUsings>

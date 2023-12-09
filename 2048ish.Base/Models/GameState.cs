@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace 2048ish.Base.Models;
+namespace _2048ish.Base.Models;
 
 /// <summary>
 /// A class that represents a state of the game.
