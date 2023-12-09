@@ -1,0 +1,3 @@
+{
+    "dotnet.defaultSolution": "ConsoleClient/2048ish.ConsoleClient.sln"
+}
