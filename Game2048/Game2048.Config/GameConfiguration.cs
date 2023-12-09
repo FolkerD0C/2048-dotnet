@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Game2048.Config;
 
 /// <summary>
-/// A static class that contains configuration values. Use <see cref="ConfigManager"/> to get and set values.
+/// A static class that contains configuration values. Use <see cref="ConfigRepository"/> to get and set values.
 /// </summary>
 internal static class GameConfiguration
 {

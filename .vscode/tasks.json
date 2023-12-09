@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Game2048.Logic/Game2048.Logic.csproj",
+                "${workspaceFolder}/Game2048.Managers/Game2048.Managers.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],

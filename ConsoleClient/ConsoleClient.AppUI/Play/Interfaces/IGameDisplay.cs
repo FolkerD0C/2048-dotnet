@@ -1,11 +1,11 @@
 using ConsoleClient.Display.Models;
-using Game2048.Shared.EventHandlers;
+using Game2048.Managers.EventHandlers;
 using System;
 
 namespace ConsoleClient.AppUI.Play;
 
 /// <summary>
-/// Defines methods that can be subscribed to a <see cref="Game2048.Logic.IPlayInstance"/> objects's events.
+/// Defines methods that can be subscribed to a <see cref="Game2048.Managers.IPlayInstance"/> objects's events.
 /// </summary>
 public interface IGameDisplay : IOverLay
 {
