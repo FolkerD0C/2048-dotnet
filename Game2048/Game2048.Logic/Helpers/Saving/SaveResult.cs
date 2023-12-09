@@ -1,6 +1,6 @@
-﻿using Game2048.Shared.Enums;
+﻿using Game2048.Logic.Enums;
 
-namespace Game2048.Shared.Models;
+namespace Game2048.Logic.Models;
 
 /// <summary>
 /// A struct that represents the result of a save action.

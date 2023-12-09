@@ -1,7 +1,7 @@
 using Game2048.Shared.Models;
 using System;
 
-namespace Game2048.Shared.EventHandlers;
+namespace Game2048.Logic.EventHandlers;
 
 /// <summary>
 /// A class used for event handling that stores information about a new play starting.

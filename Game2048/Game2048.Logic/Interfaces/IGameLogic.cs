@@ -1,4 +1,5 @@
-using Game2048.Shared.Enums;
+using Game2048.Logic.Enums;
+using Game2048.Logic.Models;
 using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;

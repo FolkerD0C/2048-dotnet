@@ -1,5 +1,5 @@
 using ConsoleClient.Display.Models;
-using Game2048.Shared.EventHandlers;
+using Game2048.Logic.EventHandlers;
 using System;
 
 namespace ConsoleClient.AppUI.Play;

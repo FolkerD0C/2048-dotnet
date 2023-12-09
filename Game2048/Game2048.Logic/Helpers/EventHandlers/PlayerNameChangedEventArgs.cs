@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Game2048.Shared.EventHandlers;
+namespace Game2048.Logic.EventHandlers;
 
 /// <summary>
 /// A class used for event handling that stores information about a player name change.

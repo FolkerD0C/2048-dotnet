@@ -1,4 +1,4 @@
-﻿using Game2048.Shared.EventHandlers;
+﻿using Game2048.Logic.EventHandlers;
 using System;
 
 namespace Game2048.Logic;

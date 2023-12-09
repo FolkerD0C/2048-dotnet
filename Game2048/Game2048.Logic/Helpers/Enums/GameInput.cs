@@ -1,4 +1,4 @@
-namespace Game2048.Shared.Enums;
+namespace Game2048.Logic.Enums;
 
 /// <summary>
 /// An enum that is used as an input for the current play.

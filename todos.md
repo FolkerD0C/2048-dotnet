@@ -1,4 +1,3 @@
-* Move play logic events to Game2048.Logic if possible
 * Rename namespaces and classes
   * Repository to Processors
   * Logic to Managers

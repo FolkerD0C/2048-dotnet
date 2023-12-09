@@ -1,4 +1,4 @@
-namespace Game2048.Shared.Enums;
+namespace Game2048.Logic.Enums;
 
 /// <summary>
 /// An enum that tells the backend about the result of the pause method during a play.

@@ -1,4 +1,4 @@
-namespace Game2048.Shared.Enums;
+namespace Game2048.Logic.Enums;
 
 /// <summary>
 /// An enum that represents the reason of the ending of the current play.

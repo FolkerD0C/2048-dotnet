@@ -8,8 +8,6 @@ using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 
 namespace Game2048.Repository;
 
@@ -106,7 +104,7 @@ public class GameRepository : IGameRepository
         maxUndos = ConfigManager.GetConfigItemValue<int>("DefaultMaxUndos");
         playerName = string.Empty;
         remainingLives = ConfigManager.GetConfigItemValue<int>("DefaultMaxLives");
-        
+
         // Initializing grid
         undoChain = new LinkedList<GameState>();
         GameState firstState = new();

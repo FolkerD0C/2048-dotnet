@@ -1,7 +1,7 @@
 ﻿using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using Game2048.Shared.Enums;
+using Game2048.Logic.Enums;
 using System;
 using System.Collections.Generic;
 

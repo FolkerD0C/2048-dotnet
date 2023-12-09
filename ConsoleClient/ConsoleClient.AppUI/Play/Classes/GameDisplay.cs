@@ -3,8 +3,9 @@ using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Display.Models;
+using Game2048.Logic.Enums;
+using Game2048.Logic.EventHandlers;
 using Game2048.Shared.Enums;
-using Game2048.Shared.EventHandlers;
 using System;
 using System.Collections.Generic;
 

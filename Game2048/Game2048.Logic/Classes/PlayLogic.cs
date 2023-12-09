@@ -1,9 +1,9 @@
 using Game2048.Logic.Enums;
+using Game2048.Logic.EventHandlers;
 using Game2048.Repository;
 using Game2048.Repository.Enums;
 using Game2048.Repository.EventHandlers;
 using Game2048.Shared.Enums;
-using Game2048.Shared.EventHandlers;
 using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
