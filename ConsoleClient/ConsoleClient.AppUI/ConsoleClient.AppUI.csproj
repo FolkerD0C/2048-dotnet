@@ -11,7 +11,7 @@
     <ProjectReference Include="..\ConsoleClient.Display\ConsoleClient.Display.csproj" />
     <ProjectReference Include="..\ConsoleClient.Menu\ConsoleClient.Menu.csproj" />
     <ProjectReference Include="..\..\Game2048\Game2048.Managers\Game2048.Managers.csproj" />
-    <ProjectReference Include="..\..\Game2048\Game2048.Base\Game2048.Base.csproj" />
+    <ProjectReference Include="..\..\2048ish.Base\2048ish.Base.csproj" />
   </ItemGroup>
 
 </Project>

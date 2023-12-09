@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Game2048.Config\Game2048.Config.csproj" />
-    <ProjectReference Include="..\Game2048.Base\Game2048.Base.csproj" />
+    <ProjectReference Include="..\..\2048ish.Base\2048ish.Base.csproj" />
   </ItemGroup>
 
 </Project>

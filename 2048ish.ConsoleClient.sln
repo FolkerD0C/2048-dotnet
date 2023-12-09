@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Managers", "Game2048\Game2048.Managers\Game2048.Managers.csproj", "{284DAD0F-E4B2-4290-840E-44D525D0FC75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Base", "Game2048\Game2048.Base\Game2048.Base.csproj", "{C94466CC-E496-4D62-9AAD-1B528806B798}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048ish.Base", "2048ish.Base\2048ish.Base.csproj", "{C94466CC-E496-4D62-9AAD-1B528806B798}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "Game2048\Game2048.Config\Game2048.Config.csproj", "{6A225DBA-6669-4FCA-8A0F-CE9D920EC330}"
 EndProject

@@ -1,5 +1,5 @@
-﻿using Game2048.Base.Enums;
-using Game2048.Base.Models;
+﻿using 2048ish.Base.Enums;
+using 2048ish.Base.Models;
 using Game2048.Config;
 using System;
 using System.Collections.Generic;

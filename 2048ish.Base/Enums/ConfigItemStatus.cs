@@ -1,4 +1,4 @@
-﻿namespace Game2048.Base.Enums;
+﻿namespace 2048ish.Base.Enums;
 
 /// <summary>
 /// An enum that is used for configuration item getting and setting.

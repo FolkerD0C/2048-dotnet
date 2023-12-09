@@ -1,6 +1,6 @@
-﻿using Game2048.Base.Enums;
+﻿using 2048ish.Base.Enums;
 
-namespace Game2048.Base.Models;
+namespace 2048ish.Base.Models;
 
 /// <summary>
 /// A dataclass that stores information about a configuration item.
