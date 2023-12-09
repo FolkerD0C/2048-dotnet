@@ -1,8 +1,8 @@
-﻿using CommandLine;
+﻿using _2048ish.Base.Enums;
+using _2048ish.Base.Models;
+using CommandLine;
 using ConsoleClient.App.Configuration.Enums;
 using ConsoleClient.App.Configuration.Models;
-using _2048ish.Base.Enums;
-using _2048ish.Base.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,7 +50,7 @@ internal static class ConfigOptionParser
                 }
                 ConfigItem<IList<int>> newListValue = new()
                 {
-                    Name = "Default" + option.Name,
+                    Name = option.Name,
                     Value = intEnumerableValue.ToList(),
                     Status = ConfigItemStatus.Unknown
                 };
@@ -75,7 +75,7 @@ internal static class ConfigOptionParser
                 }
                 ConfigItem<int> newIntValue = new()
                 {
-                    Name = "Default" + option.Name,
+                    Name = option.Name,
                     Value = intValue,
                     Status = ConfigItemStatus.Unknown
                 };

@@ -1,9 +1,9 @@
+using _2048ish.Base.Enums;
 using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Helpers;
 using ConsoleClient.Display.Models;
-using _2048ish.Base.Enums;
 using Game2048.Managers.Enums;
 using Game2048.Managers.EventHandlers;
 using System;

@@ -13,12 +13,12 @@ internal static class ConfigOptionValidator
     /// </summary>
     internal static Dictionary<string, ValidRange> ValidRanges = new()
     {
-        { "AcceptedSpawnables", new ValidRange(1, 100000) },
-        { "Goal", new ValidRange(100, 2000000000) },
-        { "MaxLives", new ValidRange(1, 100) },
-        { "MaxUndos", new ValidRange(1, 100) },
-        { "GridHeight", new ValidRange(3, 10) },
-        { "GridWidth", new ValidRange(3, 7) },
-        { "StarterTiles", new ValidRange(1, int.MaxValue) },
+        { "DefaultAcceptedSpawnables", new ValidRange(1, 100000) },
+        { "DefaultGoal", new ValidRange(100, 2000000000) },
+        { "DefaultMaxLives", new ValidRange(1, 100) },
+        { "DefaultMaxUndos", new ValidRange(1, 100) },
+        { "DefaultGridHeight", new ValidRange(3, 10) },
+        { "DefaultGridWidth", new ValidRange(3, 7) },
+        { "DefaultStarterTiles", new ValidRange(1, int.MaxValue) },
     };
 }

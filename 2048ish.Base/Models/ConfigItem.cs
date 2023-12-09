@@ -11,7 +11,7 @@ public record ConfigItem<T>
     /// <summary>
     /// The name of the configuration item.
     /// </summary>
-    public string? Name { get; init; }
+    public string Name { get; init; } = string.Empty;
 
     /// <summary>
     /// The value of the configuration item.

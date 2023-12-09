@@ -1,9 +1,9 @@
-﻿using ConsoleClient.AppUI.Helpers;
+﻿using _2048ish.Base.Models;
+using ConsoleClient.AppUI.Helpers;
 using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Display;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using _2048ish.Base.Models;
 using System.Collections.Generic;
 
 namespace ConsoleClient.App.Resources;
