@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Game2048.Base.Enums;
+using Game2048.Base.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,14 +19,15 @@ public static class ConfigRepository
     /// Returns all configurable items.
     /// </summary>
     /// <returns>An <see cref="IEnumerable{(string, object?)}"/> that contains the name and value of all configurable items.</returns>
-    public static IEnumerable<(string Name, object? Value)> GetConfigItems()
+    public static IEnumerable<ConfigItem<object>> GetConfigItems()
     {
         var configItems = typeof(GameConfiguration).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
-        return configItems.Select(configItemAsFieldInfo =>
-        (
-            configItemAsFieldInfo.Name,
-            configItemAsFieldInfo.GetValue(null)
-        ));
+        return configItems.Select(configItemAsFieldInfo => new ConfigItem<object>()
+        {
+            Name = configItemAsFieldInfo.Name,
+            Value = configItemAsFieldInfo.GetValue(null),
+            Status = ConfigItemStatus.Found
+        });
     }
 
     /// <summary>

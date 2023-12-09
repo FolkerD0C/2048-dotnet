@@ -7,8 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Game2048.Config\Game2048.Config.csproj" />
-  </ItemGroup>
-
 </Project>

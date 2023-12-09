@@ -3,7 +3,6 @@ using Game2048.Base.Models;
 using Game2048.Config;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Game2048.Managers;
 
@@ -14,23 +13,7 @@ public class ConfigManager : IConfigManager
 {
     public IEnumerable<ConfigItem<object>> GetConfigItems()
     {
-        var items = ConfigRepository.GetConfigItems();
-        return items.Select
-        (item =>
-            item.Value is null ?
-                new ConfigItem<object>()
-                {
-                    Name = item.Name,
-                    Value = null,
-                    Status = ConfigItemStatus.NotFound
-                } :
-                new ConfigItem<object>()
-                {
-                    Name = item.Name,
-                    Value = item.Value,
-                    Status = ConfigItemStatus.Found
-                }
-        );
+        return ConfigRepository.GetConfigItems();
     }
 
     public ConfigItem<T> GetConfigValue<T>(string configItemName)
