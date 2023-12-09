@@ -100,11 +100,6 @@ public class GameDisplay : IGameDisplay
     public int RowCount => displayRows.Count;
 
     /// <summary>
-    /// The name of the player.
-    /// </summary>
-    string playerName;
-
-    /// <summary>
     /// If true then the printing of the overlay under this is suppressed.
     /// </summary>
     bool suppressPrintingPreviousOverlay;
@@ -126,7 +121,6 @@ public class GameDisplay : IGameDisplay
             ));
         }
         tilePositions = new Coord[0, 0];
-        playerName = "";
         suppressPrintingPreviousOverlay = false;
     }
 
@@ -164,7 +158,7 @@ public class GameDisplay : IGameDisplay
             );
         }
 
-        Coord playerNameKeyLabelPosition = new Coord()
+        Coord playerNameKeyLabelPosition = new()
         {
             Vertical = DisplayManager.Height - 10,
             Horizontal = 1
@@ -176,13 +170,13 @@ public class GameDisplay : IGameDisplay
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
-        playerNameValueLabelPosition = new Coord()
+        playerNameValueLabelPosition = new()
         {
             Vertical = playerNameKeyLabelPosition.Vertical,
             Horizontal = playerNameKeyLabelPosition.Horizontal + PlayerNameKeyLabel.Length
         };
 
-        Coord scoreKeyLabelPosition = new Coord()
+        Coord scoreKeyLabelPosition = new()
         {
             Vertical = DisplayManager.Height - 8,
             Horizontal = 1
@@ -194,13 +188,13 @@ public class GameDisplay : IGameDisplay
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
-        scoreValueLabelPosition = new Coord()
+        scoreValueLabelPosition = new()
         {
             Vertical = scoreKeyLabelPosition.Vertical,
             Horizontal = scoreKeyLabelPosition.Horizontal + ScoreKeyLabel.Length
         };
 
-        Coord remainingUndosKeyLabelPosition = new Coord()
+        Coord remainingUndosKeyLabelPosition = new()
         {
             Vertical = DisplayManager.Height - 6,
             Horizontal = 1
@@ -212,13 +206,13 @@ public class GameDisplay : IGameDisplay
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
-        remainingUndosValueLabelPosition = new Coord()
+        remainingUndosValueLabelPosition = new()
         {
             Vertical = remainingUndosKeyLabelPosition.Vertical,
             Horizontal = remainingUndosKeyLabelPosition.Horizontal + RemainingUndosKeyLabel.Length
         };
 
-        Coord remainingLivesKeyLabelPosition = new Coord()
+        Coord remainingLivesKeyLabelPosition = new()
         {
             Vertical = DisplayManager.Height - 4,
             Horizontal = 1
@@ -230,13 +224,13 @@ public class GameDisplay : IGameDisplay
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
-        remainingLivesValueLabelPosition = new Coord()
+        remainingLivesValueLabelPosition = new()
         {
             Vertical = remainingLivesKeyLabelPosition.Vertical,
             Horizontal = remainingLivesKeyLabelPosition.Horizontal + RemainingLivesKeyLabel.Length
         };
 
-        Coord highestNumberKeyLabelPosition = new Coord()
+        Coord highestNumberKeyLabelPosition = new()
         {
             Vertical = DisplayManager.Height - 2,
             Horizontal = 1
@@ -248,7 +242,7 @@ public class GameDisplay : IGameDisplay
             DisplayManager.DefaultForegroundColor,
             DisplayManager.DefaultBackgroundColor
         );
-        highestNumberValueLabelPosition = new Coord()
+        highestNumberValueLabelPosition = new()
         {
             Vertical = highestNumberKeyLabelPosition.Vertical,
             Horizontal = highestNumberKeyLabelPosition.Horizontal + HighestNumberKeyLabel.Length
@@ -328,18 +322,19 @@ public class GameDisplay : IGameDisplay
     /// <summary>
     /// Prints the name of the player on the display.
     /// </summary>
-    /// <param name="playerName">The name of the player.</param>
-    void PrintPlayerName(string playerName)
+    /// <param name="oldName">The old name of the player.</param>
+    /// <param name="newName">The new name of the player.</param>
+    void PrintPlayerName(string oldName, string newName)
     {
         DisplayManager.PrintText(
-            new string(' ', this.playerName.Length),
+            new string(' ', oldName.Length),
             playerNameValueLabelPosition.Vertical,
             playerNameValueLabelPosition.Horizontal,
             DisplayManager.DefaultBackgroundColor,
             DisplayManager.DefaultBackgroundColor
         );
         DisplayManager.PrintText(
-            playerName,
+            newName,
             playerNameValueLabelPosition.Vertical,
             playerNameValueLabelPosition.Horizontal,
             defaultTileForeground,
@@ -529,7 +524,6 @@ public class GameDisplay : IGameDisplay
         gridHeight = args.GridHeight;
         gridWidth = args.GridWidth;
         highestNumberWidth = $"{args.HighestNumber}".Length;
-        playerName = args.PlayerName;
 
         DisplayManager.NewOverlay(this);
 
@@ -544,7 +538,7 @@ public class GameDisplay : IGameDisplay
             }
         }
 
-        PrintPlayerName(args.PlayerName);
+        PrintPlayerName("", args.PlayerName);
         PrintScore(args.State.Score);
         PrintRemainingUndos(args.RemainingUndos);
         PrintRemainingLives(args.RemainingLives);
@@ -565,8 +559,7 @@ public class GameDisplay : IGameDisplay
 
     public void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
     {
-        PrintPlayerName(args.PlayerName);
-        playerName = args.PlayerName;
+        PrintPlayerName(args.OldName, args.NewName);
     }
 
     public void OnPlayEnded(object? sender, EventArgs args)

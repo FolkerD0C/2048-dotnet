@@ -30,18 +30,20 @@ public interface IGameLogic
     public IEnumerable<string> GetSavedGames();
 
     /// <summary>
-    /// Performs a save action on the currently active play.
+    /// Performs a save action on play specified by <paramref name="playId"/>.
     /// </summary>
+    /// <param name="playId">The ID of the play to save.</param>
     /// <returns>The result of the save action as a <see cref="SaveResult"/>.</returns>
-    public SaveResult SaveCurrentGame();
+    public SaveResult SaveGame(Guid playId);
 
     /// <summary>
-    /// Performs the play action.
+    /// Performs a play action on the play instance specified by <paramref name="playId"/>.
     /// </summary>
+    /// <param name="playId">The ID of the play instance to play.</param>
     /// <param name="inputMethod">A method that supplies this function with a <see cref="GameInput"/>.</param>
     /// <param name="handlePause">A method that supplies this function with a <see cref="PauseResult"/> in case of a pause.</param>
     /// <returns></returns>
-    public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause);
+    public PlayEndedReason Play(Guid playId, Func<GameInput> inputMethod, Func<PauseResult> handlePause);
 
     /// <summary>
     /// Gets all high scores.

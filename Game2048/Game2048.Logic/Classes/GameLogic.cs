@@ -3,10 +3,10 @@ using Game2048.Logic.Enums;
 using Game2048.Logic.Saving;
 using Game2048.Repository;
 using Game2048.Shared.Enums;
+using Game2048.Shared.EventHandlers;
 using Game2048.Shared.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Game2048.Logic;
 
@@ -16,25 +16,25 @@ namespace Game2048.Logic;
 /// </summary>
 public class GameLogic : IGameLogic
 {
-    readonly Dictionary<string, string> saveFileInfos;
-    readonly IHighscoreSaveHandler highscoreHandler;
-    IGameSaveHandler? saveHandler;
-    IPlayLogic? playLogic;
+    readonly Dictionary<string, Guid> saveNameToIdMap;
+    readonly Dictionary<Guid, IPlayLogic> playInstances;
+    readonly HighscoreSaveHandler highscoreSaveHandler;
 
     /// <summary>
     /// Creates a new instance of the <see cref="GameLogic"/> class.
     /// </summary>
     public GameLogic()
     {
-        highscoreHandler = new HighScoreSaveHandler();
-        saveFileInfos = new Dictionary<string, string>();
+        saveNameToIdMap = new();
+        playInstances = new();
+        highscoreSaveHandler = new();
         GameSaveHandler.CheckOrCreateSaveDirectory();
     }
 
     public void AddHighscore(string playerName, int score)
     {
-        highscoreHandler.AddNewHighscore(playerName, score);
-        highscoreHandler.Save();
+        highscoreSaveHandler.AddNewHighscore(playerName, score);
+        highscoreSaveHandler.Save();
     }
 
     public string GetGameDescription()
@@ -44,38 +44,36 @@ public class GameLogic : IGameLogic
 
     public IEnumerable<string> GetSavedGames()
     {
-        var saveFiles = GameSaveHandler.GetSavedGames();
-        saveFileInfos.Clear();
-        foreach (var saveFile in saveFiles)
-        {
-            saveFileInfos.Add(saveFile.Name, saveFile.Fullpath);
-        }
-        return saveFiles.Select(saveFile => saveFile.Name);
+        return GameSaveHandler.GetSavedGames();
     }
 
     public IPlayInstance LoadGame(string saveGameName)
     {
-        saveHandler = new GameSaveHandler(saveFileInfos[saveGameName], default);
-        saveHandler.Load();
-        //PlayEnvironment.LoadWithParameters(saveHandler.GameRepository.GridHeight, saveHandler.GameRepository.GridWidth);
-        playLogic = new PlayLogic(saveHandler.GameRepository);
+        if (saveNameToIdMap.ContainsKey(saveGameName))
+        {
+            return playInstances[saveNameToIdMap[saveGameName]];
+        }
+        var playLogic = new PlayLogic(GameSaveHandler.Load(saveGameName));
+        playLogic.PlayerNameChangedManagerEvent += OnPlayerNameChanged;
+        playInstances.Add(playLogic.Id, playLogic);
         return playLogic;
     }
 
     public IPlayInstance NewGame()
     {
-        //PlayEnvironment.LoadWithParameters(ConfigManager.GetConfigItemValue<int>("DefaultGridHeight"), ConfigManager.GetConfigItemValue<int>("DefaultGridWidth"));
-        saveHandler = new GameSaveHandler("", new GameRepository());
-        playLogic = new PlayLogic(saveHandler.GameRepository);
+        var playLogic = new PlayLogic(new GameRepository());
+        playLogic.PlayerNameChangedManagerEvent += OnPlayerNameChanged;
+        playInstances.Add(playLogic.Id, playLogic);
         return playLogic;
     }
 
-    public PlayEndedReason Play(Func<GameInput> inputMethod, Func<PauseResult> handlePause)
+    public PlayEndedReason Play(Guid playId, Func<GameInput> inputMethod, Func<PauseResult> handlePause)
     {
-        if (playLogic is null || saveHandler is null)
+        if (!playInstances.ContainsKey(playId))
         {
             return PlayEndedReason.PlayNotInitialized;
         }
+        var playLogic = playInstances[playId];
         bool inGame = true;
         var endReason = PlayEndedReason.Unknown;
         playLogic.Start();
@@ -115,19 +113,24 @@ public class GameLogic : IGameLogic
             }
         }
         playLogic.End();
+        if (!playLogic.IsSaved)
+        {
+            playInstances.Remove(playId);
+        }
         return endReason;
     }
 
-    public SaveResult SaveCurrentGame()
+    public SaveResult SaveGame(Guid playId)
     {
-        if (playLogic is null || saveHandler is null)
+        if (!playInstances.ContainsKey(playId))
         {
             return new SaveResult()
             {
                 ResultType = SaveResultType.Failure,
-                Message = "Play is not initialized"
+                Message = "Invalid play ID."
             };
         }
+        var playLogic = playInstances[playId];
         if (playLogic.PlayerName is null || playLogic.PlayerName == "")
         {
             return new SaveResult()
@@ -136,14 +139,37 @@ public class GameLogic : IGameLogic
                 Message = "Player name can not be empty, aborting save..."
             };
         }
-        string filePath = GameSaveHandler.GetFullPathFromName(playLogic.PlayerName);
-        saveHandler.UpdateFilePath(filePath);
-        return saveHandler.Save();
+        var result = GameSaveHandler.Save(playLogic.Processor);
+        if (result.ResultType == SaveResultType.Success)
+        {
+            playLogic.IsSaved = true;
+            if (!saveNameToIdMap.ContainsKey(playLogic.PlayerName))
+            {
+                saveNameToIdMap.Add(playLogic.PlayerName, playId);
+            }
+        }
+        return result;
     }
 
     public IList<Highscore> GetHighscores()
     {
-        highscoreHandler.Load();
-        return highscoreHandler.HighscoresData.HighScores;
+        highscoreSaveHandler.Load();
+        return highscoreSaveHandler.HighscoresData.HighScores;
+    }
+
+    /// <summary>
+    /// Handles player name changes.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">Additional information about the event.</param>
+    void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
+    {
+        if (!saveNameToIdMap.ContainsKey(args.OldName))
+        {
+            return;
+        }
+        var playId = saveNameToIdMap[args.OldName];
+        saveNameToIdMap.Remove(args.OldName);
+        saveNameToIdMap.Add(args.NewName, playId);
     }
 }

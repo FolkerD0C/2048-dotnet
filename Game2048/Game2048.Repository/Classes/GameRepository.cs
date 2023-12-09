@@ -18,6 +18,9 @@ namespace Game2048.Repository;
 /// </summary>
 public class GameRepository : IGameRepository
 {
+    readonly Guid id;
+    public Guid Id => id;
+
     int remainingLives;
     public int RemainingLives => remainingLives;
 
@@ -92,6 +95,7 @@ public class GameRepository : IGameRepository
     /// </summary>
     public GameRepository()
     {
+        id = Guid.NewGuid();
         randomNumberGenerator = new Random();
         moveResultErrorMessage = string.Empty;
 
@@ -132,6 +136,7 @@ public class GameRepository : IGameRepository
         randomNumberGenerator = new Random();
         moveResultErrorMessage = string.Empty;
 
+        id = new Guid(saveData.Id);
         goal = saveData.Goal;
         acceptedSpawnables = saveData.AcceptedSpawnables;
         gridHeight = saveData.GridHeight;
@@ -281,70 +286,10 @@ public class GameRepository : IGameRepository
         return false;
     }
 
-    /*public string Serialize()
-    {
-        return "";
-        StringBuilder jsonBuilder = new();
-
-        jsonBuilder.Append('{');
-
-        jsonBuilder.Append($"\"remainingLives\":{remainingLives},");
-
-        jsonBuilder.Append($"\"gridWidth\":{gridWidth},");
-
-        jsonBuilder.Append($"\"gridHeight\":{gridHeight},");
-
-        jsonBuilder.Append($"\"goal\":{goal},");
-
-        jsonBuilder.Append($"\"playerName\":\"{playerName}\",");
-
-        jsonBuilder.Append("\"acceptedSpawnables\":[");
-        jsonBuilder.AppendJoin(",", acceptedSpawnables);
-        jsonBuilder.Append("],");
-
-        jsonBuilder.Append($"\"maxUndos\": {maxUndos},");
-
-        jsonBuilder.Append("\"undoChain\":[");
-        jsonBuilder.AppendJoin(",", undoChain.Select(state => state.Serialize()));
-        jsonBuilder.Append(']');
-
-        jsonBuilder.Append('}');
-
-        return jsonBuilder.ToString();
-    }
-
-    public void Deserialize(string deserializee)
-    {
-        using var jsonDoc = JsonDocument.Parse(deserializee);
-        var jsonRoot = jsonDoc.RootElement;
-        remainingLives = jsonRoot.GetProperty("remainingLives").GetInt32();
-        gridWidth = jsonRoot.GetProperty("gridWidth").GetInt32();
-        gridHeight = jsonRoot.GetProperty("gridHeight").GetInt32();
-        playerName = jsonRoot.GetProperty("playerName").GetString()
-            ?? throw new InvalidOperationException("Player name can not be null");
-        goal = jsonRoot.GetProperty("goal").GetInt32();
-        acceptedSpawnables = new List<int>();
-        var acceptedEnumerable = jsonRoot.GetProperty("acceptedSpawnables").EnumerateArray();
-        foreach (var accepted in acceptedEnumerable)
-        {
-            acceptedSpawnables.Add(accepted.GetInt32());
-        }
-        maxUndos = jsonRoot.GetProperty("maxUndos").GetInt32();
-        undoChain = new LinkedList<GameState>();
-        var chainEnumerable = jsonRoot.GetProperty("undoChain").EnumerateArray();
-        foreach (var chainElement in chainEnumerable)
-        {
-            IGameState gameState = new GameState();
-            gameState.Deserialize(chainElement.GetRawText());
-            undoChain.AddLast(gameState);
-        }
-        GetCurrentMaxNumber();
-    }*/
-
     public GameSaveData GetSaveDataObject()
     {
         GameSaveData result = new();
-        result.Populate(goal, acceptedSpawnables, gridHeight, gridWidth, maxUndos, playerName, remainingLives, undoChain.ToList());
+        result.Populate(id.ToString(), goal, acceptedSpawnables, gridHeight, gridWidth, maxUndos, playerName, remainingLives, undoChain.ToList());
         return result;
     }
 }

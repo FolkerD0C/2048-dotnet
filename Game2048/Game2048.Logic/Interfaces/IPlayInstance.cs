@@ -9,6 +9,11 @@ namespace Game2048.Logic;
 public interface IPlayInstance
 {
     /// <summary>
+    /// The ID of the play instance.
+    /// </summary>
+    Guid Id { get; }
+
+    /// <summary>
     /// The current score of the play.
     /// </summary>
     int PlayerScore { get; }

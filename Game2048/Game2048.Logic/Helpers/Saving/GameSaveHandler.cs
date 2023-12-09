@@ -1,5 +1,4 @@
 using Game2048.Config;
-using Game2048.Logic.Models;
 using Game2048.Repository;
 using Game2048.Repository.SaveDataObjects;
 using Game2048.Shared.Enums;
@@ -15,33 +14,21 @@ namespace Game2048.Logic.Saving;
 /// <summary>
 /// A class that represents a manager for game saving and loading.
 /// </summary>
-internal class GameSaveHandler : FileHandler, IGameSaveHandler
+internal static class GameSaveHandler
 {
-    /// <summary>
-    /// Creates a new instance of the <see cref="GameSaveHandler"/> class.
-    /// </summary>
-    /// <param name="saveFilePath">The full path for the game save file.</param>
-    /// <param name="gameRepository">The value for <see cref="GameRepository"/>.</param>
-    public GameSaveHandler(string saveFilePath, IGameRepository? gameRepository) : base(saveFilePath)
+    internal static IGameRepository Load(string saveGameName)
     {
-        this.gameRepository = gameRepository;
-    }
-
-    IGameRepository? gameRepository;
-    public IGameRepository? GameRepository => gameRepository;
-
-    public void Load()
-    {
+        string saveFilePath = GetFullPathFromName(saveGameName);
         var serializerOptions = new JsonSerializerOptions()
         {
             WriteIndented = true
         };
-        string jsonRepository = Read();
+        string jsonRepository = File.ReadAllText(saveFilePath);
         var deserializedData = JsonSerializer.Deserialize<GameSaveData>(jsonRepository, serializerOptions) ?? throw new NullReferenceException("Failed to load game.");
-        gameRepository = new GameRepository(deserializedData);
+        return new GameRepository(deserializedData);
     }
 
-    public SaveResult Save()
+    internal static SaveResult Save(IGameRepository playProcessor)
     {
         SaveResult result = new()
         {
@@ -54,8 +41,8 @@ internal class GameSaveHandler : FileHandler, IGameSaveHandler
             {
                 WriteIndented = true
             };
-            var jsonRepository = JsonSerializer.Serialize(gameRepository?.GetSaveDataObject(), serializerOptions);
-            Write(jsonRepository);
+            var jsonSaveData = JsonSerializer.Serialize(playProcessor.GetSaveDataObject(), serializerOptions);
+            File.WriteAllText(GetFullPathFromName(playProcessor.PlayerName), jsonSaveData);
             result.ResultType = SaveResultType.Success;
             result.Message = "Game successfully saved.";
         }
@@ -72,16 +59,16 @@ internal class GameSaveHandler : FileHandler, IGameSaveHandler
     /// </summary>
     /// <returns>An <see cref="IEnumerable{ISaveMetaData}"/> that contains all saved
     /// games contained in <see cref="GameData.SaveGameDirectoryPath"/>.</returns>
-    internal static IEnumerable<ISaveMetaData> GetSavedGames() // TODO create a new static class that does this and the 2 others below
+    internal static IEnumerable<string> GetSavedGames()
     {
         var saveFiles = new DirectoryInfo(GameData.SaveGameDirectoryPath).GetFiles("*.save.json");
-        return saveFiles.Select(info => new SaveMetaData(info));
+        return saveFiles.Select(info => info.Name.Replace(".save.json", ""));
     }
 
     /// <summary>
     /// Checks if the <see cref="GameData.SaveGameDirectoryPath"/> directory exists and creates it if not.
     /// </summary>
-    public static void CheckOrCreateSaveDirectory()
+    internal static void CheckOrCreateSaveDirectory()
     {
         if (!Directory.Exists(GameData.SaveGameDirectoryPath))
         {
@@ -94,13 +81,8 @@ internal class GameSaveHandler : FileHandler, IGameSaveHandler
     /// </summary>
     /// <param name="name">The name of the saved game.</param>
     /// <returns>The full path of the saved game name.</returns>
-    public static string GetFullPathFromName(string name)
+    internal static string GetFullPathFromName(string name)
     {
         return Path.Join(GameData.SaveGameDirectoryPath, name + ".save.json");
-    }
-
-    public void UpdateFilePath(string filePath)
-    {
-        saveFilePath = filePath;
     }
 }

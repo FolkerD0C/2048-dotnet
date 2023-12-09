@@ -17,6 +17,9 @@ namespace Game2048.Logic;
 /// </summary>
 public class PlayLogic : IPlayLogic
 {
+    public Guid Id => processor.Id;
+    public bool IsSaved { get; set; }
+
     /// <summary>
     /// Contains all <see cref="GameInput"/>s that are <see cref="MoveDirection"/>s.
     /// </summary>
@@ -31,17 +34,20 @@ public class PlayLogic : IPlayLogic
     bool goalReached;
 
 
-    readonly IGameRepository repository;
+    readonly IGameRepository processor;
+    public IGameRepository Processor => processor;
 
-    public int PlayerScore => repository.CurrentGameState.Score;
+    public int PlayerScore => processor.CurrentGameState.Score;
 
     public string PlayerName
     {
-        get { return repository.PlayerName; }
+        get { return processor.PlayerName; }
         set
         {
-            repository.PlayerName = value;
-            preinputEventQueue.Enqueue(new PlayerNameChangedEventArgs(repository.PlayerName), 0);
+            string oldName = processor.PlayerName;
+            processor.PlayerName = value;
+            preinputEventQueue.Enqueue(new PlayerNameChangedEventArgs(oldName, processor.PlayerName), 0);
+            PlayerNameChangedManagerEvent?.Invoke(this, new PlayerNameChangedEventArgs(oldName, processor.PlayerName));
         }
     }
 
@@ -62,13 +68,15 @@ public class PlayLogic : IPlayLogic
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
     public event EventHandler? PlayEnded;
 
+    public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChangedManagerEvent;
+
     /// <summary>
     /// Creates a new instance of the <see cref="PlayLogic"/> class.
     /// </summary>
     /// <param name="repository">The lower level manager of the play.</param>
     public PlayLogic(IGameRepository repository)
     {
-        this.repository = repository;
+        this.processor = repository;
         repository.GameRepositoryEventHappened += GameRepositoryEventHappenedDispatcher;
         preinputEventQueue = new PriorityQueue<EventArgs, int>();
         eventQueue = new PriorityQueue<EventArgs, int>();
@@ -78,8 +86,8 @@ public class PlayLogic : IPlayLogic
     public void Start()
     {
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
-            repository.CurrentGameState, repository.RemainingUndos, repository.RemainingLives,
-            repository.HighestNumber, repository.GridHeight, repository.GridWidth, repository.PlayerName
+            processor.CurrentGameState, processor.RemainingUndos, processor.RemainingLives,
+            processor.HighestNumber, processor.GridHeight, processor.GridWidth, processor.PlayerName
         ));
     }
 
@@ -134,25 +142,25 @@ public class PlayLogic : IPlayLogic
                             break;
                         }
                 }
-                var moveResult = repository.MoveGrid(moveDirection);
+                var moveResult = processor.MoveGrid(moveDirection);
                 switch (moveResult)
                 {
                     case MoveResult.NoError:
                         {
-                            eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
+                            eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);
                             inputResult = InputResult.Continue;
                             break;
                         }
                     case MoveResult.NotGameEndingError:
                         {
-                            eventQueue.Enqueue(new MoveHappenedEventArgs(repository.CurrentGameState, moveDirection), 2);
-                            eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
+                            eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);
+                            eventQueue.Enqueue(new ErrorHappenedEventArgs(processor.MoveResultErrorMessage), 7);
                             inputResult = InputResult.Continue;
                             break;
                         }
                     case MoveResult.GameOverError:
                         {
-                            eventQueue.Enqueue(new ErrorHappenedEventArgs(repository.MoveResultErrorMessage), 7);
+                            eventQueue.Enqueue(new ErrorHappenedEventArgs(processor.MoveResultErrorMessage), 7);
                             inputResult = InputResult.GameOver;
                             break;
                         }
@@ -172,7 +180,7 @@ public class PlayLogic : IPlayLogic
                 {
                     case GameInput.Undo:
                         {
-                            GameState? undoResult = repository.Undo();
+                            GameState? undoResult = processor.Undo();
                             if (undoResult is not null)
                             {
                                 eventQueue.Enqueue(new UndoHappenedEventArgs(undoResult), 2);
@@ -204,7 +212,7 @@ public class PlayLogic : IPlayLogic
         }
 
         // If the goal declared in the repository is reached an event should be triggered, but only once
-        if (!goalReached && repository.HighestNumber >= repository.Goal)
+        if (!goalReached && processor.HighestNumber >= processor.Goal)
         {
             eventQueue.Enqueue(new MiscEventHappenedEventArgs(MiscEvent.GoalReached), 5);
             goalReached = true;

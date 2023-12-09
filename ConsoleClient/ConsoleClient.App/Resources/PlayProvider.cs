@@ -36,7 +36,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
-        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
         AppEnvironment.CurrentPlayInstance = null;
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
@@ -64,7 +64,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
-        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameLogic.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
         AppEnvironment.CurrentPlayInstance = null;
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
@@ -169,17 +169,17 @@ internal static class PlayProvider
         {
             return;
         }
-        var saveResult = AppEnvironment.GameLogic.SaveCurrentGame();
+        var saveResult = AppEnvironment.GameLogic.SaveGame(AppEnvironment.CurrentPlayInstance.Id);
         switch (saveResult.ResultType)
         {
             case SaveResultType.Success:
                 {
-                    new MessageOverlay(saveResult.Message, MessageType.Success).PrintMessage();
+                    new MessageOverlay(saveResult.Message ?? "Game saved succesfully.", MessageType.Success).PrintMessage();
                     break;
                 }
             case SaveResultType.Failure:
                 {
-                    new MessageOverlay(saveResult.Message, MessageType.Error).PrintMessage();
+                    new MessageOverlay(saveResult.Message ?? "Game saving failed for unknown reason.", MessageType.Error).PrintMessage();
                     break;
                 }
             default:

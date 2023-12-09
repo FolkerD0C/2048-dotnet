@@ -14,6 +14,11 @@ namespace Game2048.Repository;
 public interface IGameRepository
 {
     /// <summary>
+    /// The ID of the play.
+    /// </summary>
+    public Guid Id { get; }
+
+    /// <summary>
     /// The number of remaining lives.
     /// </summary>
     public int RemainingLives { get; }

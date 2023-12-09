@@ -8,16 +8,22 @@ namespace Game2048.Shared.EventHandlers;
 public class PlayerNameChangedEventArgs : EventArgs
 {
     /// <summary>
+    /// The old name of the player.
+    /// </summary>
+    public string OldName { get; }
+
+    /// <summary>
     /// The new name of the player.
     /// </summary>
-    public string PlayerName { get; }
+    public string NewName { get; }
 
     /// <summary>
     /// Creates a new instance for the <see cref="PlayerNameChangedEventArgs"/> class.
     /// </summary>
-    /// <param name="playerName">The new name of the player.</param>
-    public PlayerNameChangedEventArgs(string playerName)
+    /// <param name="newName">The new name of the player.</param>
+    public PlayerNameChangedEventArgs(string oldName, string newName)
     {
-        PlayerName = playerName;
+        OldName = oldName;
+        NewName = newName;
     }
 }

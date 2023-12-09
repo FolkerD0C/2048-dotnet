@@ -10,6 +10,11 @@ namespace Game2048.Repository.SaveDataObjects;
 public class GameSaveData
 {
     /// <summary>
+    /// The ID of the saved play.
+    /// </summary>
+    public string Id { get; set; }
+
+    /// <summary>
     /// The goal of the game. If the player reaches it, they win.
     /// </summary>
     public int Goal { get; set; }
@@ -54,7 +59,8 @@ public class GameSaveData
     /// </summary>
     public GameSaveData()
     {
-        PlayerName = "";
+        Id = string.Empty;
+        PlayerName = string.Empty;
         AcceptedSpawnables = new List<int>();
         UndoChain = new List<GameState>();
     }
@@ -62,6 +68,7 @@ public class GameSaveData
     /// <summary>
     /// Populates the <see cref="GameSaveData"/> object with save data.
     /// </summary>
+    /// <param name="id">The ID of the saved play.</param>
     /// <param name="goal">The goal of the game. If the player reaches it, they win.</param>
     /// <param name="acceptedSpawnables">The list that contains the accepted spawnable tiles/numbers.</param>
     /// <param name="gridHeight">The height of the playing grid.</param>
@@ -70,8 +77,9 @@ public class GameSaveData
     /// <param name="playerName">The name of the player.</param>
     /// <param name="remainingLives">The number of remaining lives.</param>
     /// <param name="undoChain">A list that is used for undoing. The first element is the current game state.</param>
-    internal void Populate(int goal, List<int> acceptedSpawnables, int gridHeight, int gridWidth, int maxUndos, string playerName, int remainingLives, List<GameState> undoChain)
+    internal void Populate(string id, int goal, List<int> acceptedSpawnables, int gridHeight, int gridWidth, int maxUndos, string playerName, int remainingLives, List<GameState> undoChain)
     {
+        Id = id;
         Goal = goal;
         AcceptedSpawnables = acceptedSpawnables;
         GridHeight = gridHeight;
