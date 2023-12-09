@@ -15,7 +15,7 @@ namespace Game2048.Managers;
 /// A class that represents a set of methods for handling an active play and
 /// a set of events and properties that contain information about an active play.
 /// </summary>
-public class PlayManager : IPlayManager
+public class PlayInstanceManager : IPlayManager
 {
     public Guid Id => processor.Id;
     public bool IsSaved { get; set; }
@@ -71,10 +71,10 @@ public class PlayManager : IPlayManager
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChangedManagerEvent;
 
     /// <summary>
-    /// Creates a new instance of the <see cref="PlayManager"/> class.
+    /// Creates a new instance of the <see cref="PlayInstanceManager"/> class.
     /// </summary>
     /// <param name="processor">The lower level manager of the play.</param>
-    public PlayManager(IPlayProcessor processor)
+    public PlayInstanceManager(IPlayProcessor processor)
     {
         this.processor = processor;
         processor.PlayProcessorEventHappened += PlayProcessorEventHappenedDispatcher;

@@ -53,7 +53,7 @@ public class GameManager : IGameManager
         {
             return playManagers[saveNameToIdMap[saveGameName]];
         }
-        IPlayManager playManager = new PlayManager(GameSaveHandler.Load(saveGameName));
+        IPlayManager playManager = new PlayInstanceManager(GameSaveHandler.Load(saveGameName));
         playManager.PlayerNameChangedManagerEvent += OnPlayerNameChanged;
         playManagers.Add(playManager.Id, playManager);
         return playManager;
@@ -61,7 +61,7 @@ public class GameManager : IGameManager
 
     public IPlayInstance NewGame()
     {
-        IPlayManager playManager = new PlayManager(new PlayProcessor());
+        IPlayManager playManager = new PlayInstanceManager(new PlayProcessor());
         playManager.PlayerNameChangedManagerEvent += OnPlayerNameChanged;
         playManagers.Add(playManager.Id, playManager);
         return playManager;
