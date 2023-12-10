@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\2048ish.Base\2048ish.Base.csproj" />
+    <ProjectReference Include="..\Game2048.Config\Game2048.Config.csproj" />
+    <ProjectReference Include="..\Game2048.Managers\Game2048.Managers.csproj" />
+    <ProjectReference Include="..\Game2048.Processors\Game2048.Processors.csproj" />
+  </ItemGroup>
+
+</Project>

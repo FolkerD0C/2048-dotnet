@@ -5,11 +5,13 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048ish.Base", "..\2048ish.Base\2048ish.Base.csproj", "{9A22E230-0466-479C-AFCA-C44DF6EBAA21}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "..\Game2048\Game2048.Config\Game2048.Config.csproj", "{5A60C463-F8D0-459C-8E3E-93FFBA023F29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "Game2048.Config\Game2048.Config.csproj", "{5A60C463-F8D0-459C-8E3E-93FFBA023F29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Processors", "..\Game2048\Game2048.Processors\Game2048.Processors.csproj", "{9544E983-E158-47A4-B914-98A720059DB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Processors", "Game2048.Processors\Game2048.Processors.csproj", "{9544E983-E158-47A4-B914-98A720059DB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Managers", "..\Game2048\Game2048.Managers\Game2048.Managers.csproj", "{AD0356A1-06A6-48A9-9AA0-6E3DC3D92F91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Managers", "Game2048.Managers\Game2048.Managers.csproj", "{AD0356A1-06A6-48A9-9AA0-6E3DC3D92F91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Test", "Game2048.Test\Game2048.Test.csproj", "{710955EF-C18C-47D1-A871-5ADABED545FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AD0356A1-06A6-48A9-9AA0-6E3DC3D92F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD0356A1-06A6-48A9-9AA0-6E3DC3D92F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD0356A1-06A6-48A9-9AA0-6E3DC3D92F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{710955EF-C18C-47D1-A871-5ADABED545FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{710955EF-C18C-47D1-A871-5ADABED545FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{710955EF-C18C-47D1-A871-5ADABED545FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{710955EF-C18C-47D1-A871-5ADABED545FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
