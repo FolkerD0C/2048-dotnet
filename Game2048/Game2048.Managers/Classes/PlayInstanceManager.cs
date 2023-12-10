@@ -85,6 +85,10 @@ public class PlayInstanceManager : IPlayManager
 
     public void Start()
     {
+        if (processor.CurrentGameState.Grid.All(row => row.All(tile => tile == 0)))
+        {
+            processor.NewGameActions();
+        }
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
             processor.CurrentGameState, processor.RemainingUndos, processor.RemainingLives,
             processor.HighestNumber, processor.GridHeight, processor.GridWidth, processor.PlayerName
@@ -143,34 +147,26 @@ public class PlayInstanceManager : IPlayManager
                         }
                 }
                 var moveResult = processor.MoveGrid(moveDirection);
-                switch (moveResult)
+                if (moveResult == MoveResult.CannotMoveInthatDirection)
                 {
-                    case MoveResult.NoError:
-                        {
-                            eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);
-                            inputResult = InputResult.Continue;
-                            break;
-                        }
-                    case MoveResult.NotGameEndingError:
-                        {
-                            eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);
-                            eventQueue.Enqueue(new ErrorHappenedEventArgs(processor.MoveResultErrorMessage), 7);
-                            inputResult = InputResult.Continue;
-                            break;
-                        }
-                    case MoveResult.GameOverError:
-                        {
-                            eventQueue.Enqueue(new ErrorHappenedEventArgs(processor.MoveResultErrorMessage), 7);
-                            inputResult = InputResult.GameOver;
-                            break;
-                        }
-                    case MoveResult.CannotMoveInthatDirection:
-                        {
-                            inputResult = InputResult.Continue;
-                            break;
-                        }
-                    default:
-                        break;
+                    inputResult = InputResult.Continue;
+                }
+                else if (moveResult == MoveResult.CanMove)
+                {
+                    var postMoveResult = processor.PostMoveActions();
+                    eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);
+                    if (postMoveResult == PostMoveResult.NotGameEndingError || postMoveResult == PostMoveResult.GameOverError)
+                    {
+                        eventQueue.Enqueue(new ErrorHappenedEventArgs(processor.MoveResultErrorMessage), 7);
+                    }
+                    if (postMoveResult == PostMoveResult.GameOverError)
+                    {
+                        inputResult = InputResult.GameOver;
+                    }
+                    else if (postMoveResult == PostMoveResult.NoError || postMoveResult == PostMoveResult.NotGameEndingError)
+                    {
+                        inputResult = InputResult.Continue;
+                    }
                 }
             }
             else

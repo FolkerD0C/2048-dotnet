@@ -86,12 +86,6 @@ public class PlayProcessor : IPlayProcessor
             }
         }
         undoChain.AddFirst(firstState);
-        int numbersToPlace = GameConfiguration.DefaultStarterTiles;
-        for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
-        {
-            PlaceRandomNumber();
-        }
-        GetCurrentMaxNumber();
     }
 
     /// <summary>
@@ -115,6 +109,16 @@ public class PlayProcessor : IPlayProcessor
         for (int i = 0; i < saveData.UndoChain.Count; i++)
         {
             undoChain.AddLast(saveData.UndoChain[i]);
+        }
+        GetCurrentMaxNumber();
+    }
+
+    public void NewGameActions()
+    {
+        int numbersToPlace = GameConfiguration.DefaultStarterTiles;
+        for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
+        {
+            PlaceRandomNumber();
         }
         GetCurrentMaxNumber();
     }
@@ -143,25 +147,28 @@ public class PlayProcessor : IPlayProcessor
             PlayProcessorEventHappened?.Invoke(this,
                 new PlayProcessorEventHappenedEventArgs(PlayProcessorEvent.UndoCountChanged, RemainingUndos));
         }
+        return MoveResult.CanMove;
+    }
 
-        // Perform after-move actions
+    public PostMoveResult PostMoveActions()
+    {
         PlaceRandomNumber();
         GetCurrentMaxNumber();
-        if (!CheckIfGridCanMove(gameStateCopy))
+        if (!GridCanMove(undoChain.First()))
         {
             if (--remainingLives <= 0)
             {
                 moveResultErrorMessage = "You have ran out of lives, game is over";
-                return MoveResult.GameOverError;
+                return PostMoveResult.GameOverError;
             }
             PlayProcessorEventHappened?.Invoke(this,
                 new PlayProcessorEventHappenedEventArgs(PlayProcessorEvent.MaxLivesChanged, RemainingLives));
             moveResultErrorMessage = "The grid is stuck, you can not " +
                 "move, you lose a life. If you run out of lives it is GAME OVER. " +
                 "You can undo if you have lives.";
-            return MoveResult.NotGameEndingError;
+            return PostMoveResult.NotGameEndingError;
         }
-        return MoveResult.NoError;
+        return PostMoveResult.NoError;
     }
 
     public GameState? Undo()
@@ -190,7 +197,7 @@ public class PlayProcessor : IPlayProcessor
         }
         GameStateExtensions.GridPosition position = emptyTiles[randomNumberGenerator.Next(emptyTiles.Count)];
         int tileValue = acceptedSpawnables[randomNumberGenerator.Next(acceptedSpawnables.Count)];
-        undoChain.First().PlaceTile(position.Vertical, position.Horizontal, tileValue);
+        undoChain.First().Grid[position.Vertical][position.Horizontal] = tileValue;
     }
 
     /// <summary>
@@ -211,7 +218,7 @@ public class PlayProcessor : IPlayProcessor
     /// Checks if a move can be performed on the playing grid.
     /// </summary>
     /// <returns>True if a movement can be performed on the playing grid.</returns>
-    bool CheckIfGridCanMove(GameState state)
+    bool GridCanMove(GameState state)
     {
         // Check if there is any empty tile on the grid
         if (state.Grid.Any(row => row.Contains(0)))

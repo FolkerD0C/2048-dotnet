@@ -23,17 +23,6 @@ internal static class GameStateExtensions
     }
 
     /// <summary>
-    /// Sets the tile on the playing grid specified by <paramref name="vertical"/> and <paramref name="horizontal"/> to <paramref name="tileValue"/>.
-    /// </summary>
-    /// <param name="vertical">The row number on the playing grid to place a new tile to.</param>
-    /// <param name="horizontal">The column number on the playing grid to place a new tile to.</param>
-    /// <param name="tileValue">The value to place on the playing grid.</param>
-    internal static void PlaceTile(this GameState state, int vertical, int horizontal, int tileValue)
-    {
-        state.Grid[vertical][horizontal] = tileValue;
-    }
-
-    /// <summary>
     /// Gets the empty tiles of a playing grid.
     /// </summary>
     /// <returns>The empty positions of the playing grid.</returns>

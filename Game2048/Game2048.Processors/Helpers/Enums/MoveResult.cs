@@ -5,9 +5,7 @@
 /// </summary>
 public enum MoveResult
 {
-    NoError,
     CannotMoveInthatDirection,
-    NotGameEndingError,
-    GameOverError,
+    CanMove,
     Unkown
 }
