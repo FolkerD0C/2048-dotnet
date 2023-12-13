@@ -146,12 +146,12 @@ public class PlayInstanceManager : IPlayManager
                             break;
                         }
                 }
-                var moveResult = processor.MoveGrid(moveDirection);
-                if (moveResult == MoveResult.CannotMoveInthatDirection)
+                var moveHappened = processor.MoveGrid(moveDirection);
+                if (!moveHappened)
                 {
                     inputResult = InputResult.Continue;
                 }
-                else if (moveResult == MoveResult.CanMove)
+                else
                 {
                     var postMoveResult = processor.PostMoveActions();
                     eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);

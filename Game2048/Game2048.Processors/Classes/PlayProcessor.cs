@@ -123,7 +123,7 @@ public class PlayProcessor : IPlayProcessor
         GetCurrentMaxNumber();
     }
 
-    public MoveResult MoveGrid(MoveDirection direction)
+    public bool MoveGrid(MoveDirection direction)
     {
         var currentGameState = undoChain.First();
 
@@ -133,7 +133,7 @@ public class PlayProcessor : IPlayProcessor
 
         if (currentGameState.StateEquals(gameStateCopy))
         {
-            return MoveResult.CannotMoveInthatDirection;
+            return false;
         }
 
         // If move happened then add current position to the undochain
@@ -147,7 +147,7 @@ public class PlayProcessor : IPlayProcessor
             PlayProcessorEventHappened?.Invoke(this,
                 new PlayProcessorEventHappenedEventArgs(PlayProcessorEvent.UndoCountChanged, RemainingUndos));
         }
-        return MoveResult.CanMove;
+        return true;
     }
 
     public PostMoveResult PostMoveActions()

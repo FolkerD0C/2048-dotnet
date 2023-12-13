@@ -68,11 +68,11 @@ public interface IPlayProcessor
     public void NewGameActions();
 
     /// <summary>
-    /// Performs a move ont the current <see cref="GameState"/> object.
+    /// Performs a move on the current <see cref="GameState"/> object.
     /// </summary>
     /// <param name="input">The direction to move towards.</param>
-    /// <returns>A <see cref="MoveResult"/> that represents if the move was successful.</returns>
-    public MoveResult MoveGrid(MoveDirection input);
+    /// <returns>True if the move was successful.</returns>
+    public bool MoveGrid(MoveDirection input);
 
     /// <summary>
     /// Performs post move actions like placing a new random tile and checking ig grid is stuck.
