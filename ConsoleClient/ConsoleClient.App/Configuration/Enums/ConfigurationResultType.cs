@@ -7,6 +7,5 @@ internal enum ConfigurationResultType
 {
     NotParsed,
     Failure,
-    Success,
-    Unknown
+    Success
 }

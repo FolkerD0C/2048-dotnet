@@ -14,8 +14,9 @@ public interface IGameManager
     /// <summary>
     /// Gets an <see cref="IPlayInstance"/> that can be used for a new game.
     /// </summary>
+    /// <param name="gameConfiguration">The configuration to use when starting and playing the game.</param>
     /// <returns>An <see cref="IPlayInstance"/> suitable for a new game.</returns>
-    public IPlayInstance NewGame();
+    public IPlayInstance NewGame(NewGameConfiguration gameConfiguration);
 
     /// <summary>
     /// Gets an <see cref="IPlayInstance"/> that can be used for a loaded game.

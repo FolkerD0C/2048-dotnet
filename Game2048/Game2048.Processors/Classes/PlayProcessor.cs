@@ -1,6 +1,5 @@
 using _2048ish.Base.Enums;
 using _2048ish.Base.Models;
-using Game2048.Config;
 using Game2048.Processors.Enums;
 using Game2048.Processors.EventHandlers;
 using Game2048.Processors.Helpers;
@@ -58,23 +57,26 @@ public class PlayProcessor : IPlayProcessor
     readonly Random randomNumberGenerator;
 
     readonly bool isNewGame;
+    readonly int starterTiles;
 
     /// <summary>
     /// Creates a new instance of the <see cref="PlayProcessor"/> class that can be used for a new game.
     /// </summary>
-    public PlayProcessor()
+    /// <param name="gameConfiguration">The configuration to use upon generating and playing the game.</param>
+    public PlayProcessor(NewGameConfiguration gameConfiguration)
     {
         id = Guid.NewGuid();
         randomNumberGenerator = new Random();
         moveResultErrorMessage = string.Empty;
 
-        goal = GameConfiguration.DefaultGoal;
-        acceptedSpawnables = GameConfiguration.DefaultAcceptedSpawnables;
-        gridHeight = GameConfiguration.DefaultGridHeight;
-        gridWidth = GameConfiguration.DefaultGridWidth;
-        maxUndos = GameConfiguration.DefaultMaxUndos;
+        goal = gameConfiguration.Goal;
+        acceptedSpawnables = gameConfiguration.AcceptedSpawnables;
+        gridHeight = gameConfiguration.GridHeight;
+        gridWidth = gameConfiguration.GridWidth;
+        maxUndos = gameConfiguration.MaxUndos;
         playerName = string.Empty;
-        remainingLives = GameConfiguration.DefaultMaxLives;
+        remainingLives = gameConfiguration.MaxLives;
+        starterTiles = gameConfiguration.StarterTiles;
 
         // Initializing grid
         undoChain = new LinkedList<GameState>();
@@ -123,7 +125,7 @@ public class PlayProcessor : IPlayProcessor
         {
             return;
         }
-        int numbersToPlace = GameConfiguration.DefaultStarterTiles;
+        int numbersToPlace = starterTiles;
         for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
         {
             PlaceRandomNumber();

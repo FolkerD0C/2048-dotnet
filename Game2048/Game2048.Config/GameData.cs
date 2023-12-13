@@ -9,6 +9,12 @@ namespace Game2048.Config;
 public static class GameData
 {
     /// <summary>
+    /// The path of the directory that contains <see cref="HighscoresFilePath"/>
+    /// and <see cref="SaveGameDirectoryPath"/>.
+    /// </summary>
+    static readonly string GameDataDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+    /// <summary>
     /// Description of the game.
     /// </summary>
     public static readonly string GameDescription =
@@ -22,15 +28,10 @@ public static class GameData
     /// <summary>
     /// The path for the directory that contains game save files.
     /// </summary>
-    public static string SaveGameDirectoryPath => GameConfiguration.GameDataDirectory + "saves";
+    public static string SaveGameDirectoryPath => Path.Join(GameDataDirectory, "saves");
 
     /// <summary>
     /// The path of the file that contains high scores.
     /// </summary>
-    public static string HighscoresFilePath => GameConfiguration.GameDataDirectory + "highscores.json";
-
-    /// <summary>
-    /// The path of the game configuration file. It should be next to the executable.
-    /// </summary>
-    public static string ConfigFilePath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "gameconfig.json");
+    public static string HighscoresFilePath => Path.Join(GameDataDirectory, "highscores.json");
 }

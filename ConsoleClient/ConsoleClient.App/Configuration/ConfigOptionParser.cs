@@ -1,5 +1,4 @@
-﻿using _2048ish.Base.Enums;
-using _2048ish.Base.Models;
+﻿using _2048ish.Base.Models;
 using CommandLine;
 using ConsoleClient.App.Configuration.Enums;
 using ConsoleClient.App.Configuration.Models;
@@ -14,6 +13,31 @@ namespace ConsoleClient.App.Configuration;
 internal static class ConfigOptionParser
 {
     /// <summary>
+    /// The dictionary that stores the validators for the individual configuration items.
+    /// </summary>
+    internal static Dictionary<string, ValidRange> ValidRanges = new()
+    {
+        { "AcceptedSpawnables", new ValidRange(1, 100000) },
+        { "Goal", new ValidRange(100, 2000000000) },
+        { "MaxLives", new ValidRange(1, 100) },
+        { "MaxUndos", new ValidRange(1, 100) },
+        { "GridHeight", new ValidRange(3, 10) },
+        { "GridWidth", new ValidRange(3, 7) },
+    };
+
+    static bool ValidateOption(string optionName, int optionValue)
+    {
+        return optionValue >= ValidRanges[optionName].Min && optionValue <= ValidRanges[optionName].Max;
+    }
+
+    static string ConstructOutOfRangeMessage(string optionName, int optionValue)
+    {
+        return "Value: '" + optionValue + "', is out of range: [" +
+            ValidRanges[optionName] + "], in '" +
+            optionName + "'.";
+    }
+
+    /// <summary>
     /// Sets the configuration values specified in <paramref name="parserResult"/>.
     /// </summary>
     /// <param name="parserResult">The result of the command line parser.</param>
@@ -22,73 +46,95 @@ internal static class ConfigOptionParser
     {
         var configResult = new ConfigurationResult()
         {
-            Result = ConfigurationResultType.Unknown,
+            ResultType = ConfigurationResultType.Failure,
             Message = ""
         };
+
         if (parserResult.Tag == ParserResultType.NotParsed)
         {
-            configResult.Result = ConfigurationResultType.NotParsed;
+            configResult.ResultType = ConfigurationResultType.NotParsed;
             return configResult;
         }
 
         var options = parserResult.Value;
-        foreach (var option in options.GetType().GetProperties())
+        var newGameConfig = new NewGameConfiguration();
+
+        if (options.AcceptedSpawnables is not null && options.AcceptedSpawnables.Any())
         {
-            if (option.GetValue(options) is IEnumerable<int> intEnumerableValue && intEnumerableValue is not null && intEnumerableValue.Any())
+            foreach (int acceptedSpawnable in options.AcceptedSpawnables)
             {
-                foreach (var item in intEnumerableValue)
+                if (!ValidateOption("AcceptedSpawnables", acceptedSpawnable))
                 {
-                    if (item < ConfigOptionValidator.ValidRanges[option.Name].Min
-                        || item > ConfigOptionValidator.ValidRanges[option.Name].Max)
-                    {
-                        configResult.Result = ConfigurationResultType.Failure;
-                        configResult.Message = "Value: '" + item + "' is out of range: '[" +
-                            ConfigOptionValidator.ValidRanges[option.Name].Min + "-" +
-                            ConfigOptionValidator.ValidRanges[option.Name].Max + "]' in '" + option.Name + "'";
-                        return configResult;
-                    }
-                }
-                ConfigItem<IList<int>> newListValue = new()
-                {
-                    Name = option.Name,
-                    Value = intEnumerableValue.ToList(),
-                    Status = ConfigItemStatus.Unknown
-                };
-                newListValue = AppEnvironment.Configuration.SetConfigValue(newListValue);
-                if (newListValue.Status == ConfigItemStatus.SettingFailed)
-                {
-                    configResult.Result = ConfigurationResultType.Failure;
-                    configResult.Message = "Setting config item '" + newListValue.Name + "' failed.";
+                    configResult.Message = ConstructOutOfRangeMessage("AcceptedSpawnables", acceptedSpawnable);
                     return configResult;
                 }
             }
-            else if (option.GetValue(options) is int intValue && intValue != 0)
-            {
-                if (intValue < ConfigOptionValidator.ValidRanges[option.Name].Min
-                    || intValue > ConfigOptionValidator.ValidRanges[option.Name].Max)
-                {
-                    configResult.Result = ConfigurationResultType.Failure;
-                    configResult.Message = "Value: '" + intValue + "' is out of range: '[" +
-                        ConfigOptionValidator.ValidRanges[option.Name].Min + "-" +
-                        ConfigOptionValidator.ValidRanges[option.Name].Max + "]' in '" + option.Name + "'";
-                    return configResult;
-                }
-                ConfigItem<int> newIntValue = new()
-                {
-                    Name = option.Name,
-                    Value = intValue,
-                    Status = ConfigItemStatus.Unknown
-                };
-                newIntValue = AppEnvironment.Configuration.SetConfigValue(newIntValue);
-                if (newIntValue.Status == ConfigItemStatus.SettingFailed)
-                {
-                    configResult.Result = ConfigurationResultType.Failure;
-                    configResult.Message = "Setting config item '" + newIntValue.Name + "' failed.";
-                    return configResult;
-                }
-            }
+            newGameConfig.AcceptedSpawnables = options.AcceptedSpawnables.ToList();
         }
-        configResult.Result = ConfigurationResultType.Success;
+
+        if (options.Goal != 0)
+        {
+            if (!ValidateOption("Goal", options.Goal))
+            {
+                configResult.Message = ConstructOutOfRangeMessage("Goal", options.Goal);
+                return configResult;
+            }
+            newGameConfig.Goal = options.Goal;
+        }
+
+        if (options.MaxLives != 0)
+        {
+            if (!ValidateOption("MaxLives", options.MaxLives))
+            {
+                configResult.Message = ConstructOutOfRangeMessage("MaxLives", options.MaxLives);
+                return configResult;
+            }
+            newGameConfig.MaxLives = options.MaxLives;
+        }
+
+        if (options.MaxUndos != 0)
+        {
+            if (!ValidateOption("MaxUndos", options.MaxUndos))
+            {
+                configResult.Message = ConstructOutOfRangeMessage("MaxUndos", options.MaxUndos);
+                return configResult;
+            }
+            newGameConfig.MaxUndos = options.MaxUndos;
+        }
+
+        if (options.GridHeight != 0)
+        {
+            if (!ValidateOption("GridHeight", options.GridHeight))
+            {
+                configResult.Message = ConstructOutOfRangeMessage("GridHeight", options.GridHeight);
+                return configResult;
+            }
+            newGameConfig.GridHeight = options.GridHeight;
+        }
+
+        if (options.GridWidth != 0)
+        {
+            if (!ValidateOption("GridWidth", options.GridWidth))
+            {
+                configResult.Message = ConstructOutOfRangeMessage("GridWidth", options.GridWidth);
+                return configResult;
+            }
+            newGameConfig.GridWidth = options.GridWidth;
+        }
+
+        if (options.StarterTiles != 0)
+        {
+            if (options.StarterTiles < 1 || newGameConfig.StarterTiles > newGameConfig.GridHeight * options.GridWidth - 1)
+            {
+                configResult.Message = $"Value: {options.StarterTiles}, is out of range: [{new ValidRange(1, newGameConfig.GridHeight * newGameConfig.GridWidth - 1)}], in 'StarterTiles'.";
+                return configResult;
+            }
+            newGameConfig.StarterTiles = options.StarterTiles;
+        }
+
+        configResult.ConfiguredValues = newGameConfig;
+
+        configResult.ResultType = ConfigurationResultType.Success;
         return configResult;
     }
 }

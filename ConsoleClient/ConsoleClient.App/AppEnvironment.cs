@@ -1,4 +1,5 @@
-﻿using ConsoleClient.App.Resources;
+﻿using _2048ish.Base.Models;
+using ConsoleClient.App.Resources;
 using ConsoleClient.Display;
 using ConsoleClient.Display.Models;
 using ConsoleClient.Menu;
@@ -12,10 +13,6 @@ namespace ConsoleClient.App;
 /// </summary>
 internal static class AppEnvironment
 {
-    /// <summary>
-    /// The high level manager for the config.
-    /// </summary>
-    internal readonly static IConfigManager Configuration = new ConfigManager();
     /// <summary>
     /// The high level manager of the backend.
     /// </summary>
@@ -36,15 +33,19 @@ internal static class AppEnvironment
     /// The main menu of the game.
     /// </summary>
     internal static IConsoleMenu MainMenu => CurrentMenus["mainMenu"];
+    /// <summary>
+    /// The configuration passed on to new games.
+    /// </summary>
+    internal static NewGameConfiguration? GameConfiguration;
 
     /// <summary>
     /// Initializes the game.
     /// </summary>
-    internal static void Initialize()
+    internal static void Initialize(NewGameConfiguration gameConfig)
     {
         DisplayManager.Initialize(40, 100);
         MainMenuProvider.ProvideMainMenu();
-        Configuration.LoadConfig();
+        GameConfiguration = gameConfig;
     }
 
     /// <summary>

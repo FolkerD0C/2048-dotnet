@@ -18,38 +18,33 @@ class Run
     /// <param name="args">The command line arguments form outside of the application.</param>
     static void Main(string[] args)
     {
-        AppEnvironment.Initialize();
+        //AppEnvironment.Initialize();
         var optionsParser = Parser.Default.ParseArguments<ConfigOptions>(args);
-        var setConfigResult = ConfigOptionParser.SetConfigOptions(optionsParser);
-        switch (setConfigResult.Result)
+        var configurationResult = ConfigOptionParser.SetConfigOptions(optionsParser);
+
+        if (configurationResult.ResultType == ConfigurationResultType.NotParsed)
         {
-            case ConfigurationResultType.Failure:
-                {
-                    new MessageOverlay(setConfigResult.Message ?? "", MessageType.Error).PrintMessage();
-                    break;
-                }
-            case ConfigurationResultType.Success:
-                {
-                    try
-                    {
-                        AppEnvironment.MainMenu.Navigate();
-                        if (optionsParser.Value.SaveConfig)
-                        {
-                            AppEnvironment.Configuration.SaveConfig();
-                        }
-                    }
-                    catch (Exception exc)
-                    {
-                        new MessageOverlay(exc.Message, MessageType.Error).PrintMessage();
-                    }
-                    finally
-                    {
-                        AppEnvironment.Shutdown();
-                    }
-                    break;
-                }
-            default:
-                break;
+            Environment.Exit(1);
+        }
+
+        if (configurationResult.ResultType == ConfigurationResultType.Failure)
+        {
+            Console.WriteLine(configurationResult.Message);
+            Environment.Exit(2);
+        }
+
+        AppEnvironment.Initialize(configurationResult.ConfiguredValues);
+        try
+        {
+            AppEnvironment.MainMenu.Navigate();
+        }
+        catch (Exception exc)
+        {
+            new MessageOverlay(exc.Message, MessageType.Error).PrintMessage();
+        }
+        finally
+        {
+            AppEnvironment.Shutdown();
         }
     }
 }

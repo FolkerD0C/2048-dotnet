@@ -1,5 +1,4 @@
 using _2048ish.Base.Models;
-using Game2048.Config;
 using Game2048.Processors.SaveDataObjects;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +10,8 @@ namespace Game2048.Processors;
 /// </summary>
 public class HighscoreProcessor : IHighscoreProcessor
 {
+    static readonly int MaxHighscoresListLength = 100;
+
     List<Highscore> highScores;
     public List<Highscore> HighScores => highScores;
 
@@ -31,7 +32,7 @@ public class HighscoreProcessor : IHighscoreProcessor
     {
         highScores.Add(highscoreObject);
         highScores = highScores.OrderByDescending(item => item.PlayerScore).ThenBy(item => item.PlayerName)
-            .Take(GameConfiguration.MaxHighscoresListLength).ToList();
+            .Take(MaxHighscoresListLength).ToList();
     }
 
     public HighscoreSaveData GetSaveDataObject()

@@ -51,9 +51,9 @@ public class GameManager : IGameManager
         return playManager;
     }
 
-    public IPlayInstance NewGame()
+    public IPlayInstance NewGame(NewGameConfiguration gameConfiguration)
     {
-        IPlayManager playManager = new PlayInstanceManager(new PlayProcessor());
+        IPlayManager playManager = new PlayInstanceManager(new PlayProcessor(gameConfiguration));
         playManagers.Add(playManager.Id, playManager);
         return playManager;
     }

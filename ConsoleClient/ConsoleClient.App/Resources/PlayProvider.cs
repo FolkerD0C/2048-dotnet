@@ -22,11 +22,11 @@ internal static class PlayProvider
     /// <exception cref="NullReferenceException"></exception>
     internal static void ProvideNewGame()
     {
-        if (AppEnvironment.GameManager is null)
+        if (AppEnvironment.GameConfiguration is null)
         {
-            throw new NullReferenceException("GameManager is null");
+            throw new NullReferenceException("Initializing new game failed, non-existent game configuration.");
         }
-        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameManager.NewGame();
+        AppEnvironment.CurrentPlayInstance = AppEnvironment.GameManager.NewGame(AppEnvironment.GameConfiguration);
         IGameDisplay currentPlayInstanceOverlay = new GameDisplay();
         AppEnvironment.CurrentOverlays.Add("currentPlayInstanceOverlay", currentPlayInstanceOverlay);
         AppEnvironment.CurrentPlayInstance.PlayStarted += currentPlayInstanceOverlay.OnPlayStarted;
