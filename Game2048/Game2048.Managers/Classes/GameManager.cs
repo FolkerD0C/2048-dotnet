@@ -1,7 +1,6 @@
 using _2048ish.Base.Models;
 using Game2048.Config;
 using Game2048.Managers.Enums;
-using Game2048.Managers.EventHandlers;
 using Game2048.Managers.Models;
 using Game2048.Managers.Saving;
 using Game2048.Processors;
@@ -16,7 +15,6 @@ namespace Game2048.Managers;
 /// </summary>
 public class GameManager : IGameManager
 {
-    readonly Dictionary<string, Guid> saveNameToIdMap;
     readonly Dictionary<Guid, IPlayManager> playManagers;
     readonly HighscoreSaveHandler highscoreSaveHandler;
 
@@ -25,7 +23,6 @@ public class GameManager : IGameManager
     /// </summary>
     public GameManager()
     {
-        saveNameToIdMap = new();
         playManagers = new();
         highscoreSaveHandler = new();
         GameSaveHandler.CheckOrCreateSaveDirectory();
@@ -49,12 +46,7 @@ public class GameManager : IGameManager
 
     public IPlayInstance LoadGame(string saveGameName)
     {
-        if (saveNameToIdMap.ContainsKey(saveGameName))
-        {
-            return playManagers[saveNameToIdMap[saveGameName]];
-        }
         IPlayManager playManager = new PlayInstanceManager(GameSaveHandler.Load(saveGameName));
-        playManager.PlayerNameChangedManagerEvent += OnPlayerNameChanged;
         playManagers.Add(playManager.Id, playManager);
         return playManager;
     }
@@ -62,7 +54,6 @@ public class GameManager : IGameManager
     public IPlayInstance NewGame()
     {
         IPlayManager playManager = new PlayInstanceManager(new PlayProcessor());
-        playManager.PlayerNameChangedManagerEvent += OnPlayerNameChanged;
         playManagers.Add(playManager.Id, playManager);
         return playManager;
     }
@@ -113,10 +104,7 @@ public class GameManager : IGameManager
             }
         }
         playManager.End();
-        if (!playManager.IsSaved)
-        {
-            playManagers.Remove(playId);
-        }
+        playManagers.Remove(playId);
         return endReason;
     }
 
@@ -140,14 +128,6 @@ public class GameManager : IGameManager
             };
         }
         var result = GameSaveHandler.Save(playManager.Processor);
-        if (result.ResultType == SaveResultType.Success)
-        {
-            playManager.IsSaved = true;
-            if (!saveNameToIdMap.ContainsKey(playManager.PlayerName))
-            {
-                saveNameToIdMap.Add(playManager.PlayerName, playId);
-            }
-        }
         return result;
     }
 
@@ -155,21 +135,5 @@ public class GameManager : IGameManager
     {
         highscoreSaveHandler.Load();
         return highscoreSaveHandler.HighscoreData.HighScores;
-    }
-
-    /// <summary>
-    /// Handles player name changes.
-    /// </summary>
-    /// <param name="sender">The sender of the event.</param>
-    /// <param name="args">Additional information about the event.</param>
-    void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
-    {
-        if (!saveNameToIdMap.ContainsKey(args.OldName))
-        {
-            return;
-        }
-        var playId = saveNameToIdMap[args.OldName];
-        saveNameToIdMap.Remove(args.OldName);
-        saveNameToIdMap.Add(args.NewName, playId);
     }
 }

@@ -18,7 +18,6 @@ namespace Game2048.Managers;
 public class PlayInstanceManager : IPlayManager
 {
     public Guid Id => processor.Id;
-    public bool IsSaved { get; set; }
 
     /// <summary>
     /// Contains all <see cref="GameInput"/>s that are <see cref="MoveDirection"/>s.
@@ -47,7 +46,6 @@ public class PlayInstanceManager : IPlayManager
             string oldName = processor.PlayerName;
             processor.PlayerName = value;
             preinputEventQueue.Enqueue(new PlayerNameChangedEventArgs(oldName, processor.PlayerName), 0);
-            PlayerNameChangedManagerEvent?.Invoke(this, new PlayerNameChangedEventArgs(oldName, processor.PlayerName));
         }
     }
 
@@ -67,8 +65,6 @@ public class PlayInstanceManager : IPlayManager
     public event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
     public event EventHandler? PlayEnded;
-
-    public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChangedManagerEvent;
 
     /// <summary>
     /// Creates a new instance of the <see cref="PlayInstanceManager"/> class.

@@ -1,7 +1,5 @@
 using Game2048.Managers.Enums;
-using Game2048.Managers.EventHandlers;
 using Game2048.Processors;
-using System;
 
 namespace Game2048.Managers;
 
@@ -14,11 +12,6 @@ public interface IPlayManager : IPlayInstance
     /// The play processor object that stores all playdata
     /// </summary>
     IPlayProcessor Processor { get; }
-
-    /// <summary>
-    /// If true then the play is saved.
-    /// </summary>
-    bool IsSaved { get; set; }
 
     /// <summary>
     /// Triggers events before a play starts.
@@ -41,9 +34,4 @@ public interface IPlayManager : IPlayInstance
     /// <param name="input">The input as a <see cref="GameInput"/> enum.</param>
     /// <returns>The result of an input as an <see cref="InputResult"/>.</returns>
     InputResult HandleInput(GameInput input);
-
-    /// <summary>
-    /// An event that triggers when the player changes their name.
-    /// </summary>
-    event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChangedManagerEvent;
 }
