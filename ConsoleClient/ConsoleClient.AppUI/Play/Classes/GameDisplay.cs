@@ -101,6 +101,9 @@ public class GameDisplay : IGameDisplay
 
     public int RowCount => displayRows.Count;
 
+    int currentRemainingUndos;
+    int currentRemainingLives;
+
     /// <summary>
     /// If true then the printing of the overlay under this is suppressed.
     /// </summary>
@@ -388,12 +391,20 @@ public class GameDisplay : IGameDisplay
     void PrintRemainingUndos(int remainingUndos)
     {
         DisplayManager.PrintText(
+            $"{currentRemainingUndos}",
+            remainingUndosValueLabelPosition.Vertical,
+            remainingUndosValueLabelPosition.Horizontal,
+            defaultTileBackground,
+            defaultTileBackground
+        );
+        DisplayManager.PrintText(
             $"{remainingUndos}",
             remainingUndosValueLabelPosition.Vertical,
             remainingUndosValueLabelPosition.Horizontal,
             defaultTileForeground,
             defaultTileBackground
         );
+        currentRemainingUndos = remainingUndos;
     }
     /// <summary>
     /// Prints the number of remaining lives of the player on the display.
@@ -402,12 +413,20 @@ public class GameDisplay : IGameDisplay
     void PrintRemainingLives(int remainingLives)
     {
         DisplayManager.PrintText(
+            $"{currentRemainingLives}",
+            remainingLivesValueLabelPosition.Vertical,
+            remainingLivesValueLabelPosition.Horizontal,
+            defaultTileBackground,
+            defaultTileBackground
+        );
+        DisplayManager.PrintText(
             $"{remainingLives}",
             remainingLivesValueLabelPosition.Vertical,
             remainingLivesValueLabelPosition.Horizontal,
             defaultTileForeground,
             defaultTileBackground
         );
+        currentRemainingLives = remainingLives;
     }
     #endregion
 
