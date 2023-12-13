@@ -46,7 +46,7 @@ public static class DisplayManager
     /// <summary>
     /// A default value for display positions.
     /// </summary>
-    static DisplayPosition defaultDisplayPosition = new DisplayPosition()
+    static DisplayPosition defaultDisplayPosition = new()
     {
         BackgroundColor = DefaultBackgroundColor,
         ForegroundColor = DefaultForegroundColor,
@@ -75,11 +75,12 @@ public static class DisplayManager
         offsetHorizontal = (Console.WindowWidth - width) / 2;
         offsetVertical = (Console.WindowHeight - height) / 2;
         CurrentOverlay = new BaseOverlay();
+        Console.Clear();
     }
 
     public static void EndDsiplay()
     {
-        Console.Clear();
+        Console.SetCursorPosition(width - 1, height - 1);
         Console.CursorVisible = true;
     }
 
@@ -139,7 +140,7 @@ public static class DisplayManager
 
         for (int i = 0; i < text.Length; i++)
         {
-            DisplayPosition displayPosition = new DisplayPosition()
+            DisplayPosition displayPosition = new()
             {
                 Value = text[i],
                 ForegroundColor = foregroundColor,
