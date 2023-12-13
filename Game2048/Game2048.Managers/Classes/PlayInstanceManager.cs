@@ -70,10 +70,7 @@ public class PlayInstanceManager : IPlayManager
 
     public void Start()
     {
-        if (processor.CurrentGameState.Grid.All(row => row.All(tile => tile == 0)))
-        {
-            processor.NewGameActions();
-        }
+        processor.StartGameActions();
         PlayStarted?.Invoke(this, new PlayStartedEventArgs(
             processor.CurrentGameState, processor.RemainingUndos, processor.RemainingLives,
             processor.HighestNumber, processor.GridHeight, processor.GridWidth, processor.PlayerName

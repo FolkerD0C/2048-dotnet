@@ -57,6 +57,8 @@ public class PlayProcessor : IPlayProcessor
 
     readonly Random randomNumberGenerator;
 
+    readonly bool isNewGame;
+
     /// <summary>
     /// Creates a new instance of the <see cref="PlayProcessor"/> class that can be used for a new game.
     /// </summary>
@@ -86,6 +88,7 @@ public class PlayProcessor : IPlayProcessor
             }
         }
         undoChain.AddFirst(firstState);
+        isNewGame = true;
     }
 
     /// <summary>
@@ -111,10 +114,15 @@ public class PlayProcessor : IPlayProcessor
             undoChain.AddLast(saveData.UndoChain[i]);
         }
         GetCurrentMaxNumber();
+        isNewGame = false;
     }
 
-    public void NewGameActions()
+    public void StartGameActions()
     {
+        if (!isNewGame)
+        {
+            return;
+        }
         int numbersToPlace = GameConfiguration.DefaultStarterTiles;
         for (int i = 0; i < numbersToPlace && i < gridWidth * gridHeight; i++)
         {

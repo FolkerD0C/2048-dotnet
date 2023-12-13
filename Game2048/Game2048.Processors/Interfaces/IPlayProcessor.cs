@@ -58,14 +58,14 @@ public interface IPlayProcessor
     GameState CurrentGameState { get; }
 
     /// <summary>
-    /// If an error happens during a <see cref="MoveGrid(MoveDirection)"/> call, then this property stores the message for that error.
+    /// If an error happens during a <see cref="MoveGrid(MoveDirection)"/> or a <see cref="PostMoveActions"/> call, then this property stores the message for that error.
     /// </summary>
     public string MoveResultErrorMessage { get; }
 
     /// <summary>
-    /// Performs new game actions, eg. placing random tiles on the grid.
+    /// Performs new game actions: placing random tiles on the grid and getting the highest number.
     /// </summary>
-    public void NewGameActions();
+    public void StartGameActions();
 
     /// <summary>
     /// Performs a move on the current <see cref="GameState"/> object.
