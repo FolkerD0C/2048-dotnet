@@ -28,4 +28,6 @@ internal class ConfigOptions
 
     [Option('t', "starter-tiles", HelpText = "When you start a new game this many tiles will spawn (randomly)", MetaValue = "number")]
     public int StarterTiles { get; set; }
+
+    // TODO add back saving option
 }
