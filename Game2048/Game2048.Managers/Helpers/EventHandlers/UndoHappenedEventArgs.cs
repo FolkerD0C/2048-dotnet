@@ -11,14 +11,14 @@ public class UndoHappenedEventArgs : EventArgs
     /// <summary>
     /// The new state of the playing grid.
     /// </summary>
-    public GameState Position { get; }
+    public GameState State { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="UndoHappenedEventArgs"/> class.
     /// </summary>
-    /// <param name="position">The new state of the playing grid.</param>
-    public UndoHappenedEventArgs(GameState position)
+    /// <param name="state">The new state of the playing grid.</param>
+    public UndoHappenedEventArgs(GameState state)
     {
-        Position = position;
+        State = state;
     }
 }

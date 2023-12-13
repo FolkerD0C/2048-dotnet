@@ -278,4 +278,7 @@ public class MenuDisplay : IMenuDisplay
     {
         suppressPrintingPreviosOverlay = previousOverlaySuppression;
     }
+
+    public void RestoreAsPrevious()
+    { }
 }

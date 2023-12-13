@@ -112,6 +112,7 @@ public static class DisplayManager
             previous.PrintAsPrevious();
             CurrentOverlay.Dispose();
             CurrentOverlay = previous;
+            CurrentOverlay.RestoreAsPrevious();
         }
     }
 

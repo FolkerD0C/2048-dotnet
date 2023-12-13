@@ -24,6 +24,11 @@ internal class NullOverlay : IOverLay
         throw new NotImplementedException();
     }
 
+    public void RestoreAsPrevious()
+    {
+        throw new NotImplementedException();
+    }
+
     public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
     {
         throw new NotImplementedException();

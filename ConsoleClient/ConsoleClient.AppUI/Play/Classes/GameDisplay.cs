@@ -1,4 +1,5 @@
 using _2048ish.Base.Enums;
+using _2048ish.Base.Models;
 using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Display;
@@ -105,6 +106,9 @@ public class GameDisplay : IGameDisplay
     /// </summary>
     bool suppressPrintingPreviousOverlay;
 
+    readonly PriorityQueue<EventArgs, int> postInputEventQueue;
+    readonly Queue<EventArgs> postRollbackEventQueue;
+
     /// <summary>
     /// Creates a new instance of the <see cref="GameDisplay"/> class.
     /// </summary>
@@ -123,6 +127,8 @@ public class GameDisplay : IGameDisplay
         }
         tilePositions = new Coord[0, 0];
         suppressPrintingPreviousOverlay = false;
+        postInputEventQueue = new();
+        postRollbackEventQueue = new();
     }
 
     public void Dispose()
@@ -136,6 +142,23 @@ public class GameDisplay : IGameDisplay
         return displayRows.Count >= relativeVerticalPosition
             && displayRows[relativeVerticalPosition].ColumnCount >= relativeHorizontalPosition
             && displayRows[relativeVerticalPosition][relativeHorizontalPosition].IsSet;
+    }
+
+    public void RestoreAsPrevious()
+    {
+        while (postRollbackEventQueue.Count > 0)
+        {
+            var eventArgs = postRollbackEventQueue.Dequeue();
+            if (eventArgs is PlayerNameChangedEventArgs playerNameChangedEventArgs)
+            {
+                PrintPlayerName(playerNameChangedEventArgs.OldName, playerNameChangedEventArgs.NewName);
+            }
+        }
+    }
+
+    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
+    {
+        suppressPrintingPreviousOverlay = previousOverlaySuppression;
     }
 
     #region Initializer/grid drawer
@@ -389,9 +412,69 @@ public class GameDisplay : IGameDisplay
     #endregion
 
     #region EventHandling
+    public void OnPlayStarted(object? sender, PlayStartedEventArgs args)
+    {
+        gridHeight = args.GridHeight;
+        gridWidth = args.GridWidth;
+        highestNumberWidth = $"{args.HighestNumber}".Length;
+
+        DisplayManager.NewOverlay(this);
+
+        InitializeInfos();
+        ConstructGridFrame();
+
+        for (int i = 0; i < args.State.Grid.Count; i++)
+        {
+            for (int j = 0; j < args.State.Grid[i].Count; j++)
+            {
+                PrintTile(args.State.Grid[i][j], tilePositions[i, j]);
+            }
+        }
+
+        PrintPlayerName("", args.PlayerName);
+        PrintScore(args.State.Score);
+        PrintRemainingUndos(args.RemainingUndos);
+        PrintRemainingLives(args.RemainingLives);
+        PrintTile(args.HighestNumber, highestNumberValueLabelPosition);
+    }
+
+    public void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
+    {
+        postRollbackEventQueue.Enqueue(args);
+    }
+
     public void MiscEventHappenedDispatcher(object? sender, MiscEventHappenedEventArgs args)
     {
         switch (args.Event)
+        {
+            case MiscEvent.GoalReached:
+                {
+                    postInputEventQueue.Enqueue(args, 7);
+                    break;
+                }
+            case MiscEvent.MaxNumberChanged:
+                {
+                    postInputEventQueue.Enqueue(args, 0);
+                    break;
+                }
+            case MiscEvent.UndoCountChanged:
+                {
+                    postInputEventQueue.Enqueue(args, 5);
+                    break;
+                }
+            case MiscEvent.MaxLivesChanged:
+                {
+                    postInputEventQueue.Enqueue(args, 5);
+                    break;
+                }
+            default:
+                break;
+        }
+    }
+
+    void HandleMiscEvent(MiscEvent eventType, int numberArg)
+    {
+        switch (eventType)
         {
             case MiscEvent.GoalReached:
                 {
@@ -400,22 +483,22 @@ public class GameDisplay : IGameDisplay
                 }
             case MiscEvent.MaxNumberChanged:
                 {
-                    if ($"{args.NumberArg}".Length > highestNumberWidth)
+                    if ($"{numberArg}".Length > highestNumberWidth)
                     {
-                        highestNumberWidth = $"{args.NumberArg}".Length;
+                        highestNumberWidth = $"{numberArg}".Length;
                         ConstructGridFrame();
                     }
-                    PrintTile(args.NumberArg, highestNumberValueLabelPosition);
+                    PrintTile(numberArg, highestNumberValueLabelPosition);
                     break;
                 }
             case MiscEvent.UndoCountChanged:
                 {
-                    PrintRemainingUndos(args.NumberArg);
+                    PrintRemainingUndos(numberArg);
                     break;
                 }
             case MiscEvent.MaxLivesChanged:
                 {
-                    PrintRemainingLives(args.NumberArg);
+                    PrintRemainingLives(numberArg);
                     break;
                 }
             default:
@@ -425,38 +508,48 @@ public class GameDisplay : IGameDisplay
 
     public void OnErrorHappened(object? sender, ErrorHappenedEventArgs args)
     {
-        new MessageOverlay(args.ErrorMessage, MessageType.Error).PrintMessage();
+        postInputEventQueue.Enqueue(args, 7);
+    }
+
+    void HandleErrorEvent(string errorMessage)
+    {
+        new MessageOverlay(errorMessage, MessageType.Error).PrintMessage();
     }
 
     #region Handle move event
     public void OnMoveHappened(object? sender, MoveHappenedEventArgs args)
     {
-        switch (args.Direction)
+        postInputEventQueue.Enqueue(args, 2);
+    }
+
+    void HandleMoveEvent(GameState state, MoveDirection direction)
+    {
+        switch (direction)
         {
             case MoveDirection.Up:
                 {
-                    MoveUp(args.State.Grid);
+                    MoveUp(state.Grid);
                     break;
                 }
             case MoveDirection.Down:
                 {
-                    MoveDown(args.State.Grid);
+                    MoveDown(state.Grid);
                     break;
                 }
             case MoveDirection.Left:
                 {
-                    MoveLeft(args.State.Grid);
+                    MoveLeft(state.Grid);
                     break;
                 }
             case MoveDirection.Right:
                 {
-                    MoveRight(args.State.Grid);
+                    MoveRight(state.Grid);
                     break;
                 }
             default:
                 break;
         }
-        PrintScore(args.State.Score);
+        PrintScore(state.Score);
     }
 
     /// <summary>
@@ -520,57 +613,49 @@ public class GameDisplay : IGameDisplay
     }
     #endregion
 
-    public void OnPlayStarted(object? sender, PlayStartedEventArgs args)
-    {
-        gridHeight = args.GridHeight;
-        gridWidth = args.GridWidth;
-        highestNumberWidth = $"{args.HighestNumber}".Length;
-
-        DisplayManager.NewOverlay(this);
-
-        InitializeInfos();
-        ConstructGridFrame();
-
-        for (int i = 0; i < args.State.Grid.Count; i++)
-        {
-            for (int j = 0; j < args.State.Grid[i].Count; j++)
-            {
-                PrintTile(args.State.Grid[i][j], tilePositions[i, j]);
-            }
-        }
-
-        PrintPlayerName("", args.PlayerName);
-        PrintScore(args.State.Score);
-        PrintRemainingUndos(args.RemainingUndos);
-        PrintRemainingLives(args.RemainingLives);
-        PrintTile(args.HighestNumber, highestNumberValueLabelPosition);
-    }
-
     public void OnUndoHappened(object? sender, UndoHappenedEventArgs args)
+    {
+        postInputEventQueue.Enqueue(args, 2);
+    }
+    void HandleUndoEvent(GameState state)
     {
         for (int i = 0; i < gridHeight; i++)
         {
             for (int j = 0; j < gridWidth; j++)
             {
-                PrintTile(args.Position.Grid[i][j], tilePositions[i, j]);
+                PrintTile(state.Grid[i][j], tilePositions[i, j]);
             }
         }
-        PrintScore(args.Position.Score);
+        PrintScore(state.Score);
     }
 
-    public void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args)
+    public void OnInputProcessed(object? sender, EventArgs args)
     {
-        PrintPlayerName(args.OldName, args.NewName);
+        while (postInputEventQueue.Count > 0)
+        {
+            var priorityEvent = postInputEventQueue.Dequeue();
+            if (priorityEvent is MoveHappenedEventArgs moveHappenedEventArgs)
+            {
+                HandleMoveEvent(moveHappenedEventArgs.State, moveHappenedEventArgs.Direction);
+            }
+            else if (priorityEvent is UndoHappenedEventArgs undoHappenedEventArgs)
+            {
+                HandleUndoEvent(undoHappenedEventArgs.State);
+            }
+            else if (priorityEvent is ErrorHappenedEventArgs errorHappenedEventArgs)
+            {
+                HandleErrorEvent(errorHappenedEventArgs.ErrorMessage);
+            }
+            else if (priorityEvent is MiscEventHappenedEventArgs miscEventHappenedEventArgs)
+            {
+                HandleMiscEvent(miscEventHappenedEventArgs.Event, miscEventHappenedEventArgs.NumberArg);
+            }
+        }
     }
 
     public void OnPlayEnded(object? sender, EventArgs args)
     {
         DisplayManager.RollBackOverLay(suppressPrintingPreviousOverlay);
-    }
-
-    public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
-    {
-        suppressPrintingPreviousOverlay = previousOverlaySuppression;
     }
     #endregion
 }

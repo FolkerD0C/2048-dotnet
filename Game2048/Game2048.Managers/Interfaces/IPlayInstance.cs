@@ -44,7 +44,8 @@ public interface IPlayInstance
     event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
 
     /// <summary>
-    /// An event that triggers when a misc event happens. For misc event types, see <see cref="Shared.Enums.MiscEvent"/>
+    /// An event that triggers when a misc event happens. For misc event types, see
+    /// <seealso cref="Enums.MiscEvent"/>
     /// </summary>
     event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
 
@@ -52,6 +53,15 @@ public interface IPlayInstance
     /// An event that triggers when the player changes their name.
     /// </summary>
     event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
+
+    /// <summary>
+    /// An event that triggers after an input was processed. Triggers after one ore more of the following events have been triggered:<br/>
+    /// - <see cref="MoveHappened"/><br/>
+    /// - <see cref="UndoHappened"/><br/>
+    /// - <see cref="ErrorHappened"/><br/>
+    /// - <see cref="MiscEventHappened"/>
+    /// </summary>
+    event EventHandler? InputProcessed;
 
     /// <summary>
     /// An event that triggers when a play ends.

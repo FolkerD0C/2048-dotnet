@@ -340,4 +340,7 @@ public class NameForm : INameForm
     {
         suppressPrintingPreviosOverlay = previousOverlaySuppression;
     }
+
+    public void RestoreAsPrevious()
+    { }
 }

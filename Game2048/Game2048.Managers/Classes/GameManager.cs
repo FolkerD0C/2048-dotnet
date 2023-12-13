@@ -70,7 +70,6 @@ public class GameManager : IGameManager
         playManager.Start();
         while (inGame)
         {
-            playManager.PreInput();
             var input = inputMethod();
             var inputResult = playManager.HandleInput(input);
 

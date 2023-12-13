@@ -52,6 +52,13 @@ public interface IGameDisplay : IOverLay
     void OnPlayerNameChanged(object? sender, PlayerNameChangedEventArgs args);
 
     /// <summary>
+    /// Handles input processed events.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">Additional information about the event.</param>
+    void OnInputProcessed(object? sender, EventArgs args);
+
+    /// <summary>
     /// Handles play ended events.
     /// </summary>
     /// <param name="sender">The sender of the event.</param>

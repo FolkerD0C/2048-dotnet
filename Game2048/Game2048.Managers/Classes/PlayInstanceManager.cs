@@ -6,7 +6,6 @@ using Game2048.Processors;
 using Game2048.Processors.Enums;
 using Game2048.Processors.EventHandlers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Game2048.Managers;
@@ -45,18 +44,9 @@ public class PlayInstanceManager : IPlayManager
         {
             string oldName = processor.PlayerName;
             processor.PlayerName = value;
-            preinputEventQueue.Enqueue(new PlayerNameChangedEventArgs(oldName, processor.PlayerName), 0);
+            PlayerNameChanged?.Invoke(this, new PlayerNameChangedEventArgs(oldName, processor.PlayerName));
         }
     }
-
-    /// <summary>
-    /// An event queue that should be emptied and triggered before an input.
-    /// </summary>
-    readonly PriorityQueue<EventArgs, int> preinputEventQueue;
-    /// <summary>
-    /// An event queue that should be emptied and triggered after an input.
-    /// </summary>
-    readonly PriorityQueue<EventArgs, int> eventQueue;
 
     public event EventHandler<PlayStartedEventArgs>? PlayStarted;
     public event EventHandler<MoveHappenedEventArgs>? MoveHappened;
@@ -64,6 +54,7 @@ public class PlayInstanceManager : IPlayManager
     public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     public event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
+    public event EventHandler? InputProcessed;
     public event EventHandler? PlayEnded;
 
     /// <summary>
@@ -74,8 +65,6 @@ public class PlayInstanceManager : IPlayManager
     {
         this.processor = processor;
         processor.PlayProcessorEventHappened += PlayProcessorEventHappenedDispatcher;
-        preinputEventQueue = new PriorityQueue<EventArgs, int>();
-        eventQueue = new PriorityQueue<EventArgs, int>();
         goalReached = processor.HighestNumber >= processor.Goal;
     }
 
@@ -94,18 +83,6 @@ public class PlayInstanceManager : IPlayManager
     public void End()
     {
         PlayEnded?.Invoke(this, new EventArgs());
-    }
-
-    public void PreInput()
-    {
-        while (preinputEventQueue.Count > 0)
-        {
-            var eventArgs = preinputEventQueue.Dequeue();
-            if (eventArgs is PlayerNameChangedEventArgs playerNameChangedEventArgs)
-            {
-                PlayerNameChanged?.Invoke(this, playerNameChangedEventArgs);
-            }
-        }
     }
 
     public InputResult HandleInput(GameInput input)
@@ -150,10 +127,10 @@ public class PlayInstanceManager : IPlayManager
                 else
                 {
                     var postMoveResult = processor.PostMoveActions();
-                    eventQueue.Enqueue(new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection), 2);
+                    MoveHappened?.Invoke(this, new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection));
                     if (postMoveResult == PostMoveResult.NotGameEndingError || postMoveResult == PostMoveResult.GameOverError)
                     {
-                        eventQueue.Enqueue(new ErrorHappenedEventArgs(processor.MoveResultErrorMessage), 7);
+                        ErrorHappened?.Invoke(this, new ErrorHappenedEventArgs(processor.MoveResultErrorMessage));
                     }
                     if (postMoveResult == PostMoveResult.GameOverError)
                     {
@@ -175,7 +152,7 @@ public class PlayInstanceManager : IPlayManager
                             GameState? undoResult = processor.Undo();
                             if (undoResult is not null)
                             {
-                                eventQueue.Enqueue(new UndoHappenedEventArgs(undoResult), 2);
+                                UndoHappened?.Invoke(this, new UndoHappenedEventArgs(undoResult));
                             }
                             inputResult = InputResult.Continue;
                             break;
@@ -206,68 +183,13 @@ public class PlayInstanceManager : IPlayManager
         // If the goal declared in the processor is reached an event should be triggered, but only once
         if (!goalReached && processor.HighestNumber >= processor.Goal)
         {
-            eventQueue.Enqueue(new MiscEventHappenedEventArgs(MiscEvent.GoalReached), 5);
+            MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(MiscEvent.GoalReached));
             goalReached = true;
         }
 
-        // After all we need to handle the event queue
-        HandleEventQueue();
+        // After all we need to handle the call the event that represents the end of an input cycle
+        InputProcessed?.Invoke(this, new EventArgs());
         return inputResult;
-    }
-
-    /// <summary>
-    /// Triggers all events in the <see cref="eventQueue"/>.
-    /// </summary>
-    /// <exception cref="InvalidOperationException"></exception>
-    void HandleEventQueue()
-    {
-        while (eventQueue.Count > 0)
-        {
-            var eventargs = eventQueue.Dequeue();
-            if (eventargs is ErrorHappenedEventArgs errorHappenedEventArgs)
-            {
-                ErrorHappened?.Invoke(this, errorHappenedEventArgs);
-            }
-            else if (eventargs is MoveHappenedEventArgs moveHappenedEventArgs)
-            {
-                MoveHappened?.Invoke(this, moveHappenedEventArgs);
-            }
-            else if (eventargs is UndoHappenedEventArgs undoHappenedEventArgs)
-            {
-                UndoHappened?.Invoke(this, undoHappenedEventArgs);
-            }
-            else if (eventargs is MiscEventHappenedEventArgs miscEventHappenedEventArgs)
-            {
-                MiscEventHappened?.Invoke(this, miscEventHappenedEventArgs);
-            }
-            else if (eventargs is PlayProcessorEventHappenedEventArgs playProcessorEventHappenedEventArgs)
-            {
-                MiscEventHappenedEventArgs? convertedProcessorEventArgs;
-                switch (playProcessorEventHappenedEventArgs.ProcessorEvent)
-                {
-                    case PlayProcessorEvent.MaxNumberChanged:
-                        {
-                            convertedProcessorEventArgs = new MiscEventHappenedEventArgs(MiscEvent.MaxNumberChanged, playProcessorEventHappenedEventArgs.NumberArg);
-                            break;
-                        }
-                    case PlayProcessorEvent.UndoCountChanged:
-                        {
-                            convertedProcessorEventArgs = new MiscEventHappenedEventArgs(MiscEvent.UndoCountChanged, playProcessorEventHappenedEventArgs.NumberArg);
-                            break;
-                        }
-                    case PlayProcessorEvent.MaxLivesChanged:
-                        {
-                            convertedProcessorEventArgs = new MiscEventHappenedEventArgs(MiscEvent.MaxLivesChanged, playProcessorEventHappenedEventArgs.NumberArg);
-                            break;
-                        }
-                    default:
-                        {
-                            throw new InvalidOperationException("Unkown event type detected");
-                        }
-                }
-                MiscEventHappened?.Invoke(this, convertedProcessorEventArgs);
-            }
-        }
     }
 
     /// <summary>
@@ -277,13 +199,13 @@ public class PlayInstanceManager : IPlayManager
     /// <param name="args">Additional information about the event.</param>
     internal void PlayProcessorEventHappenedDispatcher(object? sender, PlayProcessorEventHappenedEventArgs args)
     {
-        if (args.ProcessorEvent == PlayProcessorEvent.MaxNumberChanged)
+        MiscEvent eventType = args.ProcessorEvent switch
         {
-            eventQueue.Enqueue(args, 0);
-        }
-        else
-        {
-            eventQueue.Enqueue(args, 5);
-        }
+            PlayProcessorEvent.UndoCountChanged => MiscEvent.UndoCountChanged,
+            PlayProcessorEvent.MaxNumberChanged => MiscEvent.MaxNumberChanged,
+            PlayProcessorEvent.MaxLivesChanged => MiscEvent.MaxLivesChanged,
+            _ => MiscEvent.Unknown
+        };
+        MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(eventType, args.NumberArg));
     }
 }

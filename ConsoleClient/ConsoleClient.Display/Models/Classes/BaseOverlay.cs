@@ -45,4 +45,7 @@ internal class BaseOverlay : IOverLay
 
     public void SetPreviousOverlaySuppression(bool previousOverlaySuppression)
     { }
+
+    public void RestoreAsPrevious()
+    { }
 }

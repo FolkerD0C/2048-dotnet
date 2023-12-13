@@ -34,6 +34,11 @@ public interface IOverLay : IDisposable
     IDisplayRow this[int index] { get; set; }
 
     /// <summary>
+    /// Gets called when the overlay gets restored after another overlay was drawn over.
+    /// </summary>
+    void RestoreAsPrevious();
+
+    /// <summary>
     /// Sets the suppression of the printing of the previous overlay to <paramref name="previousOverlaySuppression"/>.
     /// </summary>
     /// <param name="previousOverlaySuppression">A boolean value.</param>

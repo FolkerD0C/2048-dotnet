@@ -24,11 +24,6 @@ public interface IPlayManager : IPlayInstance
     void End();
 
     /// <summary>
-    /// Trigger events pre-input.
-    /// </summary>
-    void PreInput();
-
-    /// <summary>
     /// Handles a game input.
     /// </summary>
     /// <param name="input">The input as a <see cref="GameInput"/> enum.</param>

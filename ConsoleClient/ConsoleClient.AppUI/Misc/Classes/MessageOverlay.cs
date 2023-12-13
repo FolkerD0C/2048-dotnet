@@ -157,4 +157,7 @@ public class MessageOverlay : IOverLay
     {
         suppressPrintingPreviosOverlay = previousOverlaySuppression;
     }
+
+    public void RestoreAsPrevious()
+    { }
 }
