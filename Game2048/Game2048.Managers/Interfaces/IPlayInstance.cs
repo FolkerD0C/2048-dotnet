@@ -61,7 +61,7 @@ public interface IPlayInstance
     /// - <see cref="ErrorHappened"/><br/>
     /// - <see cref="MiscEventHappened"/>
     /// </summary>
-    event EventHandler? InputProcessed;
+    event EventHandler? InputProcessingFinished;
 
     /// <summary>
     /// An event that triggers when a play ends.

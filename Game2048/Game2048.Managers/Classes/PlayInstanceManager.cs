@@ -54,7 +54,7 @@ public class PlayInstanceManager : IPlayManager
     public event EventHandler<ErrorHappenedEventArgs>? ErrorHappened;
     public event EventHandler<MiscEventHappenedEventArgs>? MiscEventHappened;
     public event EventHandler<PlayerNameChangedEventArgs>? PlayerNameChanged;
-    public event EventHandler? InputProcessed;
+    public event EventHandler? InputProcessingFinished;
     public event EventHandler? PlayEnded;
 
     /// <summary>
@@ -188,7 +188,7 @@ public class PlayInstanceManager : IPlayManager
         }
 
         // After all we need to handle the call the event that represents the end of an input cycle
-        InputProcessed?.Invoke(this, new EventArgs());
+        InputProcessingFinished?.Invoke(this, new EventArgs());
         return inputResult;
     }
 

@@ -648,7 +648,7 @@ public class GameDisplay : IGameDisplay
         PrintScore(state.Score);
     }
 
-    public void OnInputProcessed(object? sender, EventArgs args)
+    public void OnInputProcessingFinished(object? sender, EventArgs args)
     {
         while (postInputEventQueue.Count > 0)
         {

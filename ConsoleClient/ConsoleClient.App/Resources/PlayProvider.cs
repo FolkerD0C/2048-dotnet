@@ -35,7 +35,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.ErrorHappened += currentPlayInstanceOverlay.OnErrorHappened;
         AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
-        AppEnvironment.CurrentPlayInstance.InputProcessed += currentPlayInstanceOverlay.OnInputProcessed;
+        AppEnvironment.CurrentPlayInstance.InputProcessingFinished += currentPlayInstanceOverlay.OnInputProcessingFinished;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
@@ -64,7 +64,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.ErrorHappened += currentPlayInstanceOverlay.OnErrorHappened;
         AppEnvironment.CurrentPlayInstance.MiscEventHappened += currentPlayInstanceOverlay.MiscEventHappenedDispatcher;
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
-        AppEnvironment.CurrentPlayInstance.InputProcessed += currentPlayInstanceOverlay.OnInputProcessed;
+        AppEnvironment.CurrentPlayInstance.InputProcessingFinished += currentPlayInstanceOverlay.OnInputProcessingFinished;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
         PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
         HandlePlayEnded(endedReason);
