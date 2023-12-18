@@ -1,7 +1,6 @@
 ﻿using ConsoleClient.AppUI.Menu;
 using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
-using Game2048.Managers.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -176,6 +175,10 @@ internal static class PauseMenuProvider
             AppEnvironment.CurrentOverlays["pauseMenuOverlay"].SetPreviousOverlaySuppression(true);
             AppEnvironment.CurrentOverlays["currentPlayInstanceOverlay"].SetPreviousOverlaySuppression(true);
             AppEnvironment.CurrentMenus["pauseMenu"].EndNavigation();
+            if (AppEnvironment.CurrentOverlays.ContainsKey("loadGameMenuOverlay"))
+            {
+                AppEnvironment.CurrentOverlays["loadGameMenuOverlay"].SetPreviousOverlaySuppression(true);
+            }
         };
         return new MenuItem(menuItemName, new MenuItemActionRequestedArgs(pauseMenuExitGamePromptMenu));
     }

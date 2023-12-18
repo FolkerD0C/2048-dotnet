@@ -67,7 +67,7 @@ internal static class MainMenuProvider
         IList<IMenuItem> loadGameMenuItems = new List<IMenuItem>();
         foreach (string savedGameName in savedGameNames)
         {
-            loadGameMenuItems.Add(new MenuItem(savedGameName, MenuItemResult.Back, new MenuItemActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName)));
+            loadGameMenuItems.Add(new MenuItem(savedGameName, new MenuItemActionRequestedArgs(PlayProvider.ProvideLoadedGame, savedGameName)));
         }
         loadGameMenuItems.Add(new MenuItem("Back"));
         IConsoleMenu loadGameMenu = new ConsoleMenu(loadGameMenuItems, InputProvider.ProvideMenuInput);

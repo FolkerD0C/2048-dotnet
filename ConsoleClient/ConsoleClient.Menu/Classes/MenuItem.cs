@@ -67,17 +67,6 @@ public class MenuItem : IMenuItem
     public MenuItem(string name, IMenuItemActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, MenuItemResult.Ok, actionRequestedArgs)
     { }
 
-    /// <summary>
-    /// Creates a nwe instance of the <see cref="MenuItem"/> class that will be a
-    /// <see cref="MenuItemType.Action"/> type.
-    /// </summary>
-    /// <param name="name">The display name of the <see cref="IMenuItem"/> object.</param>
-    /// <param name="menuResult">The result of the selection.</param>
-    /// <param name="actionRequestedArgs">Holds information about the action that can
-    /// happen during the selection of this <see cref="MenuItem"/> object.</param>
-    public MenuItem(string name, MenuItemResult menuResult, IMenuItemActionRequestedArgs actionRequestedArgs) : this(name, MenuItemType.Action, menuResult, actionRequestedArgs)
-    { }
-
     public MenuItemResult Select()
     {
         if (itemType == MenuItemType.Action)
