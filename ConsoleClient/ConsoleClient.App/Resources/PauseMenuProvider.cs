@@ -27,14 +27,6 @@ internal static class PauseMenuProvider
         /// </summary>
         public PauseMenuActionRequestedResultProvider()
         {
-            Result = PauseResult.Unknown;
-        }
-
-        /// <summary>
-        /// Sets the <see cref="Result"/> to <see cref="PauseResult.Continue"/>.
-        /// </summary>
-        internal void Continue()
-        {
             Result = PauseResult.Continue;
         }
 
@@ -58,17 +50,25 @@ internal static class PauseMenuProvider
     /// <summary>
     /// Provides a pause menu action for a play action.
     /// </summary>
-    /// <param name="changePlayerNameMethod">A method for changing a player's name.</param>
-    /// <param name="saveGameMethod">A method for saving the game.</param>
+    /// <param name="changePlayerNameAction">A method for changing a player's name.</param>
+    /// <param name="saveGameAction">A method for saving the game.</param>
     /// <returns></returns>
-    internal static PauseResult ProvidePauseMenuAction(Action changePlayerNameMethod, Action saveGameMethod)
+    internal static PauseResult ProvidePauseMenuAction(Action changePlayerNameAction, Action saveGameAction)
     {
         PauseMenuActionRequestedResultProvider resultProvider = new();
         IList<IMenuItem> pauseMenuItems = new List<IMenuItem>
         {
-            new MenuItem("Continue", MenuItemResult.Back, new MenuItemActionRequestedArgs (resultProvider.Continue)),
-            new MenuItem("Change player name", new MenuItemActionRequestedArgs (changePlayerNameMethod)),
-            new MenuItem("Save Game", new MenuItemActionRequestedArgs (saveGameMethod)),
+            new MenuItem("Continue", new MenuItemActionRequestedArgs(
+                () =>
+                {
+                    if (AppEnvironment.CurrentMenus.ContainsKey("pauseMenu"))
+                    {
+                        AppEnvironment.CurrentMenus["pauseMenu"].EndNavigation();
+                    }
+                }
+            )),
+            new MenuItem("Change player name", new MenuItemActionRequestedArgs (changePlayerNameAction)),
+            new MenuItem("Save Game", new MenuItemActionRequestedArgs (saveGameAction)),
             ProvideEndPlayMenuItem(resultProvider),
             ProvideExitGameMenuItem(resultProvider)
         };

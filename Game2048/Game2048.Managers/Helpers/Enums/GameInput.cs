@@ -10,6 +10,6 @@ public enum GameInput
     Left,
     Right,
     Undo,
-    Pause,
+    EndPlay,
     Unknown
 }

@@ -6,7 +6,5 @@
 public enum InputResult
 {
     Continue,
-    Pause,
-    GameOver,
-    Unknown
+    GameOver
 }

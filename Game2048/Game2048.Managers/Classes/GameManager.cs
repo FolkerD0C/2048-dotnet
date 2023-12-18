@@ -6,6 +6,7 @@ using Game2048.Managers.Saving;
 using Game2048.Processors;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Game2048.Managers;
 
@@ -58,7 +59,7 @@ public class GameManager : IGameManager
         return playManager;
     }
 
-    public PlayEndedReason Play(Guid playId, Func<GameInput> inputMethod, Func<PauseResult> handlePause)
+    public async Task<PlayEndedReason> Play(Guid playId, Func<Task<GameInput>> providePlayInput)
     {
         if (!playManagers.ContainsKey(playId))
         {
@@ -70,33 +71,16 @@ public class GameManager : IGameManager
         playManager.Start();
         while (inGame)
         {
-            var input = inputMethod();
-            var inputResult = playManager.HandleInput(input);
-
-            if (inputResult == InputResult.Continue)
+            var input = await providePlayInput();
+            if (input == GameInput.EndPlay)
             {
+                inGame = false;
+                endReason = PlayEndedReason.Exit;
                 continue;
             }
+            var inputResult = playManager.HandleInput(input);
 
-            if (inputResult == InputResult.Pause)
-            {
-                var pauseResult = handlePause();
-                if (pauseResult == PauseResult.Continue)
-                {
-                    continue;
-                }
-                if (pauseResult == PauseResult.EndPlay)
-                {
-                    inGame = false;
-                    endReason = PlayEndedReason.ExitPlay;
-                }
-                else if (pauseResult == PauseResult.ExitGame)
-                {
-                    inGame = false;
-                    endReason = PlayEndedReason.QuitGame;
-                }
-            }
-            else if (inputResult == InputResult.GameOver)
+            if (inputResult == InputResult.GameOver)
             {
                 inGame = false;
                 endReason = PlayEndedReason.GameOver;

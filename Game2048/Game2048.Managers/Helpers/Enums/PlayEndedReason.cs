@@ -6,8 +6,7 @@ namespace Game2048.Managers.Enums;
 public enum PlayEndedReason
 {
     GameOver,
-    ExitPlay,
-    QuitGame,
+    Exit,
     PlayNotInitialized,
     Unknown
 }

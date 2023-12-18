@@ -3,6 +3,7 @@ using Game2048.Managers.Enums;
 using Game2048.Managers.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Game2048.Managers;
 
@@ -42,10 +43,9 @@ public interface IGameManager
     /// Performs a play action on the play instance specified by <paramref name="playId"/>.
     /// </summary>
     /// <param name="playId">The ID of the play instance to play.</param>
-    /// <param name="inputMethod">A method that supplies this function with a <see cref="GameInput"/>.</param>
-    /// <param name="handlePause">A method that supplies this function with a <see cref="PauseResult"/> in case of a pause.</param>
+    /// <param name="providePlayInput">An async function that supplies this function with a <see cref="GameInput"/>.</param>
     /// <returns></returns>
-    public PlayEndedReason Play(Guid playId, Func<GameInput> inputMethod, Func<PauseResult> handlePause);
+    Task<PlayEndedReason> Play(Guid playId, Func<Task<GameInput>> providePlayInput);
 
     /// <summary>
     /// Gets all high scores.

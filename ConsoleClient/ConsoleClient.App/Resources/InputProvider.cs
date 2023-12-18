@@ -1,7 +1,6 @@
 ﻿using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Menu.Enums;
-using Game2048.Managers.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -17,42 +16,42 @@ internal static class InputProvider
     /// </summary>
     /// <returns>Input for the game.</returns>
     /// <exception cref="InvalidOperationException"></exception>
-    internal static GameInput ProvidePlayInput()
+    internal static ExtendedGameInput ProvidePlayInput()
     {
-        GameInput input = GameInput.Unknown;
-        while (input == GameInput.Unknown)
+        ExtendedGameInput input = ExtendedGameInput.Invalid;
+        while (input == ExtendedGameInput.Invalid)
         {
             switch (Console.ReadKey(true).Key)
             {
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
                     {
-                        return GameInput.Up;
+                        return ExtendedGameInput.Up;
                     }
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
                     {
-                        return GameInput.Down;
+                        return ExtendedGameInput.Down;
                     }
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
                     {
-                        return GameInput.Left;
+                        return ExtendedGameInput.Left;
                     }
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
                     {
-                        return GameInput.Right;
+                        return ExtendedGameInput.Right;
                     }
                 case ConsoleKey.Backspace:
                 case ConsoleKey.U:
                     {
-                        return GameInput.Undo;
+                        return ExtendedGameInput.Undo;
                     }
                 case ConsoleKey.P:
                 case ConsoleKey.Escape:
                     {
-                        return GameInput.Pause;
+                        return ExtendedGameInput.Pause;
                     }
                 default:
                     break;

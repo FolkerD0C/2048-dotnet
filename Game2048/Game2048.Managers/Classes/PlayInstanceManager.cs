@@ -84,104 +84,71 @@ public class PlayInstanceManager : IPlayManager
 
     public InputResult HandleInput(GameInput input)
     {
-        InputResult inputResult = InputResult.Unknown;
-        // Handle input
-        bool unknownInputDetected = false;
-        try
+        InputResult inputResult = InputResult.Continue;
+        if (movementInputs.Contains(input))
         {
-            // Handle movement input
-            if (movementInputs.Contains(input))
+            MoveDirection moveDirection = MoveDirection.Unknown; ;
+            switch (input)
             {
-                MoveDirection moveDirection = MoveDirection.Unknown; ;
-                switch (input)
-                {
-                    case GameInput.Up:
-                        {
-                            moveDirection = MoveDirection.Up;
-                            break;
-                        }
-                    case GameInput.Down:
-                        {
-                            moveDirection = MoveDirection.Down;
-                            break;
-                        }
-                    case GameInput.Left:
-                        {
-                            moveDirection = MoveDirection.Left;
-                            break;
-                        }
-                    case GameInput.Right:
-                        {
-                            moveDirection = MoveDirection.Right;
-                            break;
-                        }
-                }
-                var moveHappened = processor.MoveGrid(moveDirection);
-                if (!moveHappened)
-                {
-                    inputResult = InputResult.Continue;
-                }
-                else
-                {
-                    var postMoveResult = processor.PostMoveActions();
-                    MoveHappened?.Invoke(this, new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection));
-                    if (postMoveResult == PostMoveResult.NotGameEndingError || postMoveResult == PostMoveResult.GameOverError)
+                case GameInput.Up:
                     {
-                        ErrorHappened?.Invoke(this, new ErrorHappenedEventArgs(processor.MoveResultErrorMessage));
+                        moveDirection = MoveDirection.Up;
+                        break;
                     }
-                    if (postMoveResult == PostMoveResult.GameOverError)
+                case GameInput.Down:
                     {
-                        inputResult = InputResult.GameOver;
+                        moveDirection = MoveDirection.Down;
+                        break;
                     }
-                    else if (postMoveResult == PostMoveResult.NoError || postMoveResult == PostMoveResult.NotGameEndingError)
+                case GameInput.Left:
                     {
-                        inputResult = InputResult.Continue;
+                        moveDirection = MoveDirection.Left;
+                        break;
                     }
-                }
+                case GameInput.Right:
+                    {
+                        moveDirection = MoveDirection.Right;
+                        break;
+                    }
+            }
+            var moveHappened = processor.MoveGrid(moveDirection);
+            if (!moveHappened)
+            {
+                inputResult = InputResult.Continue;
             }
             else
             {
-                // Handle not moving inputs
-                switch (input)
+                var postMoveResult = processor.PostMoveActions();
+                MoveHappened?.Invoke(this, new MoveHappenedEventArgs(processor.CurrentGameState, moveDirection));
+                if (postMoveResult == PostMoveResult.NotGameEndingError || postMoveResult == PostMoveResult.GameOverError)
                 {
-                    case GameInput.Undo:
-                        {
-                            GameState? undoResult = processor.Undo();
-                            if (undoResult is not null)
-                            {
-                                UndoHappened?.Invoke(this, new UndoHappenedEventArgs(undoResult));
-                            }
-                            inputResult = InputResult.Continue;
-                            break;
-                        }
-                    case GameInput.Pause:
-                        {
-                            return InputResult.Pause;
-                        }
-                    default:
-                        {
-                            unknownInputDetected = true;
-                            break;
-                        }
+                    ErrorHappened?.Invoke(this, new ErrorHappenedEventArgs(processor.MoveResultErrorMessage));
+                }
+                if (postMoveResult == PostMoveResult.GameOverError)
+                {
+                    inputResult = InputResult.GameOver;
+                }
+                else if (postMoveResult == PostMoveResult.NoError || postMoveResult == PostMoveResult.NotGameEndingError)
+                {
+                    inputResult = InputResult.Continue;
                 }
             }
-        }
-        catch (Exception exc)
-        {
-            ErrorHappened?.Invoke(this, new ErrorHappenedEventArgs(exc.Message));
-            throw;
-        }
 
-        if (unknownInputDetected)
-        {
-            throw new ArgumentOutOfRangeException(nameof(input), "Unknown input detected");
+            // If the goal declared in the processor is reached an event should be triggered, but only once
+            if (!goalReached && processor.HighestNumber >= processor.Goal)
+            {
+                MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(MiscEvent.GoalReached));
+                goalReached = true;
+            }
         }
-
-        // If the goal declared in the processor is reached an event should be triggered, but only once
-        if (!goalReached && processor.HighestNumber >= processor.Goal)
+        else if (input == GameInput.Undo)
         {
-            MiscEventHappened?.Invoke(this, new MiscEventHappenedEventArgs(MiscEvent.GoalReached));
-            goalReached = true;
+            GameState? undoResult = processor.Undo();
+            if (undoResult is not null)
+            {
+                UndoHappened?.Invoke(this, new UndoHappenedEventArgs(undoResult));
+            }
+            inputResult = InputResult.Continue;
         }
 
         // After all we need to handle the call the event that represents the end of an input cycle

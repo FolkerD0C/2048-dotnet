@@ -8,6 +8,7 @@ using Game2048.Managers.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ConsoleClient.App.Resources;
 
@@ -37,7 +38,7 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
         AppEnvironment.CurrentPlayInstance.InputProcessingFinished += currentPlayInstanceOverlay.OnInputProcessingFinished;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
-        PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
+        PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, ConvertInput).GetAwaiter().GetResult();
         HandlePlayEnded(endedReason);
         AppEnvironment.CurrentPlayInstance = null;
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
@@ -66,10 +67,52 @@ internal static class PlayProvider
         AppEnvironment.CurrentPlayInstance.PlayerNameChanged += currentPlayInstanceOverlay.OnPlayerNameChanged;
         AppEnvironment.CurrentPlayInstance.InputProcessingFinished += currentPlayInstanceOverlay.OnInputProcessingFinished;
         AppEnvironment.CurrentPlayInstance.PlayEnded += currentPlayInstanceOverlay.OnPlayEnded;
-        PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, InputProvider.ProvidePlayInput, Pause);
+        AppEnvironment.CurrentOverlays["currentPlayInstanceOverlay"].SetPreviousOverlaySuppression(true);
+        PlayEndedReason endedReason = AppEnvironment.GameManager.Play(AppEnvironment.CurrentPlayInstance.Id, ConvertInput).GetAwaiter().GetResult();
         HandlePlayEnded(endedReason);
+        AppEnvironment.CurrentMenus["loadGameMenu"].EndNavigation();
         AppEnvironment.CurrentPlayInstance = null;
         AppEnvironment.CurrentOverlays.Remove("currentPlayInstanceOverlay");
+    }
+
+    /// <summary>
+    /// Converts <see cref="ExtendedGameInput"/> into <see cref="GameInput"/>, which then can be provided to an ongoing play.
+    /// </summary>
+    /// <returns>A valid or unknown play input.</returns>
+    async static Task<GameInput> ConvertInput()
+    {
+        ExtendedGameInput input = default;
+        await Task.Run(() => input = InputProvider.ProvidePlayInput());
+        if (input == ExtendedGameInput.Pause)
+        {
+            var pauseResult = Pause();
+            switch (pauseResult)
+            {
+                case PauseResult.EndPlay:
+                    {
+                        return GameInput.EndPlay;
+                    }
+                case PauseResult.ExitGame:
+                    {
+                        AppEnvironment.MainMenu.EndNavigation();
+                        return GameInput.EndPlay;
+                    }
+                default:
+                    return GameInput.Unknown;
+            }
+        }
+        else
+        {
+            return input switch
+            {
+                ExtendedGameInput.Up => GameInput.Up,
+                ExtendedGameInput.Down => GameInput.Down,
+                ExtendedGameInput.Left => GameInput.Left,
+                ExtendedGameInput.Right => GameInput.Right,
+                ExtendedGameInput.Undo => GameInput.Undo,
+                _ => GameInput.Unknown
+            };
+        }
     }
 
     /// <summary>
@@ -84,18 +127,9 @@ internal static class PlayProvider
         {
             throw new NullReferenceException("Managers can not be null.");
         }
-        if (endedReason == PlayEndedReason.QuitGame)
-        {
-            AppEnvironment.MainMenu.EndNavigation();
-            return;
-        }
-        if (endedReason == PlayEndedReason.ExitPlay)
-        {
-            return;
-        }
         if (endedReason != PlayEndedReason.GameOver)
         {
-            throw new InvalidOperationException("Invalid return from playing the game.");
+            return;
         }
         int lowestHighscore = AppEnvironment.GameManager.GetHighscores()
             .Select(highscore => highscore.PlayerScore).OrderBy(playerscore => playerscore).First();
@@ -111,10 +145,6 @@ internal static class PlayProvider
             if (nameFormResult.ResultType == NameFormResultType.Cancelled || AppEnvironment.CurrentPlayInstance.PlayerName == "")
             {
                 return;
-            }
-            if (nameFormResult.ResultType != NameFormResultType.Success)
-            {
-                throw new InvalidOperationException("Invalid return from name form.");
             }
             AppEnvironment.CurrentPlayInstance.PlayerName = nameFormResult.Name;
         }
