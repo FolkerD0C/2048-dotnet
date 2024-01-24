@@ -1,9 +1,7 @@
 using _2048ish.Base.Models;
-using Game2048.Managers.Enums;
 using Game2048.Managers.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Game2048.Managers;
 

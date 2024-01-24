@@ -6,11 +6,9 @@ using ConsoleClient.Menu;
 using ConsoleClient.Menu.Enums;
 using Game2048.Managers;
 using Game2048.Managers.Enums;
-using Game2048.Processors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ConsoleClient.App.Resources;
 

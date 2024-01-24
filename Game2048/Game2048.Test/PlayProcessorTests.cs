@@ -4,13 +4,7 @@ using Game2048.Processors;
 using Game2048.Processors.Enums;
 using Game2048.Processors.EventHandlers;
 using Game2048.Processors.SaveDataObjects;
-using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game2048.Test
 {
@@ -82,7 +76,7 @@ namespace Game2048.Test
             Big
         }
 
-        #pragma warning disable CS8618
+#pragma warning disable CS8618
         IPlayProcessor processorWithEmptyState;
         IPlayProcessor processorWithSomeState;
         IPlayProcessor processorWithFullState;
@@ -91,7 +85,7 @@ namespace Game2048.Test
         NewGameConfiguration gameConfig;
 
         PlayProcessorEventHelper eventHelper;
-        #pragma warning restore
+#pragma warning restore
 
         [SetUp]
         public void Setup()
