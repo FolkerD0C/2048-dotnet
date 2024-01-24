@@ -1,4 +1,5 @@
-﻿using ConsoleClient.AppUI.Enums;
+﻿using ConsoleClient.App.Resources.Enums;
+using ConsoleClient.AppUI.Enums;
 using ConsoleClient.AppUI.Misc;
 using ConsoleClient.Menu.Enums;
 using System;

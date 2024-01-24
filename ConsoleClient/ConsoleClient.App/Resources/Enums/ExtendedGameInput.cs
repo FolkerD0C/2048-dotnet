@@ -1,4 +1,4 @@
-﻿namespace ConsoleClient.App.Resources;
+﻿namespace ConsoleClient.App.Resources.Enums;
 
 internal enum ExtendedGameInput
 {

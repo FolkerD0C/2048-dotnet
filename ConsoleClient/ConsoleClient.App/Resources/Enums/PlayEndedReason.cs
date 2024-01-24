@@ -1,4 +1,4 @@
-namespace Game2048.Managers.Enums;
+namespace ConsoleClient.App.Resources.Enums;
 
 /// <summary>
 /// An enum that represents the reason of the ending of the current play.
