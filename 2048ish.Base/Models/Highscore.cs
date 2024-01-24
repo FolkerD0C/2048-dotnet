@@ -20,6 +20,6 @@ public record Highscore
     /// </summary>
     public Highscore()
     {
-        PlayerName = "";
+        PlayerName = string.Empty;
     }
 }
