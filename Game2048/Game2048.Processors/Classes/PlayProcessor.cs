@@ -40,7 +40,6 @@ public class PlayProcessor : IPlayProcessor
     }
 
     readonly List<int> acceptedSpawnables;
-    public List<int>? AcceptedSpawnables => acceptedSpawnables;
 
     readonly int goal;
     public int Goal => goal;
