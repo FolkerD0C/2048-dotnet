@@ -13,18 +13,18 @@ namespace Game2048.Managers;
 public interface IGameManager
 {
     /// <summary>
-    /// Gets an <see cref="IPlayInstance"/> that can be used for a new game.
+    /// Gets an <see cref="IPlayInstanceManager"/> that can be used for a new game.
     /// </summary>
     /// <param name="gameConfiguration">The configuration to use when starting and playing the game.</param>
-    /// <returns>An <see cref="IPlayInstance"/> suitable for a new game.</returns>
-    public IPlayInstance NewGame(NewGameConfiguration gameConfiguration);
+    /// <returns>An <see cref="IPlayInstanceManager"/> suitable for a new game.</returns>
+    public IPlayInstanceManager NewGame(NewGameConfiguration gameConfiguration);
 
     /// <summary>
-    /// Gets an <see cref="IPlayInstance"/> that can be used for a loaded game.
+    /// Gets an <see cref="IPlayInstanceManager"/> that can be used for a loaded game.
     /// </summary>
     /// <param name="saveGameName">The name of the saved game.</param>
-    /// <returns>An <see cref="IPlayInstance"/> suitable for a loaded game.</returns>
-    public IPlayInstance LoadGame(string saveGameName);
+    /// <returns>An <see cref="IPlayInstanceManager"/> suitable for a loaded game.</returns>
+    public IPlayInstanceManager LoadGame(string saveGameName);
 
     /// <summary>
     /// Gets the name of all saved games.
@@ -38,14 +38,6 @@ public interface IGameManager
     /// <param name="playId">The ID of the play to save.</param>
     /// <returns>The result of the save action as a <see cref="SaveResult"/>.</returns>
     public SaveResult SaveGame(Guid playId);
-
-    /// <summary>
-    /// Performs a play action on the play instance specified by <paramref name="playId"/>.
-    /// </summary>
-    /// <param name="playId">The ID of the play instance to play.</param>
-    /// <param name="providePlayInput">An async function that supplies this function with a <see cref="GameInput"/>.</param>
-    /// <returns></returns>
-    Task<PlayEndedReason> Play(Guid playId, Func<Task<GameInput>> providePlayInput);
 
     /// <summary>
     /// Gets all high scores.

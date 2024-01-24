@@ -14,7 +14,7 @@ namespace Game2048.Managers;
 /// A class that represents a set of methods for handling an active play and
 /// a set of events and properties that contain information about an active play.
 /// </summary>
-public class PlayInstanceManager : IPlayManager
+public class PlayInstanceManager : IPlayInstanceManager
 {
     public Guid Id => processor.Id;
 

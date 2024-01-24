@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace ConsoleClient.AppUI.Play;
 
 /// <summary>
-/// A class used for displaying a play and holds methods that can be subscribed to an <see cref="Game2048.Managers.IPlayInstance"/> object's events.
+/// A class used for displaying a play and holds methods that can be subscribed to an <see cref="Game2048.Managers.IPlayInstanceManager"/> object's events.
 /// </summary>
 public class GameDisplay : IGameDisplay
 {

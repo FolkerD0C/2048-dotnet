@@ -57,7 +57,7 @@ internal static class GameSaveHandler
     /// <summary>
     /// Gets all saved games that are present in <see cref="GameData.SaveGameDirectoryPath"/>.
     /// </summary>
-    /// <returns>An <see cref="IEnumerable{ISaveMetaData}"/> that contains all saved
+    /// <returns>An <see cref="IEnumerable{string}"/> that contains all saved
     /// games contained in <see cref="GameData.SaveGameDirectoryPath"/>.</returns>
     internal static IEnumerable<string> GetSavedGames()
     {

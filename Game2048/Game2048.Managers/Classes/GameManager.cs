@@ -16,7 +16,7 @@ namespace Game2048.Managers;
 /// </summary>
 public class GameManager : IGameManager
 {
-    readonly Dictionary<Guid, IPlayManager> playManagers;
+    readonly Dictionary<Guid, IPlayInstanceManager> playManagers;
     readonly HighscoreSaveHandler highscoreSaveHandler;
 
     /// <summary>
@@ -45,50 +45,22 @@ public class GameManager : IGameManager
         return GameSaveHandler.GetSavedGames();
     }
 
-    public IPlayInstance LoadGame(string saveGameName)
+    public IPlayInstanceManager LoadGame(string saveGameName)
     {
-        IPlayManager playManager = new PlayInstanceManager(GameSaveHandler.Load(saveGameName));
+        IPlayInstanceManager playManager = new PlayInstanceManager(GameSaveHandler.Load(saveGameName));
+        if (playManagers.ContainsKey(playManager.Id))
+        {
+            playManagers.Remove(playManager.Id);
+        }
         playManagers.Add(playManager.Id, playManager);
         return playManager;
     }
 
-    public IPlayInstance NewGame(NewGameConfiguration gameConfiguration)
+    public IPlayInstanceManager NewGame(NewGameConfiguration gameConfiguration)
     {
-        IPlayManager playManager = new PlayInstanceManager(new PlayProcessor(gameConfiguration));
+        IPlayInstanceManager playManager = new PlayInstanceManager(new PlayProcessor(gameConfiguration));
         playManagers.Add(playManager.Id, playManager);
         return playManager;
-    }
-
-    public async Task<PlayEndedReason> Play(Guid playId, Func<Task<GameInput>> providePlayInput)
-    {
-        if (!playManagers.ContainsKey(playId))
-        {
-            return PlayEndedReason.PlayNotInitialized;
-        }
-        IPlayManager playManager = playManagers[playId];
-        bool inGame = true;
-        var endReason = PlayEndedReason.Unknown;
-        playManager.Start();
-        while (inGame)
-        {
-            var input = await providePlayInput();
-            if (input == GameInput.EndPlay)
-            {
-                inGame = false;
-                endReason = PlayEndedReason.Exit;
-                continue;
-            }
-            var inputResult = playManager.HandleInput(input);
-
-            if (inputResult == InputResult.GameOver)
-            {
-                inGame = false;
-                endReason = PlayEndedReason.GameOver;
-            }
-        }
-        playManager.End();
-        playManagers.Remove(playId);
-        return endReason;
     }
 
     public SaveResult SaveGame(Guid playId)
@@ -101,7 +73,7 @@ public class GameManager : IGameManager
                 Message = "Invalid play ID."
             };
         }
-        IPlayManager playManager = playManagers[playId];
+        IPlayInstanceManager playManager = playManagers[playId];
         if (playManager.PlayerName is null || playManager.PlayerName == "")
         {
             return new SaveResult()

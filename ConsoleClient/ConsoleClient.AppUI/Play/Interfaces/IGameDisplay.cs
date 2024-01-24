@@ -5,7 +5,7 @@ using System;
 namespace ConsoleClient.AppUI.Play;
 
 /// <summary>
-/// Defines methods that can be subscribed to a <see cref="Game2048.Managers.IPlayInstance"/> objects's events.
+/// Defines methods that can be subscribed to a <see cref="Game2048.Managers.IPlayInstanceManager"/> objects's events.
 /// </summary>
 public interface IGameDisplay : IOverLay
 {

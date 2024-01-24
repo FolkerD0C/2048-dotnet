@@ -28,7 +28,7 @@ internal static class AppEnvironment
     /// <summary>
     /// The currently active play.
     /// </summary>
-    internal static IPlayInstance? CurrentPlayInstance;
+    internal static IPlayInstanceManager? CurrentPlayInstanceManager;
     /// <summary>
     /// The main menu of the game.
     /// </summary>
