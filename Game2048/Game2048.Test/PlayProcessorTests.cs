@@ -5,6 +5,9 @@ using Game2048.Processors.Enums;
 using Game2048.Processors.EventHandlers;
 using Game2048.Processors.SaveDataObjects;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Game2048.Test
 {
