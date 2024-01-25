@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace Game2048.Test
 {
+    [TestFixture]
     public class HighscoreProcessorTests
     {
 #pragma warning disable CS8618

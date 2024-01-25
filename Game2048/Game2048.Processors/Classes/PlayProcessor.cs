@@ -58,25 +58,37 @@ public class PlayProcessor : IPlayProcessor
     readonly bool isNewGame;
     readonly int starterTiles;
 
+    private PlayProcessor(Guid id, int remainingLives, int gridHeight, int gridWidth, string playerName, List<int> acceptedSpawnables, int goal, int maxUndos, bool isNewGame, int starterTiles)
+    {
+        this.id = id;
+        this.remainingLives = remainingLives;
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
+        this.playerName = playerName;
+        this.acceptedSpawnables = acceptedSpawnables;
+        this.goal = goal;
+        this.maxUndos = maxUndos;
+        this.isNewGame = isNewGame;
+        this.starterTiles = starterTiles;
+
+        undoChain = new();
+        moveResultErrorMessage = string.Empty;
+
+#if GAME2048_TESTING
+        randomNumberGenerator = new Random(1);
+#else
+        randomNumberGenerator = new Random();
+#endif
+    }
+
+
+
     /// <summary>
     /// Creates a new instance of the <see cref="PlayProcessor"/> class that can be used for a new game.
     /// </summary>
     /// <param name="gameConfiguration">The configuration to use upon generating and playing the game.</param>
-    public PlayProcessor(NewGameConfiguration gameConfiguration)
+    public PlayProcessor(NewGameConfiguration gameConfiguration) : this(Guid.NewGuid(), gameConfiguration.MaxLives, gameConfiguration.GridHeight, gameConfiguration.GridWidth, string.Empty, gameConfiguration.AcceptedSpawnables, gameConfiguration.Goal, gameConfiguration.MaxUndos, true, gameConfiguration.StarterTiles)
     {
-        id = Guid.NewGuid();
-        randomNumberGenerator = new Random();
-        moveResultErrorMessage = string.Empty;
-
-        goal = gameConfiguration.Goal;
-        acceptedSpawnables = gameConfiguration.AcceptedSpawnables;
-        gridHeight = gameConfiguration.GridHeight;
-        gridWidth = gameConfiguration.GridWidth;
-        maxUndos = gameConfiguration.MaxUndos;
-        playerName = string.Empty;
-        remainingLives = gameConfiguration.MaxLives;
-        starterTiles = gameConfiguration.StarterTiles;
-
         // Initializing grid
         undoChain = new LinkedList<GameState>();
         GameState firstState = new();
@@ -89,33 +101,20 @@ public class PlayProcessor : IPlayProcessor
             }
         }
         undoChain.AddFirst(firstState);
-        isNewGame = true;
     }
 
     /// <summary>
     /// Creates a new instance of the <see cref="PlayProcessor"/> class that can be used for a loaded game.
     /// </summary>
     /// <param name="saveData">The saved data of a game that is about to be loaded.</param>
-    public PlayProcessor(GameSaveData saveData)
+    public PlayProcessor(GameSaveData saveData) : this(new Guid(saveData.Id), saveData.RemainingLives, saveData.GridHeight, saveData.GridWidth, saveData.PlayerName, saveData.AcceptedSpawnables, saveData.Goal, saveData.MaxUndos, false, 0)
     {
-        randomNumberGenerator = new Random();
-        moveResultErrorMessage = string.Empty;
-
-        id = new Guid(saveData.Id);
-        goal = saveData.Goal;
-        acceptedSpawnables = saveData.AcceptedSpawnables;
-        gridHeight = saveData.GridHeight;
-        gridWidth = saveData.GridWidth;
-        maxUndos = saveData.MaxUndos;
-        playerName = saveData.PlayerName;
-        remainingLives = saveData.RemainingLives;
         undoChain = new LinkedList<GameState>();
         for (int i = 0; i < saveData.UndoChain.Count; i++)
         {
             undoChain.AddLast(saveData.UndoChain[i]);
         }
-        GetCurrentMaxNumber();
-        isNewGame = false;
+        highestNumber = undoChain.First().Grid.Max(row => row.Max());
     }
 
     public void StartGameActions()
@@ -129,7 +128,7 @@ public class PlayProcessor : IPlayProcessor
         {
             PlaceRandomNumber();
         }
-        GetCurrentMaxNumber();
+        highestNumber = undoChain.First().Grid.Max(row => row.Max());
     }
 
     public bool MoveGrid(MoveDirection direction)
@@ -165,13 +164,14 @@ public class PlayProcessor : IPlayProcessor
         GetCurrentMaxNumber();
         if (!GridCanMove(undoChain.First()))
         {
-            if (--remainingLives <= 0)
+            remainingLives--;
+            PlayProcessorEventHappened?.Invoke(this,
+                new PlayProcessorEventHappenedEventArgs(PlayProcessorEvent.MaxLivesChanged, RemainingLives));
+            if (remainingLives <= 0)
             {
                 moveResultErrorMessage = "You have ran out of lives, game is over";
                 return PostMoveResult.GameOverError;
             }
-            PlayProcessorEventHappened?.Invoke(this,
-                new PlayProcessorEventHappenedEventArgs(PlayProcessorEvent.MaxLivesChanged, RemainingLives));
             moveResultErrorMessage = "The grid is stuck, you can not " +
                 "move, you lose a life. If you run out of lives it is GAME OVER. " +
                 "You can undo if you have lives.";

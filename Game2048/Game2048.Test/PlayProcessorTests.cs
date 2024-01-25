@@ -702,10 +702,7 @@ namespace Game2048.Test
             Assert.That(playProcessor.HighestNumber != 0);
             Assert.That(nonZeroTiles.Count() == 10);
             Assert.That(nonZeroTiles.All(x => possibleTiles.Contains(x)));
-            Assert.That(eventHelper.CapturedEvents.Count == 1);
-
-            PlayProcessorEventHappenedEventArgs happenedEvent = eventHelper.CapturedEvents[0];
-            Assert.That(happenedEvent.ProcessorEvent == PlayProcessorEvent.MaxNumberChanged);
+            Assert.That(eventHelper.CapturedEvents.Count == 0);
         }
 
         [Test]
