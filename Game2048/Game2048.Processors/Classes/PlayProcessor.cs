@@ -73,12 +73,7 @@ public class PlayProcessor : IPlayProcessor
 
         undoChain = new();
         moveResultErrorMessage = string.Empty;
-
-#if GAME2048_TESTING
-        randomNumberGenerator = new Random(1);
-#else
         randomNumberGenerator = new Random();
-#endif
     }
 
 

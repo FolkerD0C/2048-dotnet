@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<RootNamespace>_2048ish.Base</RootNamespace>
@@ -6,11 +6,7 @@
     <TargetFramework>net6.0</TargetFramework>
 	<ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;TestingDebug;TestingRelease</Configurations>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestingRelease|AnyCPU'">
-    <Optimize>True</Optimize>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
 </Project>
