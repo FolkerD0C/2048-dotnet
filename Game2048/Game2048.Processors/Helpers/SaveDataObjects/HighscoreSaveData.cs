@@ -22,7 +22,7 @@ public class HighscoreSaveData
     /// Populates the <see cref="HighscoreSaveData"/> object with save data.
     /// </summary>
     /// <param name="highscores">A list that contains all the high scores.</param>
-    public void Populate(List<Highscore> highscores)
+    internal void Populate(List<Highscore> highscores)
     {
         Highscores = highscores;
     }

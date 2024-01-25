@@ -1,6 +1,7 @@
 ﻿using _2048ish.Base.Enums;
 using _2048ish.Base.Models;
 using Game2048.Processors;
+using Game2048.Processors.Helpers;
 using Game2048.Processors.Enums;
 using Game2048.Processors.EventHandlers;
 using Game2048.Processors.SaveDataObjects;
@@ -11,48 +12,6 @@ using System.Linq;
 
 namespace Game2048.Test
 {
-    internal static class GameStateHelper
-    {
-        internal static GameState Copy(this GameState state) // Copied from Game2048.Processors.Helpers.GameStateExtensions
-        {
-            List<List<int>> resultGrid = new();
-            for (int i = 0; i < state.Grid.Count; i++)
-            {
-                resultGrid.Add(new List<int>());
-                for (int j = 0; j < state.Grid[i].Count; j++)
-                {
-                    resultGrid[i].Add(state.Grid[i][j]);
-                }
-            }
-            int resultScore = state.Score;
-            GameState copyState = new()
-            {
-                Grid = resultGrid,
-                Score = resultScore
-            };
-            return copyState;
-        }
-
-        internal static bool StateEquals(this GameState state, GameState other) // Copied from Game2048.Processors.Helpers.GameStateExtensions
-        {
-            for (int i = 0; i < state.Grid.Count; i++)
-            {
-                for (int j = 0; j < state.Grid[i].Count; j++)
-                {
-                    if (state.Grid[i][j] != other.Grid[i][j])
-                    {
-                        return false;
-                    }
-                }
-            }
-            if (state.Score != other.Score)
-            {
-                return false;
-            }
-            return true;
-        }
-    }
-
     internal class PlayProcessorEventHelper
     {
         internal List<PlayProcessorEventHappenedEventArgs> CapturedEvents { get; private set; }

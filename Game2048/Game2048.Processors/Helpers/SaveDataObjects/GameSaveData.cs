@@ -73,7 +73,7 @@ public class GameSaveData
     /// <param name="playerName">The name of the player.</param>
     /// <param name="remainingLives">The number of remaining lives.</param>
     /// <param name="undoChain">A list that is used for undoing. The first element is the current game state.</param>
-    public void Populate(string id, int goal, List<int> acceptedSpawnables, int gridHeight, int gridWidth, int maxUndos, string playerName, int remainingLives, List<GameState> undoChain)
+    internal void Populate(string id, int goal, List<int> acceptedSpawnables, int gridHeight, int gridWidth, int maxUndos, string playerName, int remainingLives, List<GameState> undoChain)
     {
         Id = id;
         Goal = goal;

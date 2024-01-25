@@ -3,6 +3,7 @@ using Game2048.Managers;
 using Game2048.Managers.Enums;
 using Game2048.Managers.EventHandlers;
 using Game2048.Processors;
+using Game2048.Processors.Helpers;
 using Game2048.Processors.SaveDataObjects;
 using NUnit.Framework;
 using System;
@@ -124,7 +125,6 @@ namespace Game2048.Test
             Assert.That(firstEvent is PlayStartedEventArgs);
 
             PlayStartedEventArgs startedArgs = (PlayStartedEventArgs)firstEvent;
-
             Assert.That(startedArgs.State.StateEquals(new()
             {
                 Grid = new()
