@@ -1,9 +1,9 @@
 ﻿using _2048ish.Base.Enums;
 using _2048ish.Base.Models;
 using Game2048.Processors;
-using Game2048.Processors.Helpers;
 using Game2048.Processors.Enums;
 using Game2048.Processors.EventHandlers;
+using Game2048.Processors.Helpers;
 using Game2048.Processors.SaveDataObjects;
 using NUnit.Framework;
 using System;
@@ -106,13 +106,13 @@ namespace Game2048.Test
             };
 
             GameSaveData emptySaveData = new();
-            emptySaveData.Populate(Guid.NewGuid().ToString(), 2048, new() { 2, 4 }, 4, 4, 5, "empty", 5, new() { emptyState });
+            emptySaveData.Populate(2048, new() { 2, 4 }, 4, 4, 5, "empty", 5, new() { emptyState });
             GameSaveData someSaveData = new();
-            someSaveData.Populate(Guid.NewGuid().ToString(), 2048, new() { 2, 4 }, 4, 4, 5, "same", 5, new() { someState });
+            someSaveData.Populate(2048, new() { 2, 4 }, 4, 4, 5, "same", 5, new() { someState });
             GameSaveData fullSaveData = new();
-            fullSaveData.Populate(Guid.NewGuid().ToString(), 2048, new() { 2, 4 }, 4, 4, 5, "full", 5, new() { fullState });
+            fullSaveData.Populate(2048, new() { 2, 4 }, 4, 4, 5, "full", 5, new() { fullState });
             GameSaveData bigSaveData = new();
-            bigSaveData.Populate(Guid.NewGuid().ToString(), 2048, new() { 2, 4 }, 16, 16, 5, "big", 5, new() { bigState });
+            bigSaveData.Populate(2048, new() { 2, 16 }, 16, 16, 5, "big", 5, new() { bigState });
 
             processorWithEmptyState = new PlayProcessor(emptySaveData);
             processorWithSomeState = new PlayProcessor(someSaveData);
@@ -143,7 +143,7 @@ namespace Game2048.Test
             };
 
             GameSaveData invalidSaveData = new();
-            invalidSaveData.Populate(Guid.NewGuid().ToString(), -1, new(), 0, 0, 5, "", 5, new() { invalidState });
+            invalidSaveData.Populate(-1, new(), 0, 0, 5, "", 5, new() { invalidState });
 
             Assert.Throws<InvalidOperationException>(() => { IPlayProcessor processorWithInvalidState = new PlayProcessor(invalidSaveData); });
         }
@@ -678,7 +678,7 @@ namespace Game2048.Test
                 Score = 200
             };
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 1000, new() { 1, 2, 3, 4, 5, 6 }, 3, 3, 1, string.Empty, 1, new() { current, next });
+            saveData.Populate(1000, new() { 1, 2, 3, 4, 5, 6 }, 3, 3, 1, string.Empty, 1, new() { current, next });
             IPlayProcessor playProcessor = new PlayProcessor(saveData);
             playProcessor.PlayProcessorEventHappened += eventHelper.EventCapturer;
 
@@ -700,7 +700,7 @@ namespace Game2048.Test
         public void GridStuck()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 100000, new() { 1 }, 3, 3, 0, string.Empty, 2, new()
+            saveData.Populate(100000, new() { 1 }, 3, 3, 0, string.Empty, 2, new()
             {
                 new()
                 {
@@ -736,7 +736,7 @@ namespace Game2048.Test
         public void NoMoreLives()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 100000, new() { 1 }, 3, 3, 0, string.Empty, 1, new()
+            saveData.Populate(100000, new() { 1 }, 3, 3, 0, string.Empty, 1, new()
             {
                 new()
                 {

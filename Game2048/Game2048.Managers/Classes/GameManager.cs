@@ -17,15 +17,24 @@ public class GameManager : IGameManager
 {
     readonly Dictionary<Guid, IPlayInstanceManager> playManagers;
     readonly HighscoreSaveHandler highscoreSaveHandler;
+    readonly GameSaveHandler gameSaveHandler;
 
     /// <summary>
     /// Creates a new instance of the <see cref="GameManager"/> class.
     /// </summary>
-    public GameManager()
+    public GameManager() : this(new(), new(), new())
     {
-        playManagers = new();
-        highscoreSaveHandler = new();
         GameSaveHandler.CheckOrCreateSaveDirectory();
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="GameManager"/> object, used for unit testing
+    /// </summary>
+    internal GameManager(Dictionary<Guid, IPlayInstanceManager> playManagers, HighscoreSaveHandler highscoreSaveHandler, GameSaveHandler gameSaveHandler)
+    {
+        this.playManagers = playManagers;
+        this.highscoreSaveHandler = highscoreSaveHandler;
+        this.gameSaveHandler = gameSaveHandler;
     }
 
     public void AddHighscore(string playerName, int score)
@@ -41,16 +50,13 @@ public class GameManager : IGameManager
 
     public IEnumerable<string> GetSavedGames()
     {
-        return GameSaveHandler.GetSavedGames();
+        return gameSaveHandler.GetSavedGames();
     }
 
     public IPlayInstanceManager LoadGame(string saveGameName)
     {
-        IPlayInstanceManager playManager = new PlayInstanceManager(GameSaveHandler.Load(saveGameName));
-        if (playManagers.ContainsKey(playManager.Id))
-        {
-            playManagers.Remove(playManager.Id);
-        }
+        IPlayInstanceManager playManager = new PlayInstanceManager(gameSaveHandler.Load(saveGameName));
+        playManager.PlayEnded += OnPlayEnded;
         playManagers.Add(playManager.Id, playManager);
         return playManager;
     }
@@ -58,6 +64,7 @@ public class GameManager : IGameManager
     public IPlayInstanceManager NewGame(NewGameConfiguration gameConfiguration)
     {
         IPlayInstanceManager playManager = new PlayInstanceManager(new PlayProcessor(gameConfiguration));
+        playManager.PlayEnded += OnPlayEnded;
         playManagers.Add(playManager.Id, playManager);
         return playManager;
     }
@@ -81,13 +88,21 @@ public class GameManager : IGameManager
                 Message = "Player name can not be empty, aborting save..."
             };
         }
-        var result = GameSaveHandler.Save(playManager.Processor);
+        var result = gameSaveHandler.Save(playManager.Processor);
         return result;
     }
 
-    public IList<Highscore> GetHighscores()
+    public List<Highscore> GetHighscores()
     {
         highscoreSaveHandler.Load();
         return highscoreSaveHandler.HighscoreData.HighScores;
+    }
+
+    void OnPlayEnded(object? sender, EventArgs e)
+    {
+        if (sender is not null && sender is IPlayInstanceManager manager)
+        {
+            playManagers.Remove(manager.Id);
+        }
     }
 }

@@ -41,7 +41,7 @@ public interface IGameManager
     /// Gets all high scores.
     /// </summary>
     /// <returns>An <see cref="IList{IHighscore}"/> that contains all high scores.</returns>
-    public IList<Highscore> GetHighscores();
+    public List<Highscore> GetHighscores();
 
     /// <summary>
     /// Adds a new high scores to the existing ones. Migth delete another if there are too many.

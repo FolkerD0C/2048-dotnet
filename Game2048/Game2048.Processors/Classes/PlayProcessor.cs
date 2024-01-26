@@ -58,9 +58,9 @@ public class PlayProcessor : IPlayProcessor
     readonly bool isNewGame;
     readonly int starterTiles;
 
-    private PlayProcessor(Guid id, int remainingLives, int gridHeight, int gridWidth, string playerName, List<int> acceptedSpawnables, int goal, int maxUndos, bool isNewGame, int starterTiles)
+    private PlayProcessor(int remainingLives, int gridHeight, int gridWidth, string playerName, List<int> acceptedSpawnables, int goal, int maxUndos, bool isNewGame, int starterTiles)
     {
-        this.id = id;
+        this.id = Guid.NewGuid();
         this.remainingLives = remainingLives;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
@@ -82,7 +82,7 @@ public class PlayProcessor : IPlayProcessor
     /// Creates a new instance of the <see cref="PlayProcessor"/> class that can be used for a new game.
     /// </summary>
     /// <param name="gameConfiguration">The configuration to use upon generating and playing the game.</param>
-    public PlayProcessor(NewGameConfiguration gameConfiguration) : this(Guid.NewGuid(), gameConfiguration.MaxLives, gameConfiguration.GridHeight, gameConfiguration.GridWidth, string.Empty, gameConfiguration.AcceptedSpawnables, gameConfiguration.Goal, gameConfiguration.MaxUndos, true, gameConfiguration.StarterTiles)
+    public PlayProcessor(NewGameConfiguration gameConfiguration) : this(gameConfiguration.MaxLives, gameConfiguration.GridHeight, gameConfiguration.GridWidth, string.Empty, gameConfiguration.AcceptedSpawnables, gameConfiguration.Goal, gameConfiguration.MaxUndos, true, gameConfiguration.StarterTiles)
     {
         // Initializing grid
         undoChain = new LinkedList<GameState>();
@@ -102,7 +102,7 @@ public class PlayProcessor : IPlayProcessor
     /// Creates a new instance of the <see cref="PlayProcessor"/> class that can be used for a loaded game.
     /// </summary>
     /// <param name="saveData">The saved data of a game that is about to be loaded.</param>
-    public PlayProcessor(GameSaveData saveData) : this(new Guid(saveData.Id), saveData.RemainingLives, saveData.GridHeight, saveData.GridWidth, saveData.PlayerName, saveData.AcceptedSpawnables, saveData.Goal, saveData.MaxUndos, false, 0)
+    public PlayProcessor(GameSaveData saveData) : this(saveData.RemainingLives, saveData.GridHeight, saveData.GridWidth, saveData.PlayerName, saveData.AcceptedSpawnables, saveData.Goal, saveData.MaxUndos, false, 0)
     {
         undoChain = new LinkedList<GameState>();
         for (int i = 0; i < saveData.UndoChain.Count; i++)
@@ -257,7 +257,7 @@ public class PlayProcessor : IPlayProcessor
     public GameSaveData GetSaveDataObject()
     {
         GameSaveData result = new();
-        result.Populate(id.ToString(), goal, acceptedSpawnables, gridHeight, gridWidth, maxUndos, playerName, remainingLives, undoChain.ToList());
+        result.Populate(goal, acceptedSpawnables, gridHeight, gridWidth, maxUndos, playerName, remainingLives, undoChain.ToList());
         return result;
     }
 }

@@ -98,7 +98,7 @@ namespace Game2048.Test
         public void StartAndEnd()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 2048, new() { 1 }, 4, 4, 1, "Empty", 1, new()
+            saveData.Populate(2048, new() { 1 }, 4, 4, 1, "Empty", 1, new()
             {
                 new()
                 {
@@ -222,7 +222,7 @@ namespace Game2048.Test
         public void MoveAndUndo()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 2048, new() { 1 }, 4, 4, 2, "Empty", 1, new()
+            saveData.Populate(2048, new() { 1 }, 4, 4, 2, "Empty", 1, new()
             {
                 new()
                 {
@@ -301,7 +301,7 @@ namespace Game2048.Test
         public void GoalReached()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 128, new() { 2 }, 4, 4, 1, "Empty", 1, new()
+            saveData.Populate(128, new() { 2 }, 4, 4, 1, "Empty", 1, new()
             {
                 new()
                 {
@@ -380,7 +380,7 @@ namespace Game2048.Test
         public void CannotMoveError()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 128, new() { 1 }, 4, 4, 1, "Empty", 2, new()
+            saveData.Populate(128, new() { 1 }, 4, 4, 1, "Empty", 2, new()
             {
                 new()
                 {
@@ -458,7 +458,7 @@ namespace Game2048.Test
         public void GameOver()
         {
             GameSaveData saveData = new();
-            saveData.Populate(Guid.NewGuid().ToString(), 128, new() { 1 }, 4, 4, 1, "Empty", 1, new()
+            saveData.Populate(128, new() { 1 }, 4, 4, 1, "Empty", 1, new()
             {
                 new()
                 {

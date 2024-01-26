@@ -14,9 +14,9 @@ namespace Game2048.Managers.Saving;
 /// <summary>
 /// A class that represents a manager for game saving and loading.
 /// </summary>
-internal static class GameSaveHandler
+internal class GameSaveHandler
 {
-    internal static IPlayProcessor Load(string saveGameName)
+    internal virtual IPlayProcessor Load(string saveGameName)
     {
         string saveFilePath = GetFullPathFromName(saveGameName);
         var serializerOptions = new JsonSerializerOptions()
@@ -28,7 +28,7 @@ internal static class GameSaveHandler
         return new PlayProcessor(deserializedData);
     }
 
-    internal static SaveResult Save(IPlayProcessor playProcessor)
+    internal virtual SaveResult Save(IPlayProcessor playProcessor)
     {
         SaveResult result = new()
         {
@@ -59,7 +59,7 @@ internal static class GameSaveHandler
     /// </summary>
     /// <returns>An <see cref="IEnumerable{string}"/> that contains all saved
     /// games contained in <see cref="GameData.SaveGameDirectoryPath"/>.</returns>
-    internal static IEnumerable<string> GetSavedGames()
+    internal virtual IEnumerable<string> GetSavedGames()
     {
         var saveFiles = new DirectoryInfo(GameData.SaveGameDirectoryPath).GetFiles("*.save.json");
         return saveFiles.Select(info => info.Name.Replace(".save.json", ""));
@@ -81,7 +81,7 @@ internal static class GameSaveHandler
     /// </summary>
     /// <param name="name">The name of the saved game.</param>
     /// <returns>The full path of the saved game name.</returns>
-    internal static string GetFullPathFromName(string name)
+    static string GetFullPathFromName(string name)
     {
         return Path.Join(GameData.SaveGameDirectoryPath, name + ".save.json");
     }

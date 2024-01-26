@@ -18,7 +18,7 @@ internal class HighscoreSaveHandler
     /// <summary>
     /// The highscore processor to serialize or desiarilize.
     /// </summary>
-    public IHighscoreProcessor HighscoreData { get; private set; }
+    internal virtual IHighscoreProcessor HighscoreData { get; private set; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="HighscoreSaveHandler"/> class.
@@ -41,10 +41,23 @@ internal class HighscoreSaveHandler
     public HighscoreSaveHandler() : this(GameData.HighscoresFilePath)
     { }
 
+    internal HighscoreSaveHandler(bool testing)
+    {
+        if (testing)
+        {
+            saveFilePath = string.Empty;
+        }
+        else
+        {
+            throw new InvalidOperationException("Cannot be used outside of tests");
+        }
+        HighscoreData = new HighscoreProcessor();
+    }
+
     /// <summary>
     /// Loads the highscores from a file.
     /// </summary>
-    public void Load()
+    internal virtual void Load()
     {
         var serializerOptions = new JsonSerializerOptions()
         {
@@ -58,7 +71,7 @@ internal class HighscoreSaveHandler
     /// <summary>
     /// Saves the highscores to a file.
     /// </summary>
-    public void Save()
+    internal virtual void Save()
     {
         var serializerOptions = new JsonSerializerOptions()
         {
@@ -72,7 +85,7 @@ internal class HighscoreSaveHandler
     /// </summary>
     /// <param name="playerName">The name of the player who set a high score.</param>
     /// <param name="score">The score that has been set by <paramref name="playerName"/>.</param>
-    public void AddNewHighscore(string playerName, int score)
+    internal virtual void AddNewHighscore(string playerName, int score)
     {
         HighscoreData.AddNewHighscore(new Highscore()
         {
