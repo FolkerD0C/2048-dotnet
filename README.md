@@ -1,7 +1,7 @@
-<h1 align="center">2048 Dotnet</h1>
+<h1 align="center">2048ish</h1>
 
 <h4 align="center"> 
-	🚧  2048 Dotnet 🚀 Under construction...  🚧
+	2048ish
 </h4> 
 
 <hr>
@@ -25,21 +25,15 @@ and to improve my Linux knowledge. Up until commit d936c487 it was only develope
 
 The game is simple: you need to have the tiles adding up to 2048.
 
+Or not, because you can configure anything.
+
 ## :sparkles: Features ##
 
-:heavy_check_mark: Undo up to 7 times;\
-:heavy_check_mark: 5 LIVES;\
+:heavy_check_mark: Configure game goal, maximum lives, maximum undos, grid height, grid width, accepted spawnables and the number of starter tiles;\
 :heavy_check_mark: Saving/Loading;
+:heavy_check_mark: A fully featured, layered backend and terminal frontend;
 
-<img src="resources/2048-dotnet-screenshot-earlygame.png" alt="Screenshot" title="Screenshot of the game">
-
-## :rocket: Technologies ##
-
-The following tools were used in this project:
-
-- [nvim](https://neovim.io/)
-- [coc.nvim](https://github.com/neoclide/coc.nvim)
-- [net6.0](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6)
+<img src="resources/2048ish.png" alt="Screenshot" title="Screenshot of the game">
 
 ## :white_check_mark: Requirements ##
 
@@ -49,20 +43,27 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) an
 
 ```bash
 # Clone this project
-$ git clone https://github.com/FolkerD0C/2048-dotnet
+git clone https://github.com/FolkerD0C/2048ish
 
-# Build the project
-$ dotnet build 2048-dotnet/2048-dotnet.csproj
+# Cd into 2048ish
+cd 2048ish
+
+# Build the terminal client
+dotnet build ConsoleClient/ConsoleClient.App/ConsoleClient.App.csproj
 
 ```
-<img src="resources/2048-dotnet-gameplay.gif" alt="Gameplay">
+<img src="resources/2048ish-gameplay.gif" alt="Gameplay">
+
+## Future plans ##
+
+- I plan to add the Apache Thrift API so I can have multiple clients in different languages
 
 ## :memo: License ##
 
 This project is under license from the GNU General Public License. For more details, see the [LICENSE](LICENSE) file.
 
 
-Made with :heart: by <a href="https://github.com/FolkerD0C" target="_blank">Levente Markot</a>
+Made with :heart: by <a href="https://github.com/FolkerD0C" target="_blank">FolkerD0C</a>
 
 &#xa0;
 
