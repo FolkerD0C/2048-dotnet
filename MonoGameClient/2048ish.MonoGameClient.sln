@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34316.72
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGameClient.App", "MonoGameClient.App\MonoGameClient.App.csproj", "{4AB99E8D-77E9-4C39-90D8-82146E596119}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048ish.Base", "..\2048ish.Base\2048ish.Base.csproj", "{5713E07C-0FCD-444A-93AB-CA9F518275D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "..\Game2048\Game2048.Config\Game2048.Config.csproj", "{31C93F52-79BD-456D-881B-717F2A165FC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Managers", "..\Game2048\Game2048.Managers\Game2048.Managers.csproj", "{99CD48E7-0E29-4761-B3D8-1BA326538C04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Processors", "..\Game2048\Game2048.Processors\Game2048.Processors.csproj", "{135651E9-FB6A-48BF-9C71-7CD34CDBB1DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Test", "..\Game2048\Game2048.Test\Game2048.Test.csproj", "{C6E46158-18EE-446D-9AF4-89F585929A1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C93F52-79BD-456D-881B-717F2A165FC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C93F52-79BD-456D-881B-717F2A165FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C93F52-79BD-456D-881B-717F2A165FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C93F52-79BD-456D-881B-717F2A165FC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99CD48E7-0E29-4761-B3D8-1BA326538C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99CD48E7-0E29-4761-B3D8-1BA326538C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99CD48E7-0E29-4761-B3D8-1BA326538C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99CD48E7-0E29-4761-B3D8-1BA326538C04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{135651E9-FB6A-48BF-9C71-7CD34CDBB1DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{135651E9-FB6A-48BF-9C71-7CD34CDBB1DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{135651E9-FB6A-48BF-9C71-7CD34CDBB1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{135651E9-FB6A-48BF-9C71-7CD34CDBB1DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96F82A9A-B7F7-47BD-9585-C5F1C6404767}
+	EndGlobalSection
+EndGlobal
