@@ -1,37 +1,31 @@
-﻿using FontStashSharp;
-using Game2048.Managers;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGameClient.App.ContentLoading;
-using Myra;
-using Myra.Graphics2D.UI;
-using System.IO;
+using MonoGameClient.App.Assets;
+using MonoGameClient.App.Utils;
 
 namespace MonoGameClient.App
 {
     public class Game2048ish : Game
     {
         static readonly Game2048ish instance = new();
-        public static Game2048ish Instance => instance;
+        internal static Game2048ish Instance => instance;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Desktop _desktop;
-        private IGameManager _gameManager;
-        public IGameManager BackendIntermediator => _gameManager;
+
+        Button button;
 
         private Game2048ish()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _gameManager = new GameManager();
         }
 
         protected override void Initialize()
         {
-            MyraContent.Load();
+            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -40,12 +34,9 @@ namespace MonoGameClient.App
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            MyraEnvironment.Game = this;
+            ContentCentral.Load(Content);
 
-            VerticalStackPanel mainMenu = MainMenu.Load();
-
-            _desktop = new();
-            _desktop.Root = mainMenu;
+            button = new(ContentCentral.LongButton1, new(100, 100), 100, 600, "", ContentCentral.ComicMono48);
         }
 
         protected override void Update(GameTime gameTime)
@@ -54,14 +45,21 @@ namespace MonoGameClient.App
                 Exit();
 
             // TODO: Add your update logic here
+            MouseUtils.Update();
+
+            button.Update();
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-            _desktop.Render();
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+    
+            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            button.Draw(_spriteBatch);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

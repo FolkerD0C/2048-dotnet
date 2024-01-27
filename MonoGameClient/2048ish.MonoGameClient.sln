@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGameClient.App", "MonoGameClient.App\MonoGameClient.App.csproj", "{4AB99E8D-77E9-4C39-90D8-82146E596119}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2048ish.Base", "..\2048ish.Base\2048ish.Base.csproj", "{5713E07C-0FCD-444A-93AB-CA9F518275D3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Config", "..\Game2048\Game2048.Config\Game2048.Config.csproj", "{31C93F52-79BD-456D-881B-717F2A165FC5}"
@@ -15,16 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Processors", "..\G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game2048.Test", "..\Game2048\Game2048.Test\Game2048.Test.csproj", "{C6E46158-18EE-446D-9AF4-89F585929A1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameClient.App", "MonoGameClient.App\MonoGameClient.App.csproj", "{212F051E-1918-412A-93A0-750F09DD2563}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AB99E8D-77E9-4C39-90D8-82146E596119}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5713E07C-0FCD-444A-93AB-CA9F518275D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6E46158-18EE-446D-9AF4-89F585929A1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{212F051E-1918-412A-93A0-750F09DD2563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212F051E-1918-412A-93A0-750F09DD2563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212F051E-1918-412A-93A0-750F09DD2563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212F051E-1918-412A-93A0-750F09DD2563}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
