@@ -1,24 +1,37 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Game2048.Managers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGameClient.App.ContentLoading;
+using Myra;
+using Myra.Graphics2D.UI;
+using System.IO;
 
 namespace MonoGameClient.App
 {
-    public class Game1 : Game
+    public class Game2048ish : Game
     {
+        static readonly Game2048ish instance = new();
+        public static Game2048ish Instance => instance;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Desktop _desktop;
+        private IGameManager _gameManager;
+        public IGameManager BackendIntermediator => _gameManager;
 
-        public Game1()
+        private Game2048ish()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _gameManager = new GameManager();
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            MyraContent.Load();
 
             base.Initialize();
         }
@@ -27,7 +40,12 @@ namespace MonoGameClient.App
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            MyraEnvironment.Game = this;
+
+            VerticalStackPanel mainMenu = MainMenu.Load();
+
+            _desktop = new();
+            _desktop.Root = mainMenu;
         }
 
         protected override void Update(GameTime gameTime)
@@ -42,9 +60,8 @@ namespace MonoGameClient.App
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
+            GraphicsDevice.Clear(Color.Black);
+            _desktop.Render();
 
             base.Draw(gameTime);
         }
