@@ -2,19 +2,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "C#: ConsoleClient.App Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/ConsoleClient/ConsoleClient.App/ConsoleClient.App .csproj"
+        },
+        {
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-console-client",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/2048-dotnet/bin/Debug/net6.0/2048-dotnet.dll",
+            "program": "${workspaceFolder}/ConsoleClient/ConsoleClient.App/bin/Debug/net6.0/Game2048.ConsoleApp.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/2048-dotnet",
+            "cwd": "${workspaceFolder}/ConsoleClient/ConsoleClient.App/bin/Debug/net6.0",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "integratedTerminal",
+            "console": "externalTerminal",
             "stopAtEntry": false
         },
         {
