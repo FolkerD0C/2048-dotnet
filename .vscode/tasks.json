@@ -44,6 +44,18 @@
                 "kind": "test",
                 "isDefault": true
             }
+        },
+        {
+            "label": "build-monogame-client",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/MonoGameClient/MonoGameClient.App/MonoGameClient.App.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
         }
     ]
 }

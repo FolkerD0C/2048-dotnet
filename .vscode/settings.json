@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "ConsoleClient/2048ish.ConsoleClient.sln"
+    "dotnet.defaultSolution": "MonoGameClient/2048ish.MonoGameClient.sln",
+    "dotnet.dotnetPath": "/usr/share/dotnet"
 }
