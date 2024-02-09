@@ -14,17 +14,6 @@ internal static class NinePatchUtils
         Stretching
     }
 
-    public static void Test01(GraphicsDevice gd)
-    {
-        Texture2D test = ContentCentral.ProportionedButton1;
-        var outPut = new Color[25 * 75];
-        test.GetData(outPut);
-        ;
-        Texture2D testNew = new(gd, 25, 25);
-        testNew.SetData(outPut[..(25 * 25)]);
-        ;
-    }
-
     internal static Texture2D MakePatches(
         GraphicsDevice gd, Texture2D texture, NinePatchMethod method,
         int frameCount, int singleWidth, int singleHeight
@@ -34,7 +23,7 @@ internal static class NinePatchUtils
         {
             throw new NotImplementedException();
         }
-        var frames = GetFrames( texture, frameCount); // TODO Make changes so that the private methods all use the SetRange extension method, where it can be used
+        var frames = GetFrames(texture, frameCount); // TODO Make changes so that the private methods all use the SetRange extension method, where it can be used
         Color[][] patchedFrames = new Color[frameCount][];
 
         for (int i = 0; i < frameCount; i++)
@@ -51,7 +40,6 @@ internal static class NinePatchUtils
         texture.GetData(rawData);
         for (int i = 0; i < frameCount; i++)
         {
-            frames[i] = new Color[texture.Width * texture.Height / frameCount];
             frames[i] = rawData[(rawData.Length / frameCount * i)..(rawData.Length / frameCount * (i + 1))];
         }
         return frames;
@@ -63,7 +51,7 @@ internal static class NinePatchUtils
         Color[] rawResult = new Color[result.Width * result.Height];
         for (int i = 0; i < frames.Length; i++)
         {
-            rawResult.SetRange(frames[i].Length * i, frames[i]);
+            rawResult.SetRange(frames[i], frames[i].Length * i);
         }
         result.SetData(rawResult);
 
@@ -151,6 +139,8 @@ internal static class NinePatchUtils
         Color[][] transformedCentralPatch = new Color[newMiddlePatchesHeight][];
         Color[][] transformedMiddleRightPatch = new Color[newMiddlePatchesHeight][];
         Color[][] transformedLowerMiddlePatch = new Color[originalLowerPatchesHeight][];
+
+        // TODO use Array.Copy(Array, int, Array, int, int) to copy ranges of elements (see Utils.Extensions.SetRange)
 
         // First loop: stretching the upper middle patch to the right by copying each row next to itself until the new width.
         // Height remains the same, width changes.
