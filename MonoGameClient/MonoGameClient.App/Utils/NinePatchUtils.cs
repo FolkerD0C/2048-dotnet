@@ -25,97 +25,95 @@ internal static class NinePatchUtils
         ;
     }
 
-    internal static Texture2D MakePatches(GraphicsDevice gd, Texture2D texture, NinePatchMethod method, int frameCount, int singleWidth, int singleHeight)
+    internal static Texture2D MakePatches(
+        GraphicsDevice gd, Texture2D texture, NinePatchMethod method,
+        int frameCount, int singleWidth, int singleHeight
+    )
     {
         if (method != NinePatchMethod.Repeating)
         {
             throw new NotImplementedException();
         }
-        var frames = GetFrames(gd, texture, frameCount); // TODO Make changes so that the private methods all pass around Color arrays and they use the SetRange extension method
-        var patchedFrames = new Texture2D[frameCount];
+        var frames = GetFrames( texture, frameCount); // TODO Make changes so that the private methods all use the SetRange extension method, where it can be used
+        Color[][] patchedFrames = new Color[frameCount][];
+
         for (int i = 0; i < frameCount; i++)
         {
-            patchedFrames[i] = RepeatingNinePatch(gd, frames[i], singleWidth, singleHeight);
+            patchedFrames[i] = RepeatingNinePatch(frames[i], texture.Width, texture.Height / frameCount, singleWidth, singleHeight);
         }
-        return MergeFrames(gd, patchedFrames);
+        return MergeFrames(gd, patchedFrames, singleWidth, singleHeight);
     }
 
-    static Texture2D[] GetFrames(GraphicsDevice gd, Texture2D texture, int frameCount)
+    static Color[][] GetFrames(Texture2D texture, int frameCount)
     {
-        Texture2D[] frames = new Texture2D[frameCount];
+        Color[][] frames = new Color[frameCount][];
         Color[] rawData = new Color[texture.Width * texture.Height];
         texture.GetData(rawData);
         for (int i = 0; i < frameCount; i++)
         {
-            frames[i] = new(gd, texture.Width, texture.Height / frameCount);
-            frames[i].SetData(rawData[(rawData.Length / frameCount * i)..(rawData.Length / frameCount * (i + 1))]);
+            frames[i] = new Color[texture.Width * texture.Height / frameCount];
+            frames[i] = rawData[(rawData.Length / frameCount * i)..(rawData.Length / frameCount * (i + 1))];
         }
         return frames;
     }
 
-    static Texture2D MergeFrames(GraphicsDevice gd, Texture2D[] frames)
+    static Texture2D MergeFrames(GraphicsDevice gd, Color[][] frames, int width, int height)
     {
-        Texture2D result = new(gd, frames[0].Width, frames[0].Height * frames.Length);
+        Texture2D result = new(gd, width, height * frames.Length);
         Color[] rawResult = new Color[result.Width * result.Height];
         for (int i = 0; i < frames.Length; i++)
         {
-            Color[] rawdata = new Color[frames[i].Width * frames[i].Height];
-            frames[i].GetData(rawdata);
-            rawResult.SetRange(rawdata.Length * i, rawdata);
+            rawResult.SetRange(frames[i].Length * i, frames[i]);
         }
         result.SetData(rawResult);
 
         return result;
     }
 
-    static Texture2D RepeatingNinePatch(GraphicsDevice gd, Texture2D original, int width, int height)
+    static Color[] RepeatingNinePatch(
+        Color[] rawData, int originalWidth, int originalHeight, int width, int height
+    )
     {
-        if (original.Width % 2 != 1 || original.Height % 2 != 1)
+        if (originalWidth % 2 != 1 || originalHeight % 2 != 1) // TODO Make a SimpleNinePatch method which accepts a Texture2D object and has a middle patch width/height of 1 pixel
         {
             throw new InvalidOperationException("Central proportions must be 1 pixel wide/tall,"
                 + " the others must match in width/heigth with the opposite side.");
         }
-        int horizontalTertile1 = original.Width / 2;
-        int horizontalTertile2 = original.Width / 2 + 1;
-        int verticalTertile1 = original.Height / 2;
-        int verticalTertile2 = original.Height / 2 + 1;
-        Color[][][] proportions = InitiatePatchArrays(verticalTertile1, verticalTertile2, original.Height);
-
-        Color[] rawData = new Color[original.Width * original.Height];
-        original.GetData(rawData);
+        int horizontalTertile1 = originalWidth / 2;
+        int horizontalTertile2 = originalWidth / 2 + 1;
+        int verticalTertile1 = originalHeight / 2;
+        int verticalTertile2 = originalHeight / 2 + 1;
+        Color[][][] proportions = InitiatePatchArrays(verticalTertile1, verticalTertile2, originalHeight);
 
         for (int i = 0; i < verticalTertile1; i++)
         {
-            proportions[0][i] = rawData[(original.Width * i)..(original.Width * i + horizontalTertile1)];
-            proportions[1][i] = rawData[(original.Width * i + horizontalTertile1)..(original.Width * i + horizontalTertile2)];
-            proportions[2][i] = rawData[(original.Width * i + horizontalTertile2)..(original.Width * (i + 1))];
+            proportions[0][i] = rawData[(originalWidth * i)..(originalWidth * i + horizontalTertile1)];
+            proportions[1][i] = rawData[(originalWidth * i + horizontalTertile1)..(originalWidth * i + horizontalTertile2)];
+            proportions[2][i] = rawData[(originalWidth * i + horizontalTertile2)..(originalWidth * (i + 1))];
         }
 
         for (int i = verticalTertile1; i < verticalTertile2; i++)
         {
-            proportions[3][i - verticalTertile1] = rawData[(original.Width * i)..(original.Width * i + horizontalTertile1)];
-            proportions[4][i - verticalTertile1] = rawData[(original.Width * i + horizontalTertile1)..(original.Width * i + horizontalTertile2)];
-            proportions[5][i - verticalTertile1] = rawData[(original.Width * i + horizontalTertile2)..(original.Width * (i + 1))];
+            proportions[3][i - verticalTertile1] = rawData[(originalWidth * i)..(originalWidth * i + horizontalTertile1)];
+            proportions[4][i - verticalTertile1] = rawData[(originalWidth * i + horizontalTertile1)..(originalWidth * i + horizontalTertile2)];
+            proportions[5][i - verticalTertile1] = rawData[(originalWidth * i + horizontalTertile2)..(originalWidth * (i + 1))];
         }
 
-        for (int i = verticalTertile2; i < original.Height; i++)
+        for (int i = verticalTertile2; i < originalHeight; i++)
         {
-            proportions[6][i - verticalTertile2] = rawData[(original.Width * i)..(original.Width * i + horizontalTertile1)];
-            proportions[7][i - verticalTertile2] = rawData[(original.Width * i + horizontalTertile1)..(original.Width * i + horizontalTertile2)];
-            proportions[8][i - verticalTertile2] = rawData[(original.Width * i + horizontalTertile2)..(original.Width * (i + 1))];
+            proportions[6][i - verticalTertile2] = rawData[(originalWidth * i)..(originalWidth * i + horizontalTertile1)];
+            proportions[7][i - verticalTertile2] = rawData[(originalWidth * i + horizontalTertile1)..(originalWidth * i + horizontalTertile2)];
+            proportions[8][i - verticalTertile2] = rawData[(originalWidth * i + horizontalTertile2)..(originalWidth * (i + 1))];
         }
 
         var repeatingPatchArrays = CreateRepeatingPatchArrays(
-            proportions, width - horizontalTertile1 - (original.Width - horizontalTertile2),
-            height - verticalTertile1 - (original.Height - verticalTertile2)
+            proportions, width - horizontalTertile1 - (originalWidth - horizontalTertile2),
+            height - verticalTertile1 - (originalHeight - verticalTertile2)
             );
         
         var mergedArray = MergePatchArrays(repeatingPatchArrays, width, height);
 
-        Texture2D result = new(gd, width, height);
-        result.SetData(mergedArray);
-
-        return result;
+        return mergedArray;
     }
 
     static Color[][][] InitiatePatchArrays(int verticalTertile1, int verticalTertile2, int originalHeight)
