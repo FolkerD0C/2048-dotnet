@@ -25,10 +25,36 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Buttons/longButton1.png
 
+#begin Assets/Labels/longLabel1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Labels/longLabel1.png
+
 #begin Fonts/ComicMono48.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/ComicMono48.spritefont
+
+#begin Fonts/FreeMono/FreeMono36.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/FreeMono/FreeMono36.spritefont
+
+#begin Fonts/UnifontEX/Unifontexmono36.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/UnifontEX/Unifontexmono36.spritefont
 
