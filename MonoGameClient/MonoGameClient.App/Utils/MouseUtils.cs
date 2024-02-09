@@ -13,6 +13,7 @@ internal static class MouseUtils
     static MouseState current;
 
     static bool currentlyClicked = false;
+    static Guid? currentMouseHandleHolder;
 
     internal static int XPos => current.X;
     internal static int YPos => current.Y;
@@ -40,23 +41,33 @@ internal static class MouseUtils
         currentlyClicked = LeftDown;
     }
 
-    internal static bool LockMouseHandle(Guid handleCandidateId)
+    internal static bool LockMouseHandle(Guid id)
     {
-        if (mouseLeftButtonHandle == null)
+        if (currentMouseHandleHolder is null)
         {
-            mouseLeftButtonHandle = handleCandidateId;
+            currentMouseHandleHolder = id;
             return true;
         }
         return false;
     }
 
-    internal static bool ReleaseMouseHandle(Guid handleId)
+    internal static bool ReleaseMouseHandle(Guid id)
     {
-        if (mouseLeftButtonHandle == handleId)
+        if (currentMouseHandleHolder is not null && currentMouseHandleHolder == id)
         {
-            mouseLeftButtonHandle = null;
+            currentMouseHandleHolder = null;
             return true;
         }
         return false;
+    }
+
+    internal static bool IsCurrentMouseHandleHolder(Guid id)
+    {
+        return currentMouseHandleHolder is not null && currentMouseHandleHolder == id;
+    }
+
+    internal static bool MouseIsFree()
+    {
+        return currentMouseHandleHolder is null;
     }
 }

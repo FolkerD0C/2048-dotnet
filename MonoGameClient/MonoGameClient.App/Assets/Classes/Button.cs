@@ -19,7 +19,10 @@ namespace MonoGameClient.App.Assets
             Hover,
             Clicked
         }
-
+        Vector2 destinationPosition;
+        Texture2D textureAtlas;
+        int height;
+        int width;
         protected ButtonState state;
 
         readonly Guid id;
@@ -29,7 +32,6 @@ namespace MonoGameClient.App.Assets
 
         public Button(string text, Texture2D texture, SpriteFont font, Color fontColor, Vector2 destination, Vector2 padding) : base(text, texture, font, fontColor, destination, padding)
         {
-            id = Guid.NewGuid();
             state = ButtonState.Idle;
         }
 
@@ -59,10 +61,11 @@ namespace MonoGameClient.App.Assets
                 case ButtonState.Clicked:
                     {
                         atlasRow = 2;
+                        atlasRow = 2;
                         break;
                     }
                 default:
-                    throw new InvalidOperationException("Invalid button state: " + state + " in button: " + id);
+                    throw new InvalidOperationException("Invalid button state: " + state + " in button: " + Id);
             }
 
             Rectangle sourceRectangle = new(0, texture.Height / 3 * atlasRow, texture.Width, texture.Height / 3);

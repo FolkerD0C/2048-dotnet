@@ -10,17 +10,15 @@ namespace MonoGameClient.App.Assets;
 
 internal class Menu : IBaseAsset
 {
-    readonly Guid id;
-    public Guid Id => id;
+    public Guid Id => throw new NotImplementedException();
 
-    public Menu()
+    public Menu() : base()
     {
-        id = Guid.NewGuid();
     }
 
     public void Update(GameTime gameTime)
     {
-
+        throw new NotImplementedException();
     }
 
     public void Draw(SpriteBatch openSpriteBatch, GameTime gameTime)

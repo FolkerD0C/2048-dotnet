@@ -18,6 +18,8 @@ internal static class ContentCentral
 
     internal static Texture2D LongButton1 { get; private set; }
 
+    internal static Texture2D ProportionedButton1 { get; private set; }
+
     internal static Texture2D LongLabel1 { get; private set; }
 
     internal static void Load(ContentManager contentManager)
@@ -32,6 +34,7 @@ internal static class ContentCentral
         FreeMono36 = contentManager.Load<SpriteFont>("Fonts/FreeMono/FreeMono36");
 
         LongButton1 = contentManager.Load<Texture2D>("Assets/Buttons/longButton1");
+        ProportionedButton1 = contentManager.Load<Texture2D>("Assets/Buttons/proportionedButton1");
 
         LongLabel1 = contentManager.Load<Texture2D>("Assets/Labels/longLabel1");
 
