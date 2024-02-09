@@ -18,6 +18,9 @@ internal static class MouseUtils
     internal static int YPos => current.Y;
     internal static bool LeftDown => current.LeftButton == ButtonState.Pressed;
 
+    static Guid? mouseLeftButtonHandle;
+    internal static Guid? MouseLeftButtonHandle => mouseLeftButtonHandle;
+
     internal static event EventHandler KeyDown;
     internal static event EventHandler KeyUp;
 
@@ -35,5 +38,25 @@ internal static class MouseUtils
         }
 
         currentlyClicked = LeftDown;
+    }
+
+    internal static bool LockMouseHandle(Guid handleCandidateId)
+    {
+        if (mouseLeftButtonHandle == null)
+        {
+            mouseLeftButtonHandle = handleCandidateId;
+            return true;
+        }
+        return false;
+    }
+
+    internal static bool ReleaseMouseHandle(Guid handleId)
+    {
+        if (mouseLeftButtonHandle == handleId)
+        {
+            mouseLeftButtonHandle = null;
+            return true;
+        }
+        return false;
     }
 }
