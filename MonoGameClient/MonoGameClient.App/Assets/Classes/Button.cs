@@ -80,11 +80,11 @@ namespace MonoGameClient.App.Assets
             {
                 case ButtonState.Idle:
                     {
-                        if (MouseUtils.MouseLeftButtonHandle is not null && MouseUtils.MouseLeftButtonHandle != id)
+                        if (!MouseUtils.MouseIsFree())
                         {
                             return;
                         }
-                        if (MourseInArea())
+                        if (MouseInArea())
                         {
                             state = ButtonState.Hover;
                         }
@@ -92,11 +92,11 @@ namespace MonoGameClient.App.Assets
                     }
                 case ButtonState.Hover:
                     {
-                        if (!MourseInArea())
+                        if (!MouseInArea())
                         {
                             state = ButtonState.Idle;
                         }
-                        else if (MouseUtils.LeftDown && MouseUtils.MouseLeftButtonHandle is null)
+                        else if (MouseUtils.LeftDown)
                         {
                             MouseUtils.LockMouseHandle(id);
                             state = ButtonState.Clicked;
@@ -108,7 +108,7 @@ namespace MonoGameClient.App.Assets
                         if (!MouseUtils.LeftDown)
                         {
                             MouseUtils.ReleaseMouseHandle(id);
-                            state = MourseInArea() ? ButtonState.Hover : ButtonState.Idle;
+                            state = MouseInArea() ? ButtonState.Hover : ButtonState.Idle;
                             Click?.Invoke(this, EventArgs.Empty);
                         }
                         break;
@@ -118,7 +118,7 @@ namespace MonoGameClient.App.Assets
             }
         }
 
-        protected bool MourseInArea()
+        protected bool MouseInArea()
         {
             return MouseUtils.XPos >= Destination.X && MouseUtils.XPos <= Destination.X + Width
                 && MouseUtils.YPos >= Destination.Y && MouseUtils.YPos <= Destination.Y + Height;
