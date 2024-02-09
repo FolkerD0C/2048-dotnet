@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonoGameClient.App.Assets;
 
-internal class Menu : IDrawable
+internal class Menu : IBaseAsset
 {
     readonly Guid id;
     public Guid Id => id;
@@ -17,12 +18,12 @@ internal class Menu : IDrawable
         id = Guid.NewGuid();
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
 
     }
 
-    public void Draw(SpriteBatch openSpriteBatch)
+    public void Draw(SpriteBatch openSpriteBatch, GameTime gameTime)
     {
         throw new NotImplementedException();
     }

@@ -5,110 +5,120 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MonoGameClient.App.Assets
 {
-    internal class Button : IDrawable
+    internal class Button : BoxWithFixText, ISimpleUpdatable
     {
-        enum ButtonState
+        protected enum ButtonState
         {
             Idle,
             Hover,
-            ClickDown,
             Clicked
         }
 
-        ButtonState state;
-        Vector2 destinationPosition;
-        Texture2D textureAtlas;
-        int height;
-        int width;
-        string text;
-        SpriteFont font;
+        protected ButtonState state;
 
         readonly Guid id;
         public Guid Id => id;
 
-        public event EventHandler Click;
+        public event EventHandler? Click;
 
-        public Button(Texture2D textureAtlas, Vector2 destinationPosition, int height, int width, string text, SpriteFont font)
+        public Button(string text, Texture2D texture, SpriteFont font, Color fontColor, Vector2 destination, Vector2 padding) : base(text, texture, font, fontColor, destination, padding)
         {
             id = Guid.NewGuid();
             state = ButtonState.Idle;
-            this.textureAtlas = textureAtlas;
-            this.destinationPosition = destinationPosition;
-            this.height = height;
-            this.width = width;
-            this.text = text;
-            this.font = font;
         }
 
-        public void Draw(SpriteBatch openSpriteBatch)
+        public Button(string text, Texture2D texture, SpriteFont font, Color fontColor, Vector2 destination, float padding) : this(text, texture, font, fontColor, destination, new Vector2(padding, padding))
         {
-            int atlasColumn;
+        }
+
+        public Button(string text, Texture2D texture, SpriteFont font, Color fontColor, Vector2 destination) : this(text, texture, font, fontColor, destination, new Vector2(20, 20))
+        {
+        }
+
+        public override void Draw(SpriteBatch openSpriteBatch, GameTime gameTime)
+        {
             int atlasRow;
             switch (state)
             {
                 case ButtonState.Idle:
                     {
-                        atlasColumn = 0;
                         atlasRow = 0;
                         break;
                     }
                 case ButtonState.Hover:
                     {
-                        atlasColumn = 1;
-                        atlasRow = 0;
-                        break;
-                    }
-                case ButtonState.ClickDown:
-                    {
-                        atlasColumn = 0;
                         atlasRow = 1;
                         break;
                     }
                 case ButtonState.Clicked:
                     {
-                        atlasColumn = 1;
-                        atlasRow = 1;
+                        atlasRow = 2;
                         break;
                     }
                 default:
                     throw new InvalidOperationException("Invalid button state: " + state + " in button: " + id);
             }
 
-            Rectangle sourceRectangle = new(textureAtlas.Width / 2 * atlasColumn, textureAtlas.Height / 2 * atlasRow, textureAtlas.Width / 2, textureAtlas.Height / 2);
-            Rectangle destinationRectangle = new((int)destinationPosition.X, (int)destinationPosition.Y, width, height);
+            Rectangle sourceRectangle = new(0, texture.Height / 3 * atlasRow, texture.Width, texture.Height / 3);
 
-            openSpriteBatch.Draw(textureAtlas, destinationRectangle, sourceRectangle, Color.White);
+            openSpriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+            openSpriteBatch.DrawString(font, Text, textDestination, fontColor);
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            if (state == ButtonState.ClickDown && !MouseUtils.LeftDown)
+            switch (state)
             {
-                Click?.Invoke(this, EventArgs.Empty);
-                state = ButtonState.Clicked;
-                return;
+                case ButtonState.Idle:
+                    {
+                        if (MouseUtils.MouseLeftButtonHandle is not null && MouseUtils.MouseLeftButtonHandle != id)
+                        {
+                            return;
+                        }
+                        if (MourseInArea())
+                        {
+                            state = ButtonState.Hover;
+                        }
+                        break;
+                    }
+                case ButtonState.Hover:
+                    {
+                        if (!MourseInArea())
+                        {
+                            state = ButtonState.Idle;
+                        }
+                        else if (MouseUtils.LeftDown && MouseUtils.MouseLeftButtonHandle is null)
+                        {
+                            MouseUtils.LockMouseHandle(id);
+                            state = ButtonState.Clicked;
+                        }
+                        break;
+                    }
+                case ButtonState.Clicked:
+                    {
+                        if (!MouseUtils.LeftDown)
+                        {
+                            MouseUtils.ReleaseMouseHandle(id);
+                            state = MourseInArea() ? ButtonState.Hover : ButtonState.Idle;
+                            Click?.Invoke(this, EventArgs.Empty);
+                        }
+                        break;
+                    }
+                default:
+                    break;
             }
+        }
 
-            if (MouseUtils.XPos < destinationPosition.X || MouseUtils.XPos > destinationPosition.X + width
-                || MouseUtils.YPos < destinationPosition.Y || MouseUtils.YPos > destinationPosition.Y + height)
-            {
-                state = ButtonState.Idle;
-                return;
-            }
-
-            if (MouseUtils.LeftDown)
-            {
-                state = ButtonState.ClickDown;
-            }
-            else
-            {
-                state = ButtonState.Hover;
-            }
+        protected bool MourseInArea()
+        {
+            return MouseUtils.XPos >= Destination.X && MouseUtils.XPos <= Destination.X + Width
+                && MouseUtils.YPos >= Destination.Y && MouseUtils.YPos <= Destination.Y + Height;
         }
     }
 }
