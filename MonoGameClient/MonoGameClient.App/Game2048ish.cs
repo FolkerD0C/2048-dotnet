@@ -34,7 +34,6 @@ namespace MonoGameClient.App
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -62,7 +61,6 @@ namespace MonoGameClient.App
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
             MouseUtils.Update();
 
             button1.Update(gameTime);
@@ -76,8 +74,7 @@ namespace MonoGameClient.App
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-    
-            // TODO: Add your drawing code here
+
             _spriteBatch.Begin();
             _spriteBatch.DrawString(ContentCentral.ComicMono48, "Selected: " + selctedB, new Vector2(40, 40), Color.Yellow);
             button1.Draw(_spriteBatch, gameTime);
@@ -91,6 +88,7 @@ namespace MonoGameClient.App
             base.Draw(gameTime);
         }
 
+#nullable enable
         void OnClick(object? sender, EventArgs eventArgs)
         {
             if (sender is not null && sender is Button b)
@@ -98,5 +96,6 @@ namespace MonoGameClient.App
                 selctedB = b.Text;
             }
         }
+#nullable restore
     }
 }
