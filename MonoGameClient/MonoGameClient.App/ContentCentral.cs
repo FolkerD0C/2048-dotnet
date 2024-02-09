@@ -13,8 +13,12 @@ internal static class ContentCentral
     static bool loaded = false;
 
     internal static SpriteFont ComicMono48 { get; private set; }
+    internal static SpriteFont UniFontEXMono36 { get; private set; }
+    internal static SpriteFont FreeMono36 { get; private set; }
 
     internal static Texture2D LongButton1 { get; private set; }
+
+    internal static Texture2D LongLabel1 { get; private set; }
 
     internal static void Load(ContentManager contentManager)
     {
@@ -24,8 +28,12 @@ internal static class ContentCentral
         }
 
         ComicMono48 = contentManager.Load<SpriteFont>("Fonts/ComicMono48");
+        UniFontEXMono36 = contentManager.Load<SpriteFont>("Fonts/UnifontEX/Unifontexmono36");
+        FreeMono36 = contentManager.Load<SpriteFont>("Fonts/FreeMono/FreeMono36");
 
         LongButton1 = contentManager.Load<Texture2D>("Assets/Buttons/longButton1");
+
+        LongLabel1 = contentManager.Load<Texture2D>("Assets/Labels/longLabel1");
 
         loaded = true;
     }
