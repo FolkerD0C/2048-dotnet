@@ -1,0 +1,22 @@
+ISimpleDrawable--------------+-----+-----------+------ISimpleUpdatable
+        |                    |     |           |
+        |               BaseAsset  |           |
+        |                          |           |
+INineSliceCapable------------------+           |
+        |                          |           |
+        |                     SizableAsset     |
+        |                                      |
+ISimpleResizable-------------------------------+
+                                               |
+                                        MutableBaseAsset
+
+
+
+
+ISimpleDrawable-------+----------ISimpleUpdatable
+                      |
+                  BaseAsset-----+----ISimpleResizable
+                                |
+                          MutableBaseAsset------+-------ITextContainer
+                                                |
+                                       MutableTextContainer

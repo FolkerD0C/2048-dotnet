@@ -50,7 +50,10 @@ namespace MonoGameClient.App
             button2.Click += OnClick;
             button3 = new("button3", ContentCentral.LongButton1, ContentCentral.ComicMono48, Color.Black, new Vector2(450, 100));
             button3.Click += OnClick;
-            button4 = new("Exit", ContentCentral.LongButton1, ContentCentral.ComicMono48, Color.Black, new Vector2(450, 250));
+
+            var exitButtonTexture = NineSliceUtils.EnlargeSlices(GraphicsDevice, ContentCentral.ProportionedButton1, NineSliceUtils.NineSliceMethod.Simple, 3, 100, 100);
+
+            button4 = new("Exit", exitButtonTexture, ContentCentral.ComicMono48, Color.Black, new Vector2(450, 250));
             button4.Click += (sender, args) => { Exit(); };
 
             label1 = new("árvíztűrő tükörfúrógép", ContentCentral.LongLabel1, ContentCentral.FreeMono36, Color.Black, new Vector2(10, 375));

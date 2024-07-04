@@ -31,7 +31,7 @@ internal static class NineSliceUtils
             {
                 case NineSliceMethod.Simple:
                 {
-                    slicedFrames[1] = SimpleNineSlice(
+                    slicedFrames[i] = SimpleNineSlice(
                         frames[i], sourceWidth, sourceHeight, destinationWidth, destinationHeight
                     );
                     break;

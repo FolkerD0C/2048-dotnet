@@ -21,6 +21,7 @@
             "label": "build-console-client",
             "command": "dotnet",
             "type": "process",
+            "dependsOn": "test-game-2048",
             "args": [
                 "build",
                 "${workspaceFolder}/ConsoleClient/ConsoleClient.App/ConsoleClient.App.csproj",
@@ -48,6 +49,8 @@
         {
             "label": "build-monogame-client",
             "command": "dotnet",
+            "type": "process",
+            "dependsOn": "test-game-2048",
             "args": [
                 "build",
                 "${workspaceFolder}/MonoGameClient/MonoGameClient.App/MonoGameClient.App.csproj",
